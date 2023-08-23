@@ -25,11 +25,11 @@ const Footer = () => {
                 <div className={styles.formContainer}>
                     {btnState === 'DONE' && (<>
                         <div className={styles.title}>Thank you!</div>
-                        <div className={styles.subTitle}>We'll call you back shortly.</div>
+                        <div className={styles.subTitle}>We&apos;ll call you back shortly.</div>
                     </>)}
                     {btnState !== 'DONE' && (<>
                         <div className={styles.title}>Say <b>Hello!</b></div>
-                        <div className={styles.subTitle}>Fill in your details here & we'll call you back! Or just drop by at our office.</div>
+                        <div className={styles.subTitle}>Fill in your details here & we&apos;ll call you back! Or just drop by at our office.</div>
                         {items.map(({key, value, set}, index) => (
                             <div className={styles.field} key={key}>
                                 <input placeholder={key} onChange={(e) => set(e.target.value)} value={value} />

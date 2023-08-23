@@ -12,7 +12,7 @@ const Featured = () => {
     return (
         <div className={styles.container}>
             <div>
-                <div className={styles.title}>We've been <b>featured!</b></div>
+                <div className={styles.title}>We&apos;ve been <b>featured!</b></div>
                 <div className={styles.logos}>{logos.map(logo => <div style={{
                     '--bg': `url('${logo.src}')`
                 }} key={logo.src} />)}</div>

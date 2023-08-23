@@ -45,7 +45,7 @@ const About = () => {
             <div>
                 <div className={styles.textContainer}>
                     <div className={styles.title}><b>Capturing moments</b> that live a lifetime.</div>
-                    <div className={styles.subTitle}>We understand the importance of preserving memories that will be cherished for years to come, which is why we focus on capturing those special moments that often go unnoticed. Whether it's a teary-eyed mother of the bride, a heartfelt exchange of vows, or a spontaneous burst of laughter, We're always ready to capture the moments that matter most.</div>
+                    <div className={styles.subTitle}>We understand the importance of preserving memories that will be cherished for years to come, which is why we focus on capturing those special moments that often go unnoticed. Whether it&apos;s a teary-eyed mother of the bride, a heartfelt exchange of vows, or a spontaneous burst of laughter, We&apos;re always ready to capture the moments that matter most.</div>
                 </div>
                 <div className={styles.rightContainer}>
                     <Carousel autoPlay>
