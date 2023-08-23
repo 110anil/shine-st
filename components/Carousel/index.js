@@ -9,7 +9,6 @@ const Carousel = ({children, autoPlay = false, showControls = false, showBullets
     const ref = useRef(null)
     const [active, setActive] = useState(activeId)
 
-    console.log(active, children.length)
 
     useEffect(() => {
         ref.current && clearTimeout(ref.current)

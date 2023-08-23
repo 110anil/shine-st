@@ -28,9 +28,12 @@
     justify-content: center;
 }
 
-.logos img {
+.logos div {
     width: 200px;
     height: 250px;
     margin: 0 10px;
-    object-fit: contain;
+    background-size: contain;
+    background-position: center;
+    background-image: var(--bg);
+    background-repeat: no-repeat;
 }

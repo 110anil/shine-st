@@ -119,6 +119,12 @@
     z-index: -1;
 }
 
-.logoContainer img {
+.logoContainer span {
     height: 100px;
+    background-image: var(--bg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    display: block;
+    width: 100%;
 }

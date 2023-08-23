@@ -32,7 +32,6 @@ export default function handler (req, res) {
     transporter.sendMail(mailOptions(req.body), function(error, info){
         if (error) {
             res.status(500).json({done: false})
-            console.log(error);
         } else {
             res.status(200).json({done: true, info})
         }

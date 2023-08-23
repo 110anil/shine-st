@@ -51,7 +51,10 @@ const About = () => {
                     <Carousel autoPlay>
                         {imgs.map((img1, index) => <div className={styles.tileContainer} key={`key-${index}`}>
                             {img1.map(({url, title}) => <div key={title} className={styles.tile}>
-                                <img  alt={title} src={url.src}  />
+                                {/*<img  alt={title} src={url.src}  />*/}
+                                <span style={{
+                                    '--bg': `url('${url.src}')`
+                                }}></span>
                                 <div><div>{title}</div></div>
                             </div>)}
                         </div>)}

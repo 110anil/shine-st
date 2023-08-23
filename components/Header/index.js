@@ -15,14 +15,15 @@ export default ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
     return (
             <header className={styles.header}>
                 <div className={styles.logoContainer}>
-                    <div><img src={logo.src} fetchPriority='high' /></div>
+                    <div><span style={{
+                        '--bg': `url('${logo.src}')`
+                    }} /></div>
                 </div>
                 <div className={styles.headerContainer}>
                         <ul className={styles.leftContainer}>
                             {leftItems.map((item, index) => {
                                 return (
                                     <li onClick={() => {
-                                        console.log(document.getElementById(item))
                                         document.getElementById(item).scrollIntoView({behavior: "smooth"})
                                     }} className={cs(styles.li,item === activeTab && styles.liActive)} key={item}>{item}</li>
                                 )
