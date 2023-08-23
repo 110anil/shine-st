@@ -6,7 +6,7 @@ import {usePathname} from 'next/navigation'
 const defaultLeft = ['Services', 'Recognition', 'Testimonials', 'Contact']
 const defaultItems = [{text: 'Albums', url: '/albums'}]
 import cs from 'classnames'
-export default ({leftItems = defaultLeft, rightItems = defaultItems, activeTab = ''}) => {
+const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab = ''}) => {
     const pathname = usePathname()
     const handleClick = (e, url) => {
         e.preventDefault()
@@ -40,3 +40,4 @@ export default ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
             </header>
     )
 }
+export default HEader
