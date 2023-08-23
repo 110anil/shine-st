@@ -98,3 +98,58 @@
 .carouselBulletActive {
     opacity: 1;
 }
+
+.btns {
+    margin: 20px auto;
+    display: block;
+}
+
+.carouselBtns {
+    border-radius: 6px;
+    padding: 6px;
+    background: #444444;
+    display: inline-block;
+    vertical-align: middle;
+    height: 35px;
+    width: 35px;
+    cursor: pointer;
+    background-image: var(--bg);
+    background-size: 50%;
+    background-repeat: no-repeat;
+    background-position: center;
+    margin: 4px;
+}
+
+.legendContainer {
+    width: 80vw;
+    height: 100px;
+    overflow: hidden;
+    position: relative;
+    overflow-x: auto;
+    margin: 20px auto;
+}
+.cont {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 105px;
+    white-space: nowrap;
+
+}
+.legend {
+    display: inline-block;
+    vertical-align: top;
+    cursor: pointer;
+}
+.legend>div {
+    min-width: 285px;
+    width: 285px;
+    min-height: 105px;
+    background-position: right;
+    display: inline-block;
+    border: 3px solid transparent;
+}
+
+.active.legend>div {
+    border: 3px solid #444444;
+}

@@ -7,8 +7,7 @@ const AlbumsInput = () => {
     const [pin, setPin] = useState('')
     const [btnState, setBtnState] = useState(null)
     const onSubmit = () => {
-        setBtnState('LOADING')
-        apiCall({pin}).then(() => setBtnState(null)).catch(() => setBtnState('ERROR'))
+        window.location.href = `/albums/${pin}`
     }
     return (
         <div className={styles.container}>

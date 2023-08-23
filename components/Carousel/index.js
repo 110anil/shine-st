@@ -1,20 +1,54 @@
 'use client'
 
 import styles from './carousel.module.css'
-import React, {Fragment, useEffect, useRef, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import classNames from "classnames";
 import ControlArrow from '../../icons/carouselControl'
-const Carousel = ({children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
+import fs from './icons/fs.png'
+import pause from './icons/pause.png'
+import play from './icons/play.png'
+import restart from './icons/restart.png'
+import thumb from './icons/thumb.png'
+import cs from 'classnames'
+
+function toggleFullScreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+    } else if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+}
+const Legends = ({children, onClick, active}) => {
+    return (
+        <div className={styles.legendContainer}><div className={styles.cont}>
+            {
+                children.map((item, index) => (
+                    <div className={cs(styles.legend, active === index && styles.active)} key={index} onClick={() => onClick(index)}>{item}</div>
+                ))
+            }
+        </div></div>
+    )
+}
+const Carousel = ({showBtns = false, showLegends = false, children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
 
     const ref = useRef(null)
     const [active, setActive] = useState(activeId)
+    const [isAutoPlay, setAutoPlay] = useState(autoPlay)
+    const [isShowLegends, toggleLegends] = useState(false)
 
+    const btns = [{icon: thumb, text: 'legends', onClick: () => toggleLegends(!isShowLegends)},{
+        icon: isAutoPlay ? pause : play,
+        text: 'autoPlay', onClick: () => setAutoPlay(!isAutoPlay)}, {icon: fs, text: 'fullScreen', onClick: () => {
+            toggleFullScreen()
+        }}, {icon: restart, text: 'restart', onClick: () => {
+            setActive(0)
+        }}]
 
     useEffect(() => {
         ref.current && clearTimeout(ref.current)
         ref.current = null
 
-        if (autoPlay) {
+        if (isAutoPlay) {
             ref.current = setTimeout(() => {
                 setActive((active + 1) % children.length)
             }, 2500)
@@ -25,7 +59,7 @@ const Carousel = ({children, autoPlay = false, showControls = false, showBullets
             ref.current = null
         }
 
-    }, [children.length, active, autoPlay])
+    }, [children.length, active, isAutoPlay])
 
     return (
 
@@ -54,6 +88,18 @@ const Carousel = ({children, autoPlay = false, showControls = false, showBullets
                             )
                         })}
 
+                    </ol>
+                )}
+                {showLegends && isShowLegends && <Legends active={active} onClick={setActive}>{children}</Legends>}
+                {showBtns && (
+                    <ol className={styles.btns}>
+                        {btns.map(({text, icon, onClick}, index) => {
+                            return (
+                                <li key={`carousel-btns-${index}`} onClick={onClick} style={{
+                                    '--bg': `url('${icon.src}')`
+                                }} className={classNames(styles.carouselBtns)} />
+                            )
+                        })}
                     </ol>
                 )}
             </div>
