@@ -1,0 +1,100 @@
+
+
+.carousel {
+    position: relative;
+}
+
+.carouselInner {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+}
+
+.carouselItem {
+    position: absolute;
+    opacity: 0.5;
+    top: 0;
+    transform: translateX(-100%);
+    transition: transform .5s,opacity .3s;
+}
+
+.carouselItemActive {
+    position: static;
+    transform: none;
+    opacity: 1;
+}
+
+.carouselItemActive ~ .carouselItem {
+    transform: translateX(100%);
+}
+
+.carouselItem img,.carouselItem video {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+.carouselControl {
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    z-index: 10;
+    fill: #fff;
+    opacity: 0.5;
+    transition: scale .3s, opacity .3s;
+}
+
+.carouselControlPrev {
+    left: 2%;
+    transform: rotate(-180deg);
+}
+
+.carouselControlNext {
+    right: 2%;
+}
+
+.carouselControl:hover {
+    transform: scale(120%);
+}
+
+.carouselControlPrev.carouselControl:hover {
+    transform: rotate(-180deg) scale(120%);
+}
+
+.carouselControlActive {
+    display: block;
+    opacity: 1;
+}
+
+.carouselIndicators {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+    bottom: 2%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 10;
+}
+
+.carouselIndicators li {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.carouselBullet {
+    color: #fff;
+    opacity: 0.5;
+    cursor: pointer;
+    display: block;
+    font-size: 35px;
+}
+
+.carouselBullet:hover {
+    opacity: 1;
+}
+
+.carouselBulletActive {
+    opacity: 1;
+}

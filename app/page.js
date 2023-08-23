@@ -1,95 +1,70 @@
-import Image from 'next/image'
+'use client'
 import styles from './page.module.css'
+import Carousel from '../components/Carousel'
+import Header from '../components/Header'
+import Footer from '../components/Footer'
+import Reviews from '../components/Reviews'
+import Featured from '../components/Featured'
+import Gallery from '../components/Gallery'
+import About from '../components/About'
+import ScrollSeek from "@/components/ScrollSeek"
+import car from '../images/car.gif'
+import {useOnScreen} from "@/utils/useOnScreen";
+import {useRef, useState} from "react";
 
+const types = [ 'Without', 'JavaScript', 'Carousel']
+let options = {
+    root: null,
+    rootMargin: "0px",
+    threshold: 0.7
+}
 export default function Home() {
+    const [active, setActive] = useState('')
+    const refAbout = useRef(null)
+    const featuredRef = useRef(null)
+    const reviewsRef = useRef(null)
+    const contactRef = useRef(null)
+
+    const cb = (key) => () => setActive(key)
+    useOnScreen(refAbout, options, cb('Services'))
+    useOnScreen(featuredRef, options, cb('Recognition'))
+    useOnScreen(reviewsRef, options, cb('Testimonials'))
+    useOnScreen(contactRef, options, cb('Contact'))
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+      <>
+          <Header activeTab={active} />
+          <Carousel id={'banner'} showControls showBullets>
+              {...[
+          //         <video className="bg-video" preload="auto" autoPlay playsInline muted={true} loop
+          //                  src="https://www.kia.com/content/dam/kia2/in/en/our-vehicles/showroom/selto-teaser/seltos-xline/Desktop_1_new.mp4">
+          //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
+          // </video>,
+                  <div className={styles.test} style={{
+                  '--background': `url('${car.src}')`
+              }} key='car' />, ...types.map(id => <div className={styles.test} style={{
+              '--background': `url('http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}')`
+              }}  key={id} />)]}
+          </Carousel>
+          <div id='Services' ref={refAbout}>
+              <About />
+          </div>
+          <ScrollSeek />
+          <div id='Recognition' ref={featuredRef}><Featured /></div>
+          <Gallery />
+          <div id='Testimonials' ref={reviewsRef}><Reviews /></div>
+          <Carousel id={'banner'} showControls>
+              {...[
+                  //         <video className="bg-video" preload="auto" autoPlay playsInline muted={true} loop
+                  //                  src="https://www.kia.com/content/dam/kia2/in/en/our-vehicles/showroom/selto-teaser/seltos-xline/Desktop_1_new.mp4">
+                  //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
+                  // </video>,
+                  <div className={styles.test} style={{
+                      '--background': `url('${car.src}')`
+                  }} key='car' />, ...types.map(id => <div className={styles.test} style={{
+                      '--background': `url('http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}')`
+                  }}  key={id} />)]}
+          </Carousel>
+          <div id='Contact' ref={contactRef}><Footer /></div>
+      </>
   )
 }

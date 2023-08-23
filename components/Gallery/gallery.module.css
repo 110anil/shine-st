@@ -1,0 +1,114 @@
+.cont {
+    position: relative;
+    overflow: hidden;
+    height: 90vh;
+    width: 100vw;
+    margin: 60px 0;
+}
+.cont2 {
+    box-shadow: 4px 4px 20px rgba(0,0,0,.25);
+    width: 400vw;
+    height: 90vh;
+    animation: marquee 45s linear infinite;
+    position: absolute;
+}
+.cont3 {
+    float: left;
+    height: 90vh;
+    width: calc(50% - 15px);
+    margin-right: 15px;
+}
+
+.container {
+    display: grid;
+    grid-template-areas:
+    'a a b c c j l l m n'
+    'd e b c c k l l o p'
+    'f g g h i k l l q p';
+    gap: 15px;
+    height: 90vh;
+    width: 100%;
+}
+
+@keyframes marquee {
+    0% { left: 0; }
+    100% { left: -200%; }
+}
+
+.container>div {
+    background-color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 30px;
+    position: relative;
+    overflow: hidden;
+}
+
+
+.container>div>div {
+    display: block;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-image: var(--background);
+    transition: scale 1s;
+}
+
+.container>div>div:hover {
+    transform: scale(1.2);
+}
+.container>div:first-child {
+    grid-area: a;
+}
+
+.container>div:nth-child(2) {
+    grid-area: b;
+}
+.container>div:nth-child(3) {
+    grid-area: c;
+}
+.container>div:nth-child(4) {
+    grid-area: d;
+}
+.container>div:nth-child(5) {
+    grid-area: e;
+}
+.container>div:nth-child(6) {
+    grid-area: f;
+}
+.container>div:nth-child(7) {
+    grid-area: g;
+}
+.container>div:nth-child(8) {
+    grid-area: h;
+}
+.container>div:nth-child(9) {
+    grid-area: i;
+}
+
+.container>div:nth-child(10) {
+    grid-area: l;
+}
+.container>div:nth-child(11) {
+    grid-area: m;
+}
+.container>div:nth-child(12) {
+    grid-area: n;
+}
+.container>div:nth-child(13) {
+    grid-area: o;
+}
+.container>div:nth-child(14) {
+    grid-area: p;
+}
+.container>div:nth-child(15) {
+    grid-area: q;
+}
+
+.container>div:nth-child(16) {
+    grid-area: j;
+}
+.container>div:nth-child(17) {
+    grid-area: k;
+}

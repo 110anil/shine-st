@@ -1,0 +1,88 @@
+.container {
+    padding: 60px;
+    background: linear-gradient(116.41deg,#fff -67.02%,#63f3fc 23.01%,#f48d0c 155.41%,#fed775 311.85%);
+    box-shadow: 4px 4px 20px rgba(0,0,0,.25);
+}
+
+.container>div {
+    width: 1250px;
+    margin: 0 auto;
+}
+
+.title {
+    font-size: 38px;
+    line-height: 57px;
+    color: black;
+    margin-bottom: 10px;
+}
+
+.title b {
+    font-size: 48px;
+    display: block;
+}
+
+.subTitle {
+    font-size: 16px;
+    line-height: 27px;
+    color: black;
+    margin-bottom: 20px;
+}
+
+.textContainer {
+    display: inline-block;
+    vertical-align: middle;
+    width: 35%;
+}
+
+.rightContainer {
+    display: inline-block;
+    vertical-align: middle;
+    width: calc(65% - 50px);
+    margin-left: 50px;
+}
+
+.tileContainer {
+
+}
+
+.tile {
+    position: relative;
+    width: 340px;
+    height: 420px !important;
+    border-radius: 12px;
+    display: inline-block !important;
+    margin: 20px;
+    overflow: hidden;
+    box-shadow: 4px 4px 20px rgba(0,0,0,.25);
+}
+.tile img {
+
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 12px;
+    transition: .2s;
+}
+
+.tile:hover img {
+    transform: scale(1.2);
+}
+
+.tile>div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 12px;
+    background: linear-gradient(359.32deg,#000000c2 12.37%,transparent 65.77%);
+}
+
+.tile>div>div {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    font-size: 20px;
+    font-weight: 700;
+}
+

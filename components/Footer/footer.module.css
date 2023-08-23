@@ -1,0 +1,117 @@
+.footerContainer {
+    background: linear-gradient(116.41deg,#fff -67.02%,#63f3fc 23.01%,#f48d0c 155.41%,#fed775 311.85%);
+    box-shadow: 4px 4px 20px rgba(0,0,0,.25);
+    justify-content: center;
+    align-items: center;
+    padding: 120px 0;
+    overflow: hidden;
+}
+
+.mapContainer {
+    width: calc(50% - 20px);
+    display: inline-block;
+    vertical-align: top;
+}
+.imageContainer {
+    position: absolute;
+    left: -10%;
+    top: -45%;
+    pointer-events: none;
+    opacity: 0.1;
+}
+
+.imageContainer img {
+    transform: rotate(150deg) scale(1.6);
+    height: 100%;
+    width: 100%;
+
+}
+
+.mapContainer iframe {
+    width: 100%;
+    border: none;
+    margin-top: 20px;
+    box-shadow: 4px 4px 20px rgba(0,0,0,.25);
+    height: 400px;
+}
+
+.footer {
+    position: relative;
+    width: 1200px;
+    margin: 0px auto;
+}
+
+.formContainer {
+    width: calc(50% - 20px);
+    margin-right: 40px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.title {
+    font-size: 48px;
+    line-height: 57px;
+    color: black;
+    margin-bottom: 10px;
+}
+
+.subTitle {
+    font-size: 20px;
+    line-height: 27px;
+    color: black;
+    margin-bottom: 20px;
+}
+
+.field {
+    border-bottom: 1px solid #0000004d;
+    align-items: center;
+    justify-content: space-between;
+    display: inline-block;
+    vertical-align: top;
+    width: calc(50% - 20px);
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.field input {
+    appearance: none;
+    outline: none;
+    border: none;
+    background: none;
+    padding: 10px 0;
+    font-size: 20px;
+    display: block;
+    color: black;
+}
+
+.formContainer button {
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 136%;
+    font-weight: 600;
+    height: 45px;
+    width: 178px;
+    background: linear-gradient(134.79deg,#d7fcff 25.09%,#eb941c 195.28%);
+    color: #151515;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    margin-top: 20px;
+}
+
+.field button:disabled {
+    cursor: not-allowed;
+}
+
+.contact {
+    margin-top: 80px;
+    color: black;
+    text-align: center;
+}
+
+.contact a {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+}

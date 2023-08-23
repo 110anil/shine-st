@@ -1,0 +1,34 @@
+.video {
+    width: 100vw;
+}
+
+.videoContainer {
+    max-height: 100vh;
+    overflow: hidden;
+}
+
+.frameContainer {
+    overflow: hidden;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+}
+
+.frame {
+    left: 0;
+    top: 0;
+    opacity: 0;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    background-image: var(--background);
+}
+
+.activeFrame {
+    opacity: 1;
+}
