@@ -35,7 +35,7 @@ const getClosest = (ratio) => {
 }
 
 
-export default () => {
+const ScrollSeek = () => {
     const ref = useRef(null)
     const [active, setActive] = useState(0)
     useOnScreen(ref, options, (entry) => {
@@ -50,3 +50,5 @@ export default () => {
         </div>
     )
 }
+
+export default ScrollSeek

@@ -8,7 +8,7 @@ import logo5 from '../../images/featured/tnl.png'
 import logo6 from '../../images/featured/junebug.png'
 
 const logos = [logo3, logo1, logo4, logo6, logo2, logo5]
-export default () => {
+const Featured = () => {
     return (
         <div className={styles.container}>
             <div>
@@ -18,3 +18,4 @@ export default () => {
         </div>
     )
 }
+export default Featured

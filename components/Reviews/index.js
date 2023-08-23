@@ -26,7 +26,7 @@ Also, the album they provided were of very good quality and the video they made 
         content: `I ordered a photo album from shine Studio. The quality is up to the mark. Overall designing, editing and printing work was done perfectly. Really appreciate their efforts. Way to go smile studio 👍👍👍`
     }
 ]
-export default () => {
+const Reviews = () => {
     return (
         <div className={styles.container}>
             <div>
@@ -50,3 +50,5 @@ export default () => {
         </div>
     )
 }
+
+export default Reviews

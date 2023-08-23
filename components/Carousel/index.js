@@ -4,7 +4,7 @@ import styles from './carousel.module.css'
 import React, {Fragment, useEffect, useRef, useState} from 'react'
 import classNames from "classnames";
 import ControlArrow from '../../icons/carouselControl'
-export default ({children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
+const Carousel = ({children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
 
     const ref = useRef(null)
     const [active, setActive] = useState(activeId)
@@ -61,3 +61,5 @@ export default ({children, autoPlay = false, showControls = false, showBullets =
         </div>
     )
 }
+
+export default Carousel

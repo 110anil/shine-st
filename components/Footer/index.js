@@ -3,7 +3,7 @@ import React, {useState} from 'react'
 import styles from './footer.module.css'
 import icon from '../../images/icon.png'
 import yt from './yt.png'
-export default () => {
+const Footer = () => {
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [phone, setPhone] = useState('')
@@ -32,7 +32,7 @@ export default () => {
                         <div className={styles.subTitle}>Fill in your details here & we'll call you back! Or just drop by at our office.</div>
                         {items.map(({key, value, set}, index) => (
                             <div className={styles.field} key={key}>
-                                <input placeholder={key} value={value} onChange={(e) => set(e.target.value)} value={value} />
+                                <input placeholder={key} onChange={(e) => set(e.target.value)} value={value} />
                             </div>
                         ))}
                         <button onClick={onSubmit} disabled={btnState === 'LOADING' || btnState === 'DONE'}>
@@ -64,3 +64,4 @@ export default () => {
         </div>
     )
 }
+export default Footer

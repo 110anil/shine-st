@@ -39,7 +39,7 @@ const getChunks = (array) => {
 }
 
 const imgs = getChunks(images)
-export default () => {
+const About = () => {
     return (
         <div className={styles.container}>
             <div>
@@ -50,7 +50,7 @@ export default () => {
                 <div className={styles.rightContainer}>
                     <Carousel autoPlay>
                         {imgs.map((img1, index) => <div className={styles.tileContainer} key={`key-${index}`}>
-                            {img1.map(({url, title}) => <div className={styles.tile}>
+                            {img1.map(({url, title}) => <div key={title} className={styles.tile}>
                                 <img  alt={title} src={url.src}  />
                                 <div><div>{title}</div></div>
                             </div>)}
@@ -61,3 +61,4 @@ export default () => {
         </div>
     )
 }
+export default About

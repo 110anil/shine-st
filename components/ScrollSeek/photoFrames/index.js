@@ -30,7 +30,7 @@ import frame029 from './ezgif-frame-029.jpg'
 import frame030 from './ezgif-frame-030.jpg'
 import frame031 from './ezgif-frame-031.jpg'
 
-export default [frame001, frame001, frame001, frame001, frame001, frame001, frame001, frame001, frame002, frame002, frame002, frame002, frame002, frame002,
+const frames =  [frame001, frame001, frame001, frame001, frame001, frame001, frame001, frame001, frame002, frame002, frame002, frame002, frame002, frame002,
 frame003, frame003, frame003, frame003, frame003, frame004, frame005, frame006, frame007, frame008, frame009, frame010, frame011
     , frame012, frame013, frame014
     , frame015, frame016, frame017
@@ -39,3 +39,5 @@ frame003, frame003, frame003, frame003, frame003, frame004, frame005, frame006, 
     , frame024, frame025, frame026
     , frame027, frame028, frame029
     , frame030, frame031, frame031]
+
+export default frames

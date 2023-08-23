@@ -3,7 +3,7 @@ import React, {useState} from 'react'
 import styles from './albumsInput.module.css'
 import img1 from './img1.jpg'
 
-export default () => {
+const AlbumsInput = () => {
     const [pin, setPin] = useState('')
     const [btnState, setBtnState] = useState(null)
     const onSubmit = () => {
@@ -34,3 +34,5 @@ export default () => {
         </div>
     )
 }
+
+export default AlbumsInput
