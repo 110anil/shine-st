@@ -18,18 +18,18 @@ function toggleFullScreen() {
         document.exitFullscreen();
     }
 }
-const Legends = ({children, onClick, active}) => {
+const Legends = ({children, onClick, active, legendStyles = {}, legendClass = ''}) => {
     return (
-        <div className={styles.legendContainer}><div className={styles.cont}>
+        <div className={cs(styles.legendContainer, 'legend-container')}><div className={styles.cont}>
             {
                 children.map((item, index) => (
-                    <div className={cs(styles.legend, active === index && styles.active)} key={index} onClick={() => onClick(index)}>{item}</div>
+                    <div className={cs(styles.legend, active === index && styles.active, legendClass)} style={legendStyles} key={index} onClick={() => onClick(index)}>{item}</div>
                 ))
             }
         </div></div>
     )
 }
-const Carousel = ({showBtns = false, showLegends = false, children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
+const Carousel = ({legendClass, legendStyles = {}, showBtns = false, showLegends = false, children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
 
     const ref = useRef(null)
     const [active, setActive] = useState(activeId)
@@ -90,7 +90,7 @@ const Carousel = ({showBtns = false, showLegends = false, children, autoPlay = f
 
                     </ol>
                 )}
-                {showLegends && isShowLegends && <Legends active={active} onClick={setActive}>{children}</Legends>}
+                {showLegends && isShowLegends && <Legends legendClass={legendClass} legendStyles={legendStyles} active={active} onClick={setActive}>{children}</Legends>}
                 {showBtns && (
                     <ol className={styles.btns}>
                         {btns.map(({text, icon, onClick}, index) => {

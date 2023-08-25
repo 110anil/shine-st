@@ -30,3 +30,9 @@
     background-size: contain;
     background-repeat: no-repeat;
 }
+
+.legend>div {
+    min-width: var(--w);
+    width: var(--w);
+    min-height: var(--h);
+}
