@@ -6,7 +6,7 @@
 
 .container:before {
     content: ' ';
-    background-image: url(--bg);
+    background-image: var(--bg);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
