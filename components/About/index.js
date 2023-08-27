@@ -38,8 +38,9 @@ const getChunks = (array) => {
     return arr
 }
 
-const imgs = getChunks(images)
-const About = () => {
+
+const About = ({serviceThumbnails}) => {
+    const imgs = getChunks(serviceThumbnails)
     return (
         <div className={styles.container}>
             <div>
@@ -50,10 +51,10 @@ const About = () => {
                 <div className={styles.rightContainer}>
                     <Carousel autoPlay>
                         {imgs.map((img1, index) => <div className={styles.tileContainer} key={`key-${index}`}>
-                            {img1.map(({url, title}) => <div key={title} className={styles.tile}>
+                            {img1.map(({url, tags: [title, targetUrl] = []}) => <div onClick={() => window.location.href = targetUrl} key={title} className={styles.tile}>
                                 {/*<img  alt={title} src={url.src}  />*/}
                                 <span style={{
-                                    '--bg': `url('${url.src}')`
+                                    '--bg': `url('${url}')`
                                 }}></span>
                                 <div><div>{title}</div></div>
                             </div>)}

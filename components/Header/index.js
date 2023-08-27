@@ -6,7 +6,7 @@ import {usePathname} from 'next/navigation'
 const defaultLeft = ['Services', 'Recognition', 'Testimonials', 'Contact']
 const defaultItems = [{text: 'Albums', url: '/albums'}]
 import cs from 'classnames'
-const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab = ''}) => {
+const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab = '', logoMap}) => {
     const pathname = usePathname()
     const handleClick = (e, url) => {
         e.preventDefault()
@@ -16,7 +16,7 @@ const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
             <header className={styles.header}>
                 <div className={styles.logoContainer}>
                     <div><span style={{
-                        '--bg': `url('${logo.src}')`
+                        '--bg': `url('${logoMap.logo}')`
                     }} /></div>
                 </div>
                 <div className={styles.headerContainer}>
