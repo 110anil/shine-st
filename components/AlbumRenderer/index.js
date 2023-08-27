@@ -8,13 +8,15 @@ const AlbumRenderer = ({title, images, height, width, logoMap}) => {
     const w = Math.ceil(h * width / height)
     return (
         <Modal>
-            <div className={styles.container}>
+            <div className={styles.container} style={{
+                '--bg': `url('${logoMap.whiteLogo}')`
+            }}>
                 <div className={styles.title}>{title}</div>
                 <Carousel showBtns showControls showLegends legendClass={styles.legend} legendStyles={{
                     '--h': `${h}px`,
                     '--w': `${w}px`
                 }}>
-                    {images.map(img => <div className={styles.image} style={{'--bg': `url('${logoMap.whiteLogo}')`}} key={img} />)}
+                    {images.map(img => <div className={styles.image} style={{'--bg': `url('${img}')`}} key={img} />)}
                 </Carousel>
             </div>
         </Modal>

@@ -6,7 +6,7 @@
 
 .container:before {
     content: ' ';
-    background-image: url(./shine_logo.png);
+    background-image: url(--bg);
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
