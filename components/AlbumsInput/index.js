@@ -1,7 +1,7 @@
 'use client'
 import React, {useState} from 'react'
 import styles from './albumsInput.module.css'
-const AlbumsInput = ({albumThumbnail: [albumThumbnail] = {}}) => {
+const AlbumsInput = ({albumthumbnail: [albumthumbnail] = {}}) => {
     const [pin, setPin] = useState('')
     const [btnState, setBtnState] = useState(null)
     const onSubmit = () => {
@@ -15,7 +15,7 @@ const AlbumsInput = ({albumThumbnail: [albumThumbnail] = {}}) => {
                     <div className={styles.title}>Albums</div>
                     <div className={styles.review}>
                         <div className={styles.imgContainer} style={{
-                            '--background': `url('${albumThumbnail.url}')`
+                            '--background': `url('${albumthumbnail.url}')`
                         }}>
                         </div>
                         <div className={styles.textContainer}>

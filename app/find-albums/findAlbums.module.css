@@ -1,0 +1,165 @@
+.table {
+    display: grid;
+    grid-template-areas:
+            'a b c'
+            'd e f'
+            'g h i'
+            'j k l'
+            'm n o'
+            'p q r'
+            's t u'
+            'v w x'
+            'y z a1'
+            'a2 a3 a4'
+            'a5 a6 a7'
+            'a8 a9 10'
+            'a11 a12 a13';
+    width: 100%;
+}
+.table>div {
+    border-bottom: 1px solid #e1e1e1;
+    padding: 10px 0 10px;
+}
+.table>div:first-child {
+    grid-area: a;
+    font-weight: 700;
+}
+
+.table>div:nth-child(2) {
+    grid-area: b;
+    font-weight: 700;
+}
+.table>div:nth-child(3) {
+    grid-area: c;
+}
+.table>div:nth-child(4) {
+    grid-area: d;
+}
+.table>div:nth-child(5) {
+    grid-area: e;
+}
+.table>div:nth-child(6) {
+    grid-area: f;
+}
+.table>div:nth-child(7) {
+    grid-area: g;
+}
+.table>div:nth-child(8) {
+    grid-area: h;
+}
+.table>div:nth-child(9) {
+    grid-area: i;
+}
+.table>div:nth-child(10) {
+    grid-area: j;
+}
+.table>div:nth-child(11) {
+    grid-area: k;
+}
+.table>div:nth-child(12) {
+    grid-area: l;
+}
+.table>div:nth-child(13) {
+    grid-area: m;
+}
+.table>div:nth-child(14) {
+    grid-area: n;
+}
+.table>div:nth-child(15) {
+     grid-area: o;
+ }
+.table>div:nth-child(16) {
+    grid-area: p;
+}
+.table>div:nth-child(17) {
+    grid-area: q;
+}
+.table>div:nth-child(18) {
+    grid-area: r;
+}
+.table>div:nth-child(19) {
+    grid-area: s;
+}
+.table>div:nth-child(20) {
+    grid-area: t;
+}
+.table>div:nth-child(21) {
+    grid-area: u;
+}
+.table>div:nth-child(22) {
+    grid-area: v;
+}
+.table>div:nth-child(23) {
+    grid-area: w;
+}
+.table>div:nth-child(24) {
+    grid-area: x;
+}
+.table>div:nth-child(25) {
+    grid-area: y;
+}
+
+.table>div:nth-child(26) {
+    grid-area: z;
+}
+
+.table>div:nth-child(27) {
+    grid-area: a1;
+}
+
+.table>div:nth-child(28) {
+    grid-area: a2;
+}
+.table>div:nth-child(29) {
+    grid-area: a3;
+}
+
+.table>div:nth-child(30) {
+    grid-area: a4;
+}
+
+.table>div:nth-child(31) {
+    grid-area: a5;
+}
+.table>div:nth-child(32) {
+    grid-area: a6;
+}
+
+.table>div:nth-child(33) {
+    grid-area: a7;
+}
+
+.table>div:nth-child(34) {
+    grid-area: a8;
+}
+.table>div:nth-child(35) {
+    grid-area: a9;
+}
+
+.table>div:nth-child(36) {
+    grid-area: a10;
+}
+
+.table>div:nth-child(37) {
+    grid-area: a11;
+}
+.table>div:nth-child(38) {
+    grid-area: a12;
+}
+
+.table>div:nth-child(39) {
+    grid-area: a13;
+}
+
+
+.table a {
+    background: white;
+    color: black;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 5px 10px;
+}
+
+.table a+a {
+    margin-left: 10px;
+}

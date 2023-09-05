@@ -39,8 +39,8 @@ const getChunks = (array) => {
 }
 
 
-const About = ({serviceThumbnails}) => {
-    const imgs = getChunks(serviceThumbnails)
+const About = ({servicethumbnails}) => {
+    const imgs = getChunks(servicethumbnails)
     return (
         <div className={styles.container}>
             <div>

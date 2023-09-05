@@ -17,7 +17,7 @@ let options = {
     threshold: 0.7
 }
 
-export default function Home({logoMap, topImages, bottomImages, scrollFrames, serviceThumbnails, featured, testimonials, galleryImages}) {
+export default function Home({logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages}) {
     const [active, setActive] = useState('')
     const refAbout = useRef(null)
     const featuredRef = useRef(null)
@@ -39,16 +39,16 @@ export default function Home({logoMap, topImages, bottomImages, scrollFrames, se
                     //                  src="https://www.kia.com/content/dam/kia2/in/en/our-vehicles/showroom/selto-teaser/seltos-xline/Desktop_1_new.mp4">
                     //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
                     // </video>,
-                    ...topImages.map(x => <div className={styles.test} style={{
+                    ...topimages.map(x => <div className={styles.test} style={{
                         '--background': `url('${x.url}')`
                     }}  key={x.url} />)]}
             </Carousel>
             <div id='Services' ref={refAbout}>
-                <About serviceThumbnails={serviceThumbnails} />
+                <About servicethumbnails={servicethumbnails} />
             </div>
-            <ScrollSeek scrollFrames={scrollFrames} />
+            <ScrollSeek scrollframes={scrollframes} />
             <div id='Recognition' ref={featuredRef}><Featured featuredImages={featured} /></div>
-            <Gallery images={galleryImages} />
+            <Gallery images={galleryimages} />
             <div id='Testimonials' ref={reviewsRef}><Reviews testimonials={testimonials} /></div>
             <Carousel id={'banner'} showControls>
                 {...[
@@ -56,7 +56,7 @@ export default function Home({logoMap, topImages, bottomImages, scrollFrames, se
                     //                  src="https://www.kia.com/content/dam/kia2/in/en/our-vehicles/showroom/selto-teaser/seltos-xline/Desktop_1_new.mp4">
                     //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
                     // </video>,
-                    ...bottomImages.map(x => <div className={styles.test} style={{
+                    ...bottomimages.map(x => <div className={styles.test} style={{
                         '--background': `url('${x.url}')`
                     }}  key={x.url} />)]}
             </Carousel>

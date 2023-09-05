@@ -1,0 +1,121 @@
+.container {
+    padding: 120px;
+
+}
+
+.container>div {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    background-clip: text;
+    -webkit-background-clip: text !important;
+    text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+    opacity: .6;
+    font-size: 85px;
+    font-weight: 800;
+    line-height: 85px;
+    background: linear-gradient(180deg,#f7ffff -146.08%,rgba(247,255,255,.25));
+    margin-bottom: 60px;
+}
+
+.title b {
+    font-size: 80px;
+}
+
+.textContainer {
+    width: 100%;
+    display: block;
+    vertical-align: top;
+    border-radius: 4px;
+    padding: 44px 44px 52px 40px;
+    position: relative;
+    border: 1px solid transparent;
+    background: linear-gradient(#191919,#191919) padding-box,linear-gradient(45deg,#444,#222,transparent) border-box;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 21px;
+}
+
+
+
+.field {
+    border-bottom: 1px solid white;
+    align-items: center;
+    justify-content: space-between;
+    vertical-align: top;
+    margin-right: 10px;
+    margin-top: 60px;
+}
+
+.field input {
+    appearance: none;
+    outline: none;
+    border: none;
+    background: none;
+    padding: 10px 0;
+    font-size: 20px;
+    display: block;
+    color: white;
+    width: 100%;
+}
+
+
+.textContainer button {
+    font-size: 14px;
+    margin-bottom: 10px;
+    line-height: 136%;
+    font-weight: 600;
+    height: 45px;
+    width: 178px;
+    background: linear-gradient(134.79deg,#d7fcff 25.09%,#eb941c 195.28%);
+    color: #151515;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    border-radius: 2px;
+    margin-top: 80px;
+}
+
+.textContainer button+button {
+    margin-left: 10px;
+}
+
+.field button:disabled {
+    cursor: not-allowed;
+}
+
+.fileInput.fileInput {
+    display: none;
+}
+
+.fileInput+label {
+    cursor: pointer;
+    margin: 10px 0;
+    display: inline-block;
+    font-size: 16px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.loading:before {
+    content: ' ';
+    display: inline-block;
+    vertical-align: top;
+    height: 14px;
+    width: 14px;
+    border: 2px solid black;
+    border-bottom: none;
+    background: transparent;
+    border-radius: 50%;
+    margin-right: 5px;
+    animation: spin 1s linear infinite;
+}

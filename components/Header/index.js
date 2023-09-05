@@ -16,7 +16,7 @@ const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
             <header className={styles.header}>
                 <div className={styles.logoContainer}>
                     <div><span style={{
-                        '--bg': `url('${logoMap.logo}')`
+                        '--bg': `url('${logoMap.mainLogo}')`
                     }} /></div>
                 </div>
                 <div className={styles.headerContainer}>
