@@ -1,6 +1,9 @@
 import {makeChunks} from "@/utils/makeChunks";
 
 export const runBatch = (promises, limit = 7, timeout = 300) => {
+    if (!promises.length) {
+        return Promise.resolve()
+    }
     const chunks = makeChunks(promises, limit)
     let index = -1
     let responses = []

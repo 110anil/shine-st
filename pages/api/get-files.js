@@ -1,5 +1,5 @@
 import ImageKit from 'imagekit'
-
+import crypto from 'crypto'
 const endpoint = "https://ik.imagekit.io/shinest/"
 const privateKey = "private_jfETJAYcgdr/pGMOaB31ljVkVGI=";
 const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I=";
@@ -248,6 +248,101 @@ export function findAlbum (req, res) {
         })
         res.status(200).json({done: true, result: Object.keys(obj).map(pin => ({pin, title: obj[pin], url: `/albums/${pin}`}))})
     });
+}
 
 
+
+const keys = {
+    publicKey: '-----BEGIN PUBLIC KEY-----\n' +
+        'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCuWRg7+PmOgA2BrqODmM48MGh+\n' +
+        'yqdvKCp7+jPR6TuFuE/OnF72dd+Zt8cOoOsNuX0zwptC/fJjIpajg6HO06LnweQ9\n' +
+        'gKAl+oAjTKt3/dgrVEpie7QGrAK24H6aKS9jB9Cjf3w/uGBLWg7YmUw/ti0+pAws\n' +
+        'aZhZQn+l9CyOzNXsHwIDAQAB\n' +
+        '-----END PUBLIC KEY-----\n',
+    privateKey: '-----BEGIN PRIVATE KEY-----\n' +
+        'MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK5ZGDv4+Y6ADYGu\n' +
+        'o4OYzjwwaH7Kp28oKnv6M9HpO4W4T86cXvZ135m3xw6g6w25fTPCm0L98mMilqOD\n' +
+        'oc7ToufB5D2AoCX6gCNMq3f92CtUSmJ7tAasArbgfpopL2MH0KN/fD+4YEtaDtiZ\n' +
+        'TD+2LT6kDCxpmFlCf6X0LI7M1ewfAgMBAAECgYBbMp17mXOot5DZGenMR1zxnPy7\n' +
+        '/fNxMJhwe2Mp1Q9elheg4qjF0MiilsAYBdKOPk2gipY+h6mHc6tKYut7zbZzGIPw\n' +
+        'wqDUmNnXg3hwGD//m8Dj4rVixBrus4Wiio0T3SPx30xUYWiq9SFi8Y54UJ58R471\n' +
+        'ckkA5TEI2DlXOK1WMQJBAOSKAetcscdzeKiq4p2nBRFcyC72H6Df73ICdCpYXRjl\n' +
+        'Ue5tapRtt799nQMZTTNj3Ok9IIdS9W58z0JEft3H7kkCQQDDTCOfWRI5xGJQTgME\n' +
+        'zTmt5izRpG8jd8UyAlHrRwVCcmEVKtqQXPk5xLyk0VK3bYt5SvzZfj9kT1KPRRs7\n' +
+        'd6cnAkEAkvh1l4i7A4ss0ztiFQSt66aBTkIVwP2CHQ2a6wh8hmAjOnO/EMkmW81K\n' +
+        'Rg3laeEU1iHrY1tkXrOBDhrCg5npkQJAS5k4nOFk3bm4eO+J2Zz7u+ZC6TAm2Wru\n' +
+        'iao+Pb4zOgJ+tCvviTyEOSmAAKkKxPiBqgUuFZ76OQE/qzgMD5wEtwJAHXxjuY4H\n' +
+        'X2CEgGt18w4q2mLK5NViIm7yrZjhEmjaZaP7RPq6aR4XQV+qOloXOwmytvt6PlCq\n' +
+        'vV1oOWwB+YHOqA==\n' +
+        '-----END PRIVATE KEY-----\n'
+}
+
+const createToken = ({username, password}) => {
+    const signerObject = crypto.createSign("RSA-SHA256");
+    signerObject.update(`${username}-${password}`);
+    return signerObject.sign({key:keys.privateKey,padding:crypto.constants.RSA_PKCS1_PSS_PADDING}, "base64");
+}
+
+const verifyToken = ({username, password, token}) => {
+    const verifierObject = crypto.createVerify("RSA-SHA256");
+    verifierObject.update(`${username}-${password}`);
+    return verifierObject.verify({key:keys.publicKey, padding:crypto.constants.RSA_PKCS1_PSS_PADDING}, token, "base64");
+}
+// const signExample = (str) => {
+//     crypto.generateKeyPair('rsa', {
+//         modulusLength: 1024,
+//         publicKeyEncoding: {
+//             type: 'spki',
+//             format: 'pem'
+//         },
+//         privateKeyEncoding: {
+//             type: 'pkcs8',
+//             format: 'pem'
+//         }
+//     }, (err, publicKey, privateKey) => {
+//
+//         console.log(publicKey, privateKey)
+//         // sign String
+//         // var signerObject = crypto.createSign("RSA-SHA256");
+//         // signerObject.update(str);
+//         // var signature = signerObject.sign({key:privateKey,padding:crypto.constants.RSA_PKCS1_PSS_PADDING}, "base64");
+//         // console.info("signature: %s", signature);
+//         // //verify String
+//         // var verifierObject = crypto.createVerify("RSA-SHA256");
+//         // verifierObject.update(str);
+//         // var verified = verifierObject.verify({key:publicKey, padding:crypto.constants.RSA_PKCS1_PSS_PADDING}, signature, "base64");
+//         // console.info("is signature ok?: %s", verified);
+//     });
+// }
+
+export function login (req, res) {
+    const {username: uname, password, token: t} = req.body
+    const {username = uname, token} = t ? JSON.parse(Buffer.from(t, 'base64').toString('ascii')) : {}
+    imagekit.listFiles({
+        path : `data1/usermanagement`,
+        tags : [username]
+    }, function(error, result) {
+        if(error) {
+            res.status(500).json({done: false, error})
+            return
+        }
+        const user = result.filter(({tags}) => {
+            const [uName, pWord] = tags || []
+            if (username === uName) {
+                if (token) {
+                    return verifyToken({username, password: pWord, token})
+                }
+                if (password === pWord) {
+                    return true
+                }
+            }
+            return false
+        }).map(({tags: [username, password, role] = []}) => ({username, password, role}))[0]
+        if (!user) {
+            res.status(200).json({done: false, error: new Error('User Not Found')})
+            return
+        }
+        const newToken = t || Buffer.from(JSON.stringify({username, token: createToken(user)})).toString('base64')
+        res.status(200).json({done: true, token: newToken, role: user.role, username: user.username})
+    })
 }

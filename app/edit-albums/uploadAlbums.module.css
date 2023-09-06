@@ -76,3 +76,8 @@
 .duplicateNameFile {
     border: 1px solid red;
 }
+
+.roleError {
+    margin: 160px auto 120px;
+    width: 1200px;
+}

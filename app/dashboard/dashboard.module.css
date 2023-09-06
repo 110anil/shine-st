@@ -1,0 +1,53 @@
+.container {
+    padding: 120px;
+
+}
+
+.container>div {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.title {
+    background-clip: text;
+    -webkit-background-clip: text !important;
+    text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+    opacity: .6;
+    font-size: 85px;
+    font-weight: 800;
+    line-height: 85px;
+    background: linear-gradient(180deg,#f7ffff -146.08%,rgba(247,255,255,.25));
+    margin-bottom: 60px;
+}
+
+.textContainer {
+    width: 100%;
+    display: block;
+    vertical-align: top;
+    border-radius: 4px;
+    padding: 44px 44px 52px 40px;
+    position: relative;
+    border: 1px solid transparent;
+    background: linear-gradient(#191919,#191919) padding-box,linear-gradient(45deg,#444,#222,transparent) border-box;
+}
+
+.name {
+    font-size: 20px;
+    font-weight: 600;
+    color: #fff;
+    line-height: 21px;
+    margin-bottom: 40px;
+}
+
+.action {
+    border: 1px solid transparent;
+    background: linear-gradient(#191919,#191919) padding-box,linear-gradient(45deg,#444,#222,transparent) border-box;
+    padding: 20px 40px;
+    font-size: 14px;
+    line-height: 30px;
+    width: 300px;
+    display: inline-block;
+    vertical-align: top;
+    margin: 10px;
+}

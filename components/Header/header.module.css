@@ -51,7 +51,7 @@
 }
 
 .leftContainer li,.rightContainer li {
-    padding: 35px 20px;
+    padding: 35px 15px;
     position: relative;
     cursor: pointer;
     font-size: 15px;

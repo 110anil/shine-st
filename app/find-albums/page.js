@@ -2,13 +2,18 @@
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import SearchInput from "@/components/SearchInput";
+import Login from "@/components/Login";
 import {Fragment, useState} from "react";
 import logo from '@/images/logo.png'
 import styles from './findAlbums.module.css'
-const items = [{text: 'Home', url: '/'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
-const leftItems = ['Contact']
+const items = [{text: 'Home', url: '/'}, {text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
+const leftItems = ['Contact', {name: 'Logout', onClick: () => {
+        localStorage.removeItem('authToken')
+        window.location.reload()
+    }}]
 
-export default function FindAlbum() {
+
+function FindAlbum() {
     const [data, setData] = useState([])
     const obSubmit = (formData) => {
         return fetch('/api/find-album', {
@@ -46,4 +51,7 @@ export default function FindAlbum() {
             <div id='Contact'><Footer /></div>
         </>
     )
+}
+export default function FindAlbumPage () {
+    return <Login component={FindAlbum} />
 }

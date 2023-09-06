@@ -6,26 +6,31 @@ import {useEffect, useState} from 'react'
 import styles from './uploadAlbums.module.css'
 import styles2 from '@/components/AlbumPageContainer/albums.module.css'
 import AlbumsRenderer from '@/components/AlbumRenderer';
+import Login from '@/components/Login';
 import cs from 'classnames'
 import logo from '@/images/logo.png'
 import white from '@/images/white.webp'
 import {upload} from "@/utils/upload";
 import { useParams } from 'next/navigation'
-const items = [{text: 'Home', url: '/'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
-const leftItems = ['Contact']
+const items = [{text: 'Home', url: '/'}, {text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
+const leftItems = ['Contact', {name: 'Logout', onClick: () => {
+        localStorage.removeItem('authToken')
+        window.location.reload()
+    }}]
 
 // logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages
 const specialItems = {
-    featured: {}, // nothing required
-    galleryimages: {}, // nothing required
-    testimonials: {tags: [{key: 'name', required: true}, {key: 'description', required: true}], parse: ([name, ...description]) => {
+    featured: {title: 'Edit Featured Section', subtitle: 'Edit Featured Section', submitText: 'Update'}, // nothing required
+    galleryimages: {title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
+    testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}], parse: ([name, ...description]) => {
             return {name, description: description.join('')}
         }}, // required 2 tags: name, description. parser and deParser required
-    servicethumbnails: {tags: [{key: 'service', required: true}]}, // required 1 tag
-    scrollframes: {}, // nothing required
-    bottomimages: {tags: [{key: 'title', required: false}]}, // optional tag
-    topimages: {tags: [{key: 'title', required: false}]}, // optional tag
-    logos: {tags: [{key: 'title', required: true}]} // required 1 tag
+    servicethumbnails: {title: 'Edit Services Offered', subtitle: 'Edit Services Offered', submitText: 'Update', tags: [{key: 'service', required: true}]}, // required 1 tag
+    scrollframes: {title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update'}, // nothing required
+    bottomimages: {title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
+    topimages: {title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
+    logos: {title: 'Edit Website Logos', subtitle: 'Edit Website logos', submitText: 'Update', tags: [{key: 'title', required: true}]}, // required 1 tag,
+    usermanagement: {roles: ['admin'], title: 'Edit Users', subtitle: 'Add / Remove users', submitText: 'Update', tags: [{key: 'username', required: true}, {key: 'password', required: true, type: 'password'}, {key: 'role', required: true}]}
 }
 
 const unParse = (item, pin) => {
@@ -70,7 +75,7 @@ const getFiles = async (pin) => {
         return Promise.resolve({pin, images, ...dta})
 }
 
-export default function Edit() {
+function Edit({role = 'user', username}) {
     const [files, setFiles] = useState([])
     const [existingData, setExistingData] = useState(null)
     const [showPreview, setPreview] = useState(false)
@@ -79,11 +84,15 @@ export default function Edit() {
         urlPin = urlPin.toLowerCase()
     }
     let specialItem = false
+    let requiredRoles = ['user', 'admin']
     if (existingData && existingData.pin && specialItems[existingData.pin]) {
         specialItem = specialItems[existingData.pin]
+        requiredRoles = specialItem.roles || requiredRoles
     }
 
-    const {tags: specialTags = []} = specialItem || {}
+    const roleMatch = requiredRoles.includes(role)
+
+    const {tags: specialTags = [], title = 'Edit Album', subtitle = 'Edit Album', submitText = 'Update Album'} = specialItem || {}
 
     const togglePreview = (formData) => {
         if (showPreview) {
@@ -216,7 +225,7 @@ export default function Edit() {
                                     })
                                 }
                             } />
-                            {specialTags.map(({key}) => <input placeholder={key} key={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
+                            {specialTags.map(({key, maxLength = 470, type = 'text'}) => <input type={type} maxLength={maxLength} placeholder={key} key={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
                                 setExistingData({
                                     ...existingData,
                                     images: existingData.images.map((f) => {
@@ -268,19 +277,17 @@ export default function Edit() {
                                     key: f.objectUrl === file.objectUrl ? e.target.value : f.key
                                 })))
                             } />
-                            {specialTags.map(({key}) => <input key={key} placeholder={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
-                                setExistingData({
-                                    ...existingData,
-                                    images: files.map((f) => {
-                                        return {
-                                            ...f,
-                                            tempTags: file.objectUrl === f.url ? {
-                                                ...(f.tempTags || {}),
-                                                [key]: e.target.value
-                                            } : f.tempTags
-                                        }
-                                    })
+                            {specialTags.map(({key, maxLength = 470, type = 'text'}) => <input type={type} maxLength={maxLength} key={key} placeholder={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
+                                setFiles(files.map((f) => {
+                                    return {
+                                        ...f,
+                                        tempTags: file.objectUrl === f.objectUrl ? {
+                                            ...(f.tempTags || {}),
+                                            [key]: e.target.value
+                                        } : f.tempTags
+                                    }
                                 })
+                                )
                             }} />)}
                             <div className={styles.delete} onClick={() => {
                                 setFiles(files.map(f => ({
@@ -300,30 +307,36 @@ export default function Edit() {
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
-            {urlPin && !existingData }
             {urlPin && !existingData && <div className={styles2.loaderContainer}><div className={styles2.loader} /></div>}
-            {!urlPin && <SearchInput
-                onSubmit={findAlbum}
-                title='Edit Albums' subTitle={'Find Albums'} fields={[{key: 'pin', type: 'text', placeholder: 'Enter PIN'}]} />}
-            {existingData && (
-                <SearchInput actions={invalid ? undefined : [{label: 'Preview', action: togglePreview}]}
-                             onSubmit={invalid ? undefined : onSubmit}
-                             submitText={'Update Album'}
-                             initialValue={{title: existingData.title}}
-                             title='' subTitle={'Edit Albums'} fields={[...(!specialItem ? [{key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}] : []), {key: 'files', type: 'file', placeholder: 'Select Files', validator: () => true, onChange: (e) => {
-                        const f = [...e.target.files].map((file, index) => {
-                            let [ext] = file.name.match(/\.[a-zA-Z0-9]+$/)
-                            let name = file.name.replace(/\.[a-zA-Z0-9]+$/, '')
-                            name = name.replace(/\D/g, '')
-                            name = name.length > 0 ? name : index
-                            return {ext, file, objectUrl: URL.createObjectURL(file), key: parseInt(name)}
-                        }).sort((x, y) => x.key > y.key ? 1 : -1).map((file, index) => ({...file, key: index + 1 + lastIndex}))
-                        setFiles([...files, ...f])
-                        return f
-                    }}]}>{children}</SearchInput>
-            )}
+            {roleMatch && <>
+                {!urlPin && <SearchInput
+                    onSubmit={findAlbum}
+                    title={title} subTitle={subtitle} fields={[{key: 'pin', type: 'text', placeholder: 'Enter PIN'}]} />}
+                {existingData && (
+                    <SearchInput actions={invalid ? undefined : [{label: 'Preview', action: togglePreview}]}
+                                 onSubmit={invalid ? undefined : onSubmit}
+                                 submitText={submitText}
+                                 initialValue={{title: existingData.title}}
+                                 title={urlPin ? title : ''} subTitle={subtitle} fields={[...(!specialItem ? [{key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}] : []), {key: 'files', type: 'file', placeholder: 'Select Files', validator: () => true, onChange: (e) => {
+                            const f = [...e.target.files].map((file, index) => {
+                                let [ext] = file.name.match(/\.[a-zA-Z0-9]+$/)
+                                let name = file.name.replace(/\.[a-zA-Z0-9]+$/, '')
+                                name = name.replace(/\D/g, '')
+                                name = name.length > 0 ? name : index
+                                return {ext, file, objectUrl: URL.createObjectURL(file), key: parseInt(name)}
+                            }).sort((x, y) => x.key > y.key ? 1 : -1).map((file, index) => ({...file, key: index + 1 + lastIndex}))
+                            setFiles([...files, ...f])
+                            return f
+                        }}]}>{children}</SearchInput>
+                )}
+            </>}
+            {!roleMatch && <div className={styles.roleError}>You are not authorised for this action. Users with following roles can view this content: `{requiredRoles.join(', ')}`</div>}
             <div id='Contact'><Footer /></div>
             {showPreview && <AlbumsRenderer onClose={() => togglePreview()} logoMap={{whiteLogo: white.src}} title={showPreview.title} images={[...((existingData || {}).images || []), ...files].map(({url, objectUrl, key, deleted}) => ({url: url || objectUrl, key, deleted})).filter(x => !x.deleted).sort((x, y) => x.key > y.key ? 1 : -1).map(x => x.url)} />}
         </>
     )
+}
+
+export default function EditPage () {
+    return <Login component={Edit} />
 }

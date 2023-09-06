@@ -1,7 +1,6 @@
 'use client'
 import React from 'react'
 import styles from './header.module.css'
-import logo from '../../images/logo.png'
 import {usePathname} from 'next/navigation'
 const defaultLeft = ['Services', 'Recognition', 'Testimonials', 'Contact']
 const defaultItems = [{text: 'Albums', url: '/albums'}]
@@ -22,10 +21,16 @@ const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
                 <div className={styles.headerContainer}>
                         <ul className={styles.leftContainer}>
                             {leftItems.map((item, index) => {
+                                let name = item
+                                let onClick = (() => {
+                                    document.getElementById(item).scrollIntoView({behavior: "smooth"})
+                                })
+                                if (typeof item !== 'string') {
+                                    name = item.name
+                                    onClick = item.onClick
+                                }
                                 return (
-                                    <li onClick={() => {
-                                        document.getElementById(item).scrollIntoView({behavior: "smooth"})
-                                    }} className={cs(styles.li,item === activeTab && styles.liActive)} key={item}>{item}</li>
+                                    <li onClick={onClick} className={cs(styles.li,name === activeTab && styles.liActive)} key={name}>{name}</li>
                                 )
                             })}
                         </ul>

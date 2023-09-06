@@ -5,12 +5,17 @@ import SearchInput from "@/components/SearchInput";
 import {useState} from 'react'
 import styles from './uploadAlbums.module.css'
 import AlbumsRenderer from '@/components/AlbumRenderer';
+import Login from '@/components/Login';
 import cs from 'classnames'
 import logo from '@/images/logo.png'
 import white from '@/images/white.webp'
 import {upload} from "@/utils/upload";
-const items = [{text: 'Home', url: '/'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
-const leftItems = ['Contact']
+const items = [{text: 'Home', url: '/'}, {text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
+const leftItems = ['Contact', {name: 'Logout', onClick: () => {
+        localStorage.removeItem('authToken')
+        window.location.reload()
+    }}]
+
 
 const getFiles = async (pin) => {
         let {done, images = []} = await fetch('/api/get-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin})}).then(res => res.json())
@@ -24,7 +29,7 @@ const uploadFilesAndUpdateTags = async (files, {title, pin}) => {
     return upload(files, {title, pin})
 }
 
-export default function Albums() {
+function Albums() {
     const [files, setFiles] = useState([])
     const [showPreview, setPreview] = useState(false)
     const togglePreview = (formData) => {
@@ -155,6 +160,9 @@ export default function Albums() {
     )
 }
 
+export default function UploadAlbum () {
+    return <Login component={Albums} />
+}
 // prevent duplicate pin update
 // upload mode -> no delete option, just check if pin exists dont allow, if doesnt exists upload files and show success message
 // edit mode -> option to delete images or add additional images. additional images default name should be "lastIndex + 1"

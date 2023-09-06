@@ -34,9 +34,10 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                             {fields.map(({type = 'text', key, value: val, placeholder, onChange, disabled = false}) => {
                                 switch (type) {
                                     case 'text':
+                                    case 'password':
                                         return (
                                             <div className={styles.field} key={key}>
-                                                <input disabled={disabled} placeholder={placeholder} value={val !== undefined ? val : formData[key]} onChange={(e) => setFormData(key, e.target.value)} />
+                                                <input type={type} disabled={disabled} placeholder={placeholder} value={val !== undefined ? val : formData[key]} onChange={(e) => setFormData(key, e.target.value)} />
                                             </div>
                                         )
                                     case 'file':
