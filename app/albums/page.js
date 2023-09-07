@@ -4,6 +4,6 @@ import {getData} from "@/pages/api/get-files";
 export default async function Albums() {
     const data = await getData(['logos', 'albumthumbnail'])
     return (
-            <AlbumPage data={data} />
+            <AlbumPage {...data} />
     )
 }
