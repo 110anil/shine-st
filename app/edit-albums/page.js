@@ -6,7 +6,10 @@ import {useEffect, useState} from 'react'
 import styles from './uploadAlbums.module.css'
 import styles2 from '@/components/AlbumPageContainer/albums.module.css'
 import AlbumsRenderer from '@/components/AlbumRenderer';
+import AlbumPage from '@/components/AlbumPage';
+import PreviewTemp from '@/components/Preview';
 import Login from '@/components/Login';
+import Home from '@/components/Home';
 import cs from 'classnames'
 import logo from '@/images/logo.png'
 import white from '@/images/white.webp'
@@ -19,18 +22,29 @@ const leftItems = ['Contact', {name: 'Logout', onClick: () => {
     }}]
 
 // logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages
+
+const AlteredAlbum = (props) => {
+    const {onClose} = props
+    const right = [{text: 'Close Preview', onClick: onClose}]
+    return <AlbumPage {...props} rightItems={right} />
+}
+
+const AlteredHome = (props) => {
+    const {onClose} = props
+    const right = [{text: 'Albums', url: '/albums'}, {text: 'Close Preview', onClick: onClose}]
+    return <Home {...props} rightItems={right} />
+}
 const specialItems = {
     featured: {title: 'Edit Featured Section', subtitle: 'Edit Featured Section', submitText: 'Update'}, // nothing required
     galleryimages: {title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
-    testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}], parse: ([name, ...description]) => {
-            return {name, description: description.join('')}
-        }}, // required 2 tags: name, description. parser and deParser required
-    servicethumbnails: {title: 'Edit Services Offered', subtitle: 'Edit Services Offered', submitText: 'Update', tags: [{key: 'service', required: true}]}, // required 1 tag
+    testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}]}, // required 2 tags: name, description. parser and deParser required
+    servicethumbnails: {title: 'Edit Services Offered', subtitle: 'Edit Services Offered', submitText: 'Update', tags: [{key: 'service', required: true}, {key: 'targetUrl', required: true}]}, // required 1 tag
     scrollframes: {title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update'}, // nothing required
+    albumthumbnail: {dataKeys: ['logos'], preview: AlteredAlbum, title: 'Edit Album Page Thumbnail', subtitle: 'Edit Album Page Thumbnail Image', submitText: 'Update'}, // nothing required
     bottomimages: {title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
     topimages: {title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
     logos: {title: 'Edit Website Logos', subtitle: 'Edit Website logos', submitText: 'Update', tags: [{key: 'title', required: true}]}, // required 1 tag,
-    usermanagement: {roles: ['admin'], title: 'Edit Users', subtitle: 'Add / Remove users', submitText: 'Update', tags: [{key: 'username', required: true}, {key: 'password', required: true, type: 'password'}, {key: 'role', required: true}]}
+    usermanagement: {preview: false, roles: ['admin'], title: 'Edit Users', subtitle: 'Add / Remove users', submitText: 'Update', tags: [{key: 'username', required: true}, {key: 'password', required: true, type: 'password'}, {key: 'role', required: true}]}
 }
 
 const unParse = (item, pin) => {
@@ -38,7 +52,7 @@ const unParse = (item, pin) => {
     return {
         ...item,
         newTags: tags.reduce((res, {key}) => {
-            if (item.tempTags[key]) {
+            if (item.tempTags && item.tempTags[key]) {
                 res.push(item.tempTags[key])
             }
             return res
@@ -75,6 +89,27 @@ const getFiles = async (pin) => {
         return Promise.resolve({pin, images, ...dta})
 }
 
+
+const PreviewComp = ({specialItem, togglePreview, data, existingData, files}) => {
+    const {preview: Preview = AlteredHome} = specialItem
+    if (specialItem) {
+        files = files.filter(f => !f.deleted).map(x => unParse(x, existingData.pin)).map(x => ({...x, tags: x.newTags, url: x.objectUrl}))
+        existingData = {...existingData, images: existingData.images.filter(x => !x.deleted).map(x => unParse(x, existingData.pin)).map(x => ({...x, tags: x.newTags}))}
+        const f = [...files, ...existingData.images].sort((x, y) => x.key > y.key ? 1 : -1)
+        let dta = {[existingData.pin]: f}
+        if (existingData.pin === 'logos') {
+            dta = {logoMap: f.reduce((res, item) => {
+                res[item.tags[0]] = item.url
+                    return res
+                }, {})}
+        }
+        return <PreviewTemp onClose={() => togglePreview()} component={Preview} modifiedData={dta} keys={specialItem.dataKeys} />
+    } else if (!specialItem) {
+        return <AlbumsRenderer onClose={() => togglePreview()} logoMap={{whiteLogo: white.src}} title={data.title} images={[...((existingData || {}).images || []), ...files].map(({url, objectUrl, key, deleted}) => ({url: url || objectUrl, key, deleted})).filter(x => !x.deleted).sort((x, y) => x.key > y.key ? 1 : -1).map(x => x.url)} />
+    }
+    return null
+}
+
 function Edit({role = 'user', username}) {
     const [files, setFiles] = useState([])
     const [existingData, setExistingData] = useState(null)
@@ -92,7 +127,7 @@ function Edit({role = 'user', username}) {
 
     const roleMatch = requiredRoles.includes(role)
 
-    const {tags: specialTags = [], title = 'Edit Album', subtitle = 'Edit Album', submitText = 'Update Album'} = specialItem || {}
+    const {tags: specialTags = [], title = 'Edit Album', subtitle = 'Edit Album', submitText = 'Update Album', preview: showSpecialView = true} = specialItem || {}
 
     const togglePreview = (formData) => {
         if (showPreview) {
@@ -313,7 +348,7 @@ function Edit({role = 'user', username}) {
                     onSubmit={findAlbum}
                     title={title} subTitle={subtitle} fields={[{key: 'pin', type: 'text', placeholder: 'Enter PIN'}]} />}
                 {existingData && (
-                    <SearchInput actions={invalid ? undefined : [{label: 'Preview', action: togglePreview}]}
+                    <SearchInput actions={invalid || !showSpecialView ? undefined : [{label: 'Preview', action: togglePreview}]}
                                  onSubmit={invalid ? undefined : onSubmit}
                                  submitText={submitText}
                                  initialValue={{title: existingData.title}}
@@ -332,7 +367,7 @@ function Edit({role = 'user', username}) {
             </>}
             {!roleMatch && <div className={styles.roleError}>You are not authorised for this action. Users with following roles can view this content: `{requiredRoles.join(', ')}`</div>}
             <div id='Contact'><Footer /></div>
-            {showPreview && <AlbumsRenderer onClose={() => togglePreview()} logoMap={{whiteLogo: white.src}} title={showPreview.title} images={[...((existingData || {}).images || []), ...files].map(({url, objectUrl, key, deleted}) => ({url: url || objectUrl, key, deleted})).filter(x => !x.deleted).sort((x, y) => x.key > y.key ? 1 : -1).map(x => x.url)} />}
+            {showPreview && <PreviewComp specialItem={specialItem} togglePreview={togglePreview} data={showPreview} existingData={existingData} files={files} />}
         </>
     )
 }

@@ -17,7 +17,7 @@ let options = {
     threshold: 0.7
 }
 
-export default function Home({logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages}) {
+export default function Home({logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages, rightItems}) {
     const [active, setActive] = useState('')
     const refAbout = useRef(null)
     const featuredRef = useRef(null)
@@ -32,7 +32,7 @@ export default function Home({logoMap, topimages, bottomimages, scrollframes, se
 
     return (
         <>
-            <Header activeTab={active} logoMap={logoMap} />
+            <Header rightItems={rightItems} activeTab={active} logoMap={logoMap} />
             <Carousel id={'banner'} showControls showBullets>
                 {...[
                     //         <video className="bg-video" preload="auto" autoPlay playsInline muted={true} loop

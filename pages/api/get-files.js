@@ -105,6 +105,7 @@ export async function getData(keys = ['topimages', 'servicethumbnails', 'scrollf
     }
     return finalData
 }
+
 export default function handler (req, res) {
     handle(req.body.pin.toLowerCase(), req.body.meta).then(x => res.status(200).json(x)).catch(x => res.status(500).json(x))
 }

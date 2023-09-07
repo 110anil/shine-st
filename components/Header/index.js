@@ -35,9 +35,10 @@ const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
                             })}
                         </ul>
                     <ul className={styles.rightContainer}>
-                        {rightItems.map(({text, url}, index) => {
+                        {rightItems.map(({text, url, onClick: oC}, index) => {
+                            const onClick = oC || ((e) => handleClick(e, url))
                             return (
-                                <li className={cs(styles.li,pathname === url && styles.liActive)} onClick={(e) => handleClick(e, url)} key={text}>{text}</li>
+                                <li className={cs(styles.li,pathname === url && styles.liActive)} onClick={onClick} key={text}>{text}</li>
                             )
                         })}
                     </ul>

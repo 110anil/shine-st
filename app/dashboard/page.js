@@ -16,7 +16,6 @@ const actions = [
     {key: 'topimages', text: 'Images in top section'},
     {key: 'servicethumbnails', text: 'Services offered'},
     {key: 'scrollframes', text: 'Scroll controlled video'},
-    {key: 'scrollframes', text: 'Scroll controlled video'},
     {key: 'featured', text: 'Featured Section'},
     {key: 'galleryimages', text: 'Image Gallery'},
     {key: 'testimonials', text: 'Reviews / Testimonials'},
