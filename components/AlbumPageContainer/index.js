@@ -10,12 +10,12 @@ export default function AlbumPage({logoMap}) {
     const params = useParams()
     useEffect(() => {
         fetch('/api/get-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin: params.id})}).then(res => res.json()).then((data) => {
-            if (data.done) {
+            if (data.done && data.images && data.images.length) {
                 setData(data)
                 setState('LOADED')
                 return
             }
-            alert('Something went wrong')
+            alert('Album not found')
             setState('ERROR')
         }).catch((error) => {
             console.log(error)
