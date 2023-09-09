@@ -251,7 +251,7 @@ export function findAlbum (req, res) {
             return res
         }, []))]
     const obj = {}
-    return Promise.all(initAll().map(({imagekit}) => imagekit.listFiles({
+    return Promise.all(initAll().map(({imageKit}) => imageKit.listFiles({
         tags : [...title, req.body.title]
     }).then(result => {
         result.forEach((file) => {
@@ -262,7 +262,7 @@ export function findAlbum (req, res) {
             }
         })
     }))).then(() => {
-        return {done: true, result: Object.keys(obj).map(pin => ({pin, title: obj[pin], url: `/albums/${pin}`}))}
+        res.status(500).json({done: true, result: Object.keys(obj).map(pin => ({pin, title: obj[pin], url: `/albums/${pin}`}))})
     }).catch((error) => res.status(500).json({done: false, error}))
 }
 
