@@ -151,6 +151,7 @@ function Albums() {
                     title={showPreview.title}
                     images={files
                         .map(({url, objectUrl, key, deleted}) => ({url: url || objectUrl, key, deleted}))
+                        .filter(({deleted}) => !deleted)
                         .sort((x, y) => x.key > y.key ? 1 : -1)
                         .map(x => x.url)
                     }
