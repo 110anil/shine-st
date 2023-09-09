@@ -5,6 +5,8 @@ import favIcon16 from "@/public/favicon-16x16.png";
 import favIcon32 from "@/public/favicon-32x32.png";
 import logo from "@/images/logo.png";
 import { Inter } from 'next/font/google'
+import styles from './layoyt.module.css'
+import cs from 'classnames'
 const inter = Inter({ subsets: ['latin'] })
 export const metadata = {
   title: 'Shine Studio | Wedding Photography | Maternity Photography | Pre-wedding Shoots | Faridabad | Delhi NCR | Gurgaon | Gurugram | Noida',
@@ -47,7 +49,7 @@ export default function RootLayout({ children }) {
         <meta charSet="utf-8" />
         <meta name="format-detection" content="telephone=no" />
     </head>
-      <body className={inter.className}>{children}</body>
+      <body className={cs(inter.className, styles.body)}>{children}</body>
     </html>
   )
 }
