@@ -6,7 +6,7 @@ const AlbumsInput = ({albumthumbnail: [albumthumbnail] = {}}) => {
     const [btnState, setBtnState] = useState(null)
     const onSubmit = () => {
         setBtnState('LOADING')
-        window.location.href = `/albums/${pin}`
+        window.location.href = `/albums/${pin.trim()}`
     }
     return (
         <>

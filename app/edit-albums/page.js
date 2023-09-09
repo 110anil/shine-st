@@ -34,17 +34,115 @@ const AlteredHome = (props) => {
     const right = [{text: 'Albums', url: '/albums'}, {text: 'Close Preview', onClick: onClose}]
     return <Home {...props} rightItems={right} />
 }
+
+const logoValidator = (existingData, files) => {
+    const keys = {}
+    const {images = []} = existingData || {}
+    images.filter(x => !x.deleted).forEach(({tempTags: {title} = {}}) => {
+        title && (keys[title.trim()] = (keys[title.trim()] || 0) + 1)
+    })
+    files.filter(x => !x.deleted).forEach(({tempTags: {title} = {}}) => {
+        title && (keys[title.trim()] = (keys[title.trim()] || 0) + 1)
+    })
+
+    const requiredKeys = ['whiteLogo', 'favicon32', 'favicon16', 'android512', 'android192', 'mainLogo', 'apple', 'icon']
+    const errors = []
+    const notFoundKeys = requiredKeys.filter(x => {
+        return keys[x] === undefined
+    })
+    if (notFoundKeys.length) {
+        errors.push(`Following Logos are missing: ${notFoundKeys.join()}.`)
+    }
+    const duplicateKeys = Object.keys(keys).filter(key => keys[key] !== 1)
+    if (duplicateKeys.length) {
+        errors.push(`Multiple files found for following logos: ${duplicateKeys.join()}.`)
+    }
+    if (errors.length) {
+        return {valid: false, error: errors.join(' ')}
+    }
+    return {valid: true}
+
+}
+
+const serviceValidator = (existingData, files) => {
+    const found = {}
+    const {images = []} = existingData || {}
+    images.filter(x => !x.deleted).forEach(({tempTags: {pin} = {}}) => {
+        if (pin) {
+            pin = pin.trim().toLowerCase()
+            pin && (found[pin] = (found[pin] || 0) + 1)
+        }
+    })
+    files.filter(x => !x.deleted).forEach(({tempTags: {pin} = {}}) => {
+        if (pin) {
+            pin = pin.trim().toLowerCase()
+            pin && (found[pin] = (found[pin] || 0) + 1)
+        }
+    })
+    const duplicateKeys = Object.keys(found).filter(key => found[key] !== 1)
+    if (duplicateKeys.length) {
+        return {valid: false, error: `Multiple files found for following pins: ${duplicateKeys.join()}`}
+    }
+    return {valid: true}
+}
+const userValidator = (existingData, files) => {
+    const {images = []} = existingData || {}
+    const usernames = {}
+    let regexFail = false
+    let roleFail = false
+    let duplicateUserName = false
+    let sameUP = false
+
+    const val = ({tempTags: {username, password, role} = {}}) => {
+        [username, password, role].find(x => /[ \n\t\r]/.test(x)) && (regexFail = true)
+        !['admin', 'user'].includes(role) && (roleFail = true)
+
+        if (usernames[username]) {
+            duplicateUserName = true
+        } else {
+            usernames[username] = true
+        }
+        if (username === password) {
+            sameUP = true
+        }
+    }
+    images.filter(x => !x.deleted).forEach(val)
+    files.filter(x => !x.deleted).forEach(val)
+
+    const errors = []
+
+    if (regexFail) {
+        errors.push('Whitespaces not allowed.')
+    }
+
+    if (roleFail) {
+        errors.push('Role must be user or admin.')
+    }
+
+    if (duplicateUserName) {
+        errors.push('username must be unique.')
+    }
+
+    if (roleFail) {
+        errors.push('username and password must not be same.')
+    }
+
+    if (errors.length) {
+        return {valid: false, error: errors.join(' ')}
+    }
+    return {valid: true}
+}
 const specialItems = {
     featured: {title: 'Edit Featured Section', subtitle: 'Edit Featured Section', submitText: 'Update'}, // nothing required
     galleryimages: {title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
     testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}]}, // required 2 tags: name, description. parser and deParser required
-    servicethumbnails: {title: 'Edit Services Offered', subtitle: 'Edit Services Offered', submitText: 'Update', tags: [{key: 'service', required: true}, {key: 'targetUrl', required: true}]}, // required 1 tag
+    servicethumbnails: {validator: serviceValidator, title: 'Edit Services Offered', subtitle: 'Edit Services Offered', submitText: 'Update', tags: [{key: 'serviceName', required: true}, {key: 'pin', required: true}]}, // required 1 tag
     scrollframes: {title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update'}, // nothing required
     albumthumbnail: {dataKeys: ['logos'], preview: AlteredAlbum, title: 'Edit Album Page Thumbnail', subtitle: 'Edit Album Page Thumbnail Image', submitText: 'Update'}, // nothing required
     bottomimages: {title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
     topimages: {title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
-    logos: {title: 'Edit Website Logos', subtitle: 'Edit Website logos', submitText: 'Update', tags: [{key: 'title', required: true}]}, // required 1 tag,
-    usermanagement: {preview: false, roles: ['admin'], title: 'Edit Users', subtitle: 'Add / Remove users', submitText: 'Update', tags: [{key: 'username', required: true}, {key: 'password', required: true, type: 'password'}, {key: 'role', required: true}]}
+    logos: {validator: logoValidator, title: 'Edit Website Logos', subtitle: 'Edit Website logos', submitText: 'Update', tags: [{key: 'title', required: true, disabled: true}]}, // required 1 tag,
+    usermanagement: {validator: userValidator, preview: false, roles: ['admin'], title: 'Edit Users', subtitle: 'Add / Remove users', submitText: 'Update', tags: [{key: 'username', required: true}, {key: 'password', required: true, type: 'password'}, {key: 'role', required: true}]}
 }
 
 const unParse = (item, pin) => {
@@ -52,8 +150,8 @@ const unParse = (item, pin) => {
     return {
         ...item,
         newTags: tags.reduce((res, {key}) => {
-            if (item.tempTags && item.tempTags[key]) {
-                res.push(item.tempTags[key])
+            if (item.tempTags && item.tempTags[key] !== undefined) {
+                res.push(item.tempTags[key].trim())
             }
             return res
         }, [])
@@ -137,6 +235,7 @@ function Edit({role = 'user', username}) {
         setPreview(formData)
     }
     const findAlbum = async (formData) => {
+        console.log(formData)
         let {pin} = formData
         pin = pin.toLowerCase()
         setExistingData(null)
@@ -178,6 +277,7 @@ function Edit({role = 'user', username}) {
     }
 
     const onSubmit = async (formData) => {
+        console.log(formData)
         let {title} = formData
         let {images, pin} = existingData
         pin = pin.toLowerCase()
@@ -220,6 +320,12 @@ function Edit({role = 'user', username}) {
     let numeric = true
     let duplicateNewNameFound = false
     let lastIndex = -1
+
+    let res = {valid: true}
+    if (specialItem.validator) {
+        res = specialItem.validator(existingData, files)
+    }
+    const {valid: resValid, error} = res
     const children = <>
         {existingData && (
             <div>
@@ -260,7 +366,7 @@ function Edit({role = 'user', username}) {
                                     })
                                 }
                             } />
-                            {specialTags.map(({key, maxLength = 470, type = 'text'}) => <input type={type} maxLength={maxLength} placeholder={key} key={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
+                            {specialTags.map(({key, maxLength = 470, type = 'text', disabled = false}) => <input disabled={disabled} type={type} maxLength={maxLength} placeholder={key} key={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
                                 setExistingData({
                                     ...existingData,
                                     images: existingData.images.map((f) => {
@@ -337,8 +443,9 @@ function Edit({role = 'user', username}) {
         )}
         {duplicateNewNameFound && <div className={styles.duplicateName}>Duplicate names found. Names must be unique</div>}
         {!numeric && <div className={styles.duplicateName}>Names of the files must be numeric</div>}
+        {!resValid && error && <div className={styles.duplicateName}>{error}</div>}
     </>
-    const invalid = duplicateNewNameFound || !numeric
+    const invalid = !resValid || duplicateNewNameFound || !numeric
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />

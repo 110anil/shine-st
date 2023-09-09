@@ -51,7 +51,7 @@ const About = ({servicethumbnails}) => {
                 <div className={styles.rightContainer}>
                     <Carousel autoPlay>
                         {imgs.map((img1, index) => <div className={styles.tileContainer} key={`key-${index}`}>
-                            {img1.map(({url, tags: [title, targetUrl] = []}) => <div onClick={() => window.location.href = targetUrl} key={title} className={styles.tile}>
+                            {img1.map(({url, tags: [title, pin] = []}) => <div onClick={() => pin && (window.location.href = `/services/${pin.toLowerCase()}`)} key={title} className={styles.tile}>
                                 {/*<img  alt={title} src={url.src}  />*/}
                                 <span style={{
                                     '--bg': `url('${url}')`

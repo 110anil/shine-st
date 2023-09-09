@@ -14,9 +14,12 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
         setData({...formData, [key]: value})
     }
     const [btnState, setBtnState] = useState(null)
+    console.log(onSubmit)
     const submit = () => {
         setBtnState('LOADING')
-        onSubmit(formData).then(() => setBtnState(null)).catch((e) => {
+        const dta = {...formData}
+        fields.forEach(({key, type}) => ['text', 'password'].includes(type) && dta[key] !== undefined && (dta[key] = dta[key].trim()))
+        onSubmit(dta).then(() => setBtnState(null)).catch((e) => {
             setBtnState('ERROR')
             console.log(e)
             alert(e.message || 'Something went wrong')
@@ -53,7 +56,7 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                         )
                                 }
                             })}
-                            <button className={cs(btnState === 'LOADING' && styles.loading)} onClick={submit} disabled={!validator(formData, fields) || (btnState === 'LOADING')}>
+                            <button className={cs(btnState === 'LOADING' && styles.loading)} onClick={submit} disabled={(!validator(formData, fields) || (btnState === 'LOADING') || !onSubmit)}>
                                 {btnState === 'LOADING' ? 'Loading...' : btnState === 'ERROR' ? 'Try Again' : submitText}
                             </button>
                             {actions.map(item => (
