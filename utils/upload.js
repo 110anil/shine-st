@@ -3,20 +3,33 @@ import {runBatch} from "@/utils/runBatch";
 
 let imageKit
 
-const getImageKit = function () {
-    if (!imageKit) {
-        imageKit = new ImageKit({
-            publicKey : "public_OhjxwkIeAE/RJZt2J3fCav5kl4I=",
-            urlEndpoint : "https://ik.imagekit.io/shinest",
-            authenticationEndpoint : `${window.location.origin}/api/get-creds`
+const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I="
+const urlEndpoint = "https://ik.imagekit.io/shinest"
+
+const temp = {publicKey, urlEndpoint}
+const map = [temp, temp, temp, temp, temp]
+
+const getImageKit = function (pin) {
+    let index = 0
+    if (pin) {
+        index = parseInt(pin, 36) % 5
+    }
+    let obj = map[index]
+
+    if (!obj.imageKit) {
+        obj.imageKit = imageKit = new ImageKit({
+            publicKey : obj.publicKey,
+            urlEndpoint : obj.urlEndpoint,
+            authenticationEndpoint : `${window.location.origin}/api/get-creds/${pin}`
         })
     }
-    return imageKit
+    return obj.imageKit
 }
 
 export function upload(files, {title, pin}) {
+    pin = pin.toLowerCase()
     return runBatch(files.map(({file, ext, key, newTags = []}) => {
-        return () => getImageKit().upload({
+        return () => getImageKit(pin).upload({
             file,
             tags: newTags.length ? newTags : (title ? [title] : undefined),
             folder: `/data1/${pin}/`,

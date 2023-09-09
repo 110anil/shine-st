@@ -155,12 +155,12 @@ function Edit({role = 'user', username}) {
         }
     }, [urlPin])
 
-    const deleteFiles = (files, purge = true) => {
-        return fetch('/api/delete-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, purge})}).then(res => res.json())
+    const deleteFiles = (files, pin, purge = true) => {
+        return fetch('/api/delete-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, purge, pin})}).then(res => res.json())
     }
 
-    const renameFilesAndPurgeCache = (files, existingKeys) => {
-        return fetch('/api/rename-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, existingKeys})}).then(res => res.json())
+    const renameFilesAndPurgeCache = (files, existingKeys, pin) => {
+        return fetch('/api/rename-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, existingKeys, pin})}).then(res => res.json())
     }
 
     const uploadFilesAndUpdateTags = async (files, {title, pin}) => {
@@ -169,12 +169,12 @@ function Edit({role = 'user', username}) {
 
 
 
-    const updateTitleOnOldFiles = (fileIds, {tags, oldTags}) => {
-        return fetch('/api/change-title', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({fileIds, tags, oldTags})}).then(res => res.json())
+    const updateTitleOnOldFiles = (fileIds, {pin, title, oldTitle}) => {
+        return fetch('/api/change-title', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin, fileIds, title, oldTitle})}).then(res => res.json())
     }
 
-    const updateTags = (files) => {
-        return fetch('/api/change-tags', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files})}).then(res => res.json())
+    const updateTags = (files, pin) => {
+        return fetch('/api/change-tags', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin, files})}).then(res => res.json())
     }
 
     const onSubmit = async (formData) => {
@@ -183,7 +183,7 @@ function Edit({role = 'user', username}) {
         pin = pin.toLowerCase()
         let imagesToDelete = images.filter(x => x.deleted)
         if (imagesToDelete.length) {
-            await deleteFiles(imagesToDelete)
+            await deleteFiles(imagesToDelete, pin)
         }
 
         const existingKeys = images.reduce((res, item) => {
@@ -192,7 +192,7 @@ function Edit({role = 'user', username}) {
         }, {})
         let imagesToRename = images.filter(x => x.originalKey.toString() !== x.key.toString())
         if (imagesToRename.length) {
-            await renameFilesAndPurgeCache(imagesToRename, existingKeys)
+            await renameFilesAndPurgeCache(imagesToRename, existingKeys, existingData.pin)
         }
 
         let f = files.filter(x => !x.deleted)
@@ -204,11 +204,11 @@ function Edit({role = 'user', username}) {
         const unchangedFiles = images.filter(x => !x.deleted)
 
         if (!specialItem && unchangedFiles.length && title !== existingData.title) {
-                await updateTitleOnOldFiles(unchangedFiles.map(x => x.fileId), {tags: [title], oldTags: existingData.title ? [existingData.title] : undefined})
+                await updateTitleOnOldFiles(unchangedFiles.map(x => x.fileId), {pin: existingData.pin, title, oldTitle: existingData.title})
         } else if (specialItem) {
             const f = unchangedFiles.map(x => unParse(x, pin)).filter(x => (x.newTags || []).length > 0)
             if (f.length) {
-                await updateTags(f)
+                await updateTags(f, existingData.pin)
             }
         }
 

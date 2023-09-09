@@ -5,11 +5,37 @@ const privateKey = "private_jfETJAYcgdr/pGMOaB31ljVkVGI=";
 const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I=";
 import {runBatch} from "@/utils/runBatch";
 
-const imagekit = new ImageKit({
-    publicKey,
-    privateKey,
-    urlEndpoint : endpoint
-})
+const temp = {urlEndpoint: endpoint, privateKey, publicKey}
+const imageKitMap = [temp, temp, temp, temp, temp]
+
+const getImageKit = (pin) => {
+    let index = 0
+    if (pin) {
+        index = parseInt(pin, 36) % 5
+    }
+    let obj = imageKitMap[index]
+    if (!obj.imageKit) {
+        obj.imageKit = new ImageKit({
+            publicKey: obj.publicKey,
+            privateKey: obj.privateKey,
+            urlEndpoint: obj.urlEndpoint
+        })
+    }
+    return obj
+}
+
+const initAll = () => {
+    imageKitMap.forEach(obj => {
+        if (!obj.imageKit) {
+            obj.imageKit = new ImageKit({
+                publicKey: obj.publicKey,
+                privateKey: obj.privateKey,
+                urlEndpoint: obj.urlEndpoint
+            })
+        }
+    })
+    return imageKitMap
+}
 
 
 export const config = {
@@ -22,7 +48,7 @@ export const config = {
 
 const handle = (pin, meta) => {
     return new Promise((r, j) => {
-        imagekit.listFiles({
+        getImageKit(pin).imageKit.listFiles({
             path : `data1/${pin}`
         }, function(error, result) {
             if(error) {
@@ -61,7 +87,7 @@ const handle = (pin, meta) => {
 
 const handleData = (pin) => {
     return new Promise((r, j) => {
-        imagekit.listFiles({
+        getImageKit(pin).imageKit.listFiles({
             path : `data1/${pin}`
         }, function(error, normalFiles) {
             if(error) {
@@ -109,11 +135,10 @@ export async function getData(keys = ['topimages', 'servicethumbnails', 'scrollf
 export default function handler (req, res) {
     handle(req.body.pin.toLowerCase(), req.body.meta).then(x => res.status(200).json(x)).catch(x => res.status(500).json(x))
 }
-
-function purgeFiles (files) {
+function purgeFiles (files, pin) {
     return runBatch(files.map(f => {
         return () => new Promise((r, j) => {
-            imagekit.purgeCache(f.url, function(error, result) {
+            getImageKit(pin.toLowerCase()).imageKit.purgeCache(f.url, function(error, result) {
                 if(error) {
                     j(error)
                 }
@@ -125,11 +150,11 @@ function purgeFiles (files) {
     }))
 }
 export function deleteFiles (req, res) {
-    const {files, purge} = req.body
-    imagekit.bulkDeleteFiles(files.map(x => x.fileId))
+    const {files, purge, pin} = req.body
+    getImageKit(pin.toLowerCase()).imageKit.bulkDeleteFiles(files.map(x => x.fileId))
         .then((response) => {
             if (purge) {
-                return purgeFiles(files).then(response => res.status(200).json({done: true, response}))
+                return purgeFiles(files, pin.toLowerCase()).then(response => res.status(200).json({done: true, response}))
             } else {
                 res.status(200).json({done: true, response})
             }
@@ -138,35 +163,26 @@ export function deleteFiles (req, res) {
             res.status(500).json({done: false, error})
         });
 }
-// 1 -> 2
-// 2 -> 1
-
-// 1 -> temp_1
-// temp_1 -> 2
-// 2 -> temp_2
-// temp_2 -> 1
 export function changeTitle (req, res) {
-    const {fileIds, title, oldTitle} = req.body
+    const {fileIds, title, oldTitle, pin} = req.body
     let promise = Promise.resolve()
     if (oldTitle) {
-        promise = imagekit.bulkRemoveTags(fileIds, [oldTitle])
+        promise = getImageKit(pin.toLowerCase()).imageKit.bulkRemoveTags(fileIds, [oldTitle])
     }
-    promise.then(() => imagekit.bulkAddTags(fileIds, [title])).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
+    promise.then(() => getImageKit(pin.toLowerCase()).imageKit.bulkAddTags(fileIds, [title])).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
 }
-
 export function changeTags (req, res) {
-    const {files} = req.body
+    const {files, pin} = req.body
     return runBatch(files.map(f => {
-        return () => imagekit.updateFileDetails(f.fileId, {tags: f.newTags.length ? f.newTags : null})
+        return () => getImageKit(pin.toLowerCase()).imageKit.updateFileDetails(f.fileId, {tags: f.newTags.length ? f.newTags : null})
     })).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
 
 }
-
 export function getCreds (req, res) {
-    res.status(200).json(imagekit.getAuthenticationParameters())
+    res.status(200).json(getImageKit(req.query.pin.toLowerCase()).imageKit.getAuthenticationParameters())
 }
 export function renameFiles (req, res) {
-    const {files, existingKeys = {}} = req.body
+    const {files, existingKeys = {}, pin} = req.body
 
     let tempIndex = 0
     const tempFiles = []
@@ -202,11 +218,12 @@ export function renameFiles (req, res) {
             const {purge = true} = f
             headers.set('Content-Type', 'application/json')
             headers.set('Authorization', 'Basic ' + Buffer.from(privateKey + ":" + "").toString('base64'))
+            const imageKit = getImageKit(pin.toLowerCase())
             return fetch('https://api.imagekit.io/v1/files/rename', {
                 headers: headers,
                 method: 'PUT',
                 body: JSON.stringify({
-                    "filePath" : '/' + f.url.replace(endpoint, ''),
+                    "filePath" : '/' + f.url.replace(imageKit.urlEndpoint, ''),
                     "newFileName" : `${f.key}${f.ext}`,
                     "purgeCache": purge
                 })
@@ -215,8 +232,9 @@ export function renameFiles (req, res) {
         }
     }
 
-    return runBatch(filesToRename.map(rename)).then(() => runBatch(tempFiles.map(rename))).then((x) => urlsToPurge.length ? purgeFiles(urlsToPurge) : x).then(response => res.status(200).json({done: true, response}))
+    return runBatch(filesToRename.map(rename)).then(() => runBatch(tempFiles.map(rename))).then((x) => urlsToPurge.length ? purgeFiles(urlsToPurge, pin.toLowerCase()) : x).then(response => res.status(200).json({done: true, response}))
 }
+
 export function findAlbum (req, res) {
     let title = req.body.title
     title = title.split(/( & | and | )/i)
@@ -232,14 +250,10 @@ export function findAlbum (req, res) {
             res = [...res, item, item.replace('&', 'and'), item.replace('&', 'And')]
             return res
         }, []))]
-    imagekit.listFiles({
+    const obj = {}
+    return Promise.all(initAll().map(({imagekit}) => imagekit.listFiles({
         tags : [...title, req.body.title]
-    }, function(error, result) {
-        if(error) {
-            res.status(500).json({done: false, error})
-            return
-        }
-        const obj = {}
+    }).then(result => {
         result.forEach((file) => {
             let {tags, filePath} = file
             const pin = filePath.replace(/\/data1\//, '').split('/')[0]
@@ -247,8 +261,9 @@ export function findAlbum (req, res) {
                 obj[pin] = tags[0]
             }
         })
-        res.status(200).json({done: true, result: Object.keys(obj).map(pin => ({pin, title: obj[pin], url: `/albums/${pin}`}))})
-    });
+    }))).then(() => {
+        return {done: true, result: Object.keys(obj).map(pin => ({pin, title: obj[pin], url: `/albums/${pin}`}))}
+    }).catch((error) => res.status(500).json({done: false, error}))
 }
 
 
@@ -319,7 +334,7 @@ const verifyToken = ({username, password, token}) => {
 export function login (req, res) {
     const {username: uname, password, token: t} = req.body
     const {username = uname, token} = t ? JSON.parse(Buffer.from(t, 'base64').toString('ascii')) : {}
-    imagekit.listFiles({
+    getImageKit('usermanagement').imageKit.listFiles({
         path : `data1/usermanagement`,
         tags : [username]
     }, function(error, result) {
