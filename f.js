@@ -1,0 +1,1 @@
+console.log("/partners/broker".match(new RegExp("/partners/:entity(developer|broker)", "i")))

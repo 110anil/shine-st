@@ -28,13 +28,14 @@ const getImageKit = function (pin) {
 
 export function upload(files, {title, pin}) {
     pin = pin.toLowerCase()
+    const timestamp = '.' + (new Date()).getTime()
     return runBatch(files.map(({file, ext, key, newTags = []}) => {
         return () => getImageKit(pin).upload({
             file,
             tags: newTags.length ? newTags : (title ? [title] : undefined),
             folder: `/data1/${pin}/`,
             useUniqueFileName: false,
-            fileName: `${key}${ext}`
+            fileName: `${key}${timestamp}${ext}`
         })
     }))
 }

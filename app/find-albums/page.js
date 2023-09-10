@@ -16,7 +16,6 @@ const leftItems = ['Contact', {name: 'Logout', onClick: () => {
 function FindAlbum() {
     const [data, setData] = useState([])
     const obSubmit = (formData) => {
-        console.log(formData)
         return fetch('/api/find-album', {
             method: 'POST',
             headers: {'Content-Type': 'application/json'},

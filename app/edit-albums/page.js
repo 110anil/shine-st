@@ -123,7 +123,7 @@ const userValidator = (existingData, files) => {
         errors.push('username must be unique.')
     }
 
-    if (roleFail) {
+    if (sameUP) {
         errors.push('username and password must not be same.')
     }
 
@@ -177,10 +177,9 @@ const getFiles = async (pin) => {
     }} = specialItem || {}
 
     images = images.map(x => {
-        const name = x.url.match(/\/[\w\s\.\-]+\.[a-zA-Z0-9]+$/)[0].replace('/', '')
-        const splits = name.split('.')
-        const ext = `.${splits.slice(-1)[0]}`
-        const key = parseInt(splits.slice(0, splits.length - 1).join('.'))
+        let {groups: {key, ext}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+        ext = `.${ext}`
+        key = parseInt(key)
 
         return {url:x.url, fileId: x.id, originalKey: key.toString(), key, ext, deleted: false, tempTags: parse(x.tags)}
     })
@@ -235,7 +234,6 @@ function Edit({role = 'user', username}) {
         setPreview(formData)
     }
     const findAlbum = async (formData) => {
-        console.log(formData)
         let {pin} = formData
         pin = pin.toLowerCase()
         setExistingData(null)
@@ -254,12 +252,12 @@ function Edit({role = 'user', username}) {
         }
     }, [urlPin])
 
-    const deleteFiles = (files, pin, purge = true) => {
-        return fetch('/api/delete-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, purge, pin})}).then(res => res.json())
+    const deleteFiles = (files, pin) => {
+        return fetch('/api/delete-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, pin})}).then(res => res.json())
     }
 
-    const renameFilesAndPurgeCache = (files, existingKeys, pin) => {
-        return fetch('/api/rename-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, existingKeys, pin})}).then(res => res.json())
+    const renameFiles = (files, pin) => {
+        return fetch('/api/rename-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, pin, hash: '.' + (new Date()).getTime()})}).then(res => res.json())
     }
 
     const uploadFilesAndUpdateTags = async (files, {title, pin}) => {
@@ -277,7 +275,6 @@ function Edit({role = 'user', username}) {
     }
 
     const onSubmit = async (formData) => {
-        console.log(formData)
         let {title} = formData
         let {images, pin} = existingData
         pin = pin.toLowerCase()
@@ -286,13 +283,9 @@ function Edit({role = 'user', username}) {
             await deleteFiles(imagesToDelete, pin)
         }
 
-        const existingKeys = images.reduce((res, item) => {
-            res[item.originalKey] = true
-            return res
-        }, {})
         let imagesToRename = images.filter(x => x.originalKey.toString() !== x.key.toString())
         if (imagesToRename.length) {
-            await renameFilesAndPurgeCache(imagesToRename, existingKeys, existingData.pin)
+            await renameFiles(imagesToRename, existingData.pin)
         }
 
         let f = files.filter(x => !x.deleted)

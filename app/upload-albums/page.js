@@ -40,7 +40,6 @@ function Albums() {
         setPreview(formData)
     }
     const onSubmit = async (formData) => {
-        console.log(formData)
         let {pin, title} = formData
         pin = pin.toLowerCase()
         const {duplicate} = await getFiles(pin)

@@ -56,15 +56,20 @@ const handle = (pin, meta) => {
                 return
             }
             let imgs = []
-
-            let normalFiles = result.filter(x => !(x.tags || []).includes('front') && !(x.tags || []).includes('back'))
+            let song = result.find(x => x.url.includes('song'))
+            if (song) {
+                song = meta ? {url: song.url, id: song.fileId, tags: song.tags ? song.tags : []} : song.url
+            }
+            let normalFiles = result.filter(x => !(x.tags || []).includes('front') && !(x.tags || []).includes('back') && !x.url.includes('song'))
             const front = result.find(x => (x.tags || []).includes('front'))
             const back = result.find(x => (x.tags || []).includes('back'))
 
             normalFiles = normalFiles.sort((x, y) => {
                 try {
-                    const xIndex = parseInt(((x.url.match(/\/\d+\.[a-zA-Z\d]+/) || [])[0].match(/\d+/) || [])[0])
-                    const yIndex = parseInt(((y.url.match(/\/\d+\.[a-zA-Z\d]+/) || [])[0].match(/\d+/) || [])[0])
+                    let {groups: {key: xIndex}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+                    let {groups: {key: yIndex}} = y.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+                    xIndex = parseInt(xIndex)
+                    yIndex = parseInt(yIndex)
 
                     return xIndex < yIndex ? -1 : 1
                 } catch (e) {
@@ -80,7 +85,7 @@ const handle = (pin, meta) => {
             }
             const [{width, height, tags} = {}] = normalFiles
             const [title] = (tags || []).filter(tag => !['front', 'back'].includes(tag))
-            r({done: true, width, height, images: imgs.map(x => meta ? ({url: x.url, id: x.fileId, tags: x.tags ? x.tags : []}) : x.url), title})
+            r({song, done: true, width, height, images: imgs.map(x => meta ? ({url: x.url, id: x.fileId, tags: x.tags ? x.tags : []}) : x.url), title})
         })
     })
 }
@@ -97,8 +102,10 @@ const handleData = (pin) => {
 
             normalFiles = normalFiles.sort((x, y) => {
                 try {
-                    const xIndex = parseInt(((x.url.match(/\/\d+\.[a-zA-Z\d]+/) || [])[0].match(/\d+/) || [])[0])
-                    const yIndex = parseInt(((y.url.match(/\/\d+\.[a-zA-Z\d]+/) || [])[0].match(/\d+/) || [])[0])
+                    let {groups: {key: xIndex}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+                    let {groups: {key: yIndex}} = y.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+                    xIndex = parseInt(xIndex)
+                    yIndex = parseInt(yIndex)
 
                     return xIndex < yIndex ? -1 : 1
                 } catch (e) {
@@ -135,29 +142,12 @@ export async function getData(keys = ['topimages', 'servicethumbnails', 'scrollf
 export default function handler (req, res) {
     handle(req.body.pin.toLowerCase(), req.body.meta).then(x => res.status(200).json(x)).catch(x => res.status(500).json(x))
 }
-function purgeFiles (files, pin) {
-    return runBatch(files.map(f => {
-        return () => new Promise((r, j) => {
-            getImageKit(pin.toLowerCase()).imageKit.purgeCache(f.url, function(error, result) {
-                if(error) {
-                    j(error)
-                }
-                else {
-                    r(result)
-                }
-            });
-        })
-    }))
-}
+
 export function deleteFiles (req, res) {
-    const {files, purge, pin} = req.body
+    const {files, pin} = req.body
     getImageKit(pin.toLowerCase()).imageKit.bulkDeleteFiles(files.map(x => x.fileId))
         .then((response) => {
-            if (purge) {
-                return purgeFiles(files, pin.toLowerCase()).then(response => res.status(200).json({done: true, response}))
-            } else {
-                res.status(200).json({done: true, response})
-            }
+            res.status(200).json({done: true, response})
         })
         .catch(error => {
             res.status(500).json({done: false, error})
@@ -182,40 +172,11 @@ export function getCreds (req, res) {
     res.status(200).json(getImageKit(req.query.pin.toLowerCase()).imageKit.getAuthenticationParameters())
 }
 export function renameFiles (req, res) {
-    const {files, existingKeys = {}, pin} = req.body
-
-    let tempIndex = 0
-    const tempFiles = []
-    const temp = `temp_${(new Date()).getTime()}`
-    const purgedUrls = new Set()
-    let urlsToPurge = new Set()
-    // 306 -> 307
-    // originalKey: 306
-    // key: 307
-    // temp_0
-    let filesToRename = files.map(({key, ...f}) => {
-        purgedUrls.add(f.url)
-        if (existingKeys[key] !== undefined) {
-            const tempKey = `${temp}_${tempIndex++}`
-            tempFiles.push({...f, key, originalKey: tempKey, purge: false, url: f.url.replace(`${f.originalKey}${f.ext}`, `${tempKey}${f.ext}`) }) // temp -> key
-            return {...f, key: tempKey} // original -> temp
-        }
-        return {...f, key}
-    })
-
-    files.forEach( x => {
-        const url = x.url.replace(`${x.originalKey}${x.ext}`, `${x.key}${x.ext}`)
-        if (!purgedUrls.has(url)) {
-            urlsToPurge.add(url)
-        }
-    })
-
-    urlsToPurge = [...urlsToPurge].map(x => ({url: x}))
+    const {files, pin, hash} = req.body
 
     const rename = f => {
         return () => {
             let headers = new Headers();
-            const {purge = true} = f
             headers.set('Content-Type', 'application/json')
             headers.set('Authorization', 'Basic ' + Buffer.from(privateKey + ":" + "").toString('base64'))
             const imageKit = getImageKit(pin.toLowerCase())
@@ -224,15 +185,15 @@ export function renameFiles (req, res) {
                 method: 'PUT',
                 body: JSON.stringify({
                     "filePath" : '/' + f.url.replace(imageKit.urlEndpoint, ''),
-                    "newFileName" : `${f.key}${f.ext}`,
-                    "purgeCache": purge
+                    "newFileName" : `${f.key}${hash}${f.ext}`,
+                    "purgeCache": false
                 })
 
             })
         }
     }
 
-    return runBatch(filesToRename.map(rename)).then(() => runBatch(tempFiles.map(rename))).then((x) => urlsToPurge.length ? purgeFiles(urlsToPurge, pin.toLowerCase()) : x).then(response => res.status(200).json({done: true, response}))
+    return runBatch(files.map(rename)).then(response => res.status(200).json({done: true, response}))
 }
 
 export function findAlbum (req, res) {
