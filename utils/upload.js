@@ -6,6 +6,33 @@ let imageKit
 const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I="
 const urlEndpoint = "https://ik.imagekit.io/shinest"
 
+const account1 = {
+    publicKey: "public_/ByX9Tb7/wjtatzTatuaH9115Zw=",
+    urlEndpoint: "https://ik.imagekit.io/shine110/"
+}
+
+const account2 = {
+    publicKey: "public_C1W/B5zH1/q3WAGB0aZRedTqKxU=",
+    urlEndpoint: "https://ik.imagekit.io/shine111/"
+}
+
+const account3 = {
+    publicKey: "public_LUrXWc5fS0ssZQ5TtB3cXOBzg7k=",
+    urlEndpoint: "https://ik.imagekit.io/110anil/"
+}
+
+const account4 = {
+    publicKey: "public_S0w+m0H8pj2hcT6lp9tP9+8Me78=",
+    urlEndpoint: "https://ik.imagekit.io/smile110/"
+}
+
+const account5 = {
+    publicKey: "public_rfcRd0HCp2TfvtrNW5EqPkQ23Mg=",
+    urlEndpoint: "https://ik.imagekit.io/110smile/"
+}
+
+const accounts = [account1, account2, account3, account4, account5]
+
 const temp = {publicKey, urlEndpoint}
 const map = [temp, temp, temp, temp, temp]
 

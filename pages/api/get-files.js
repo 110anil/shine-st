@@ -40,7 +40,7 @@ const account5 = {
     urlEndpoint: "https://ik.imagekit.io/110smile/"
 }
 
-export const accounts = {account1, account2, account3, account4, account5}
+const accounts = [account1, account2, account3, account4, account5]
 
 const temp = {urlEndpoint: endpoint, privateKey, publicKey}
 const imageKitMap = [temp, temp, temp, temp, temp]
