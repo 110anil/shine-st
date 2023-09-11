@@ -25,11 +25,12 @@ const getFiles = async (pin) => {
         return Promise.resolve({duplicate: images.length > 0})
 }
 
-const uploadFilesAndUpdateTags = async (files, {title, pin}) => {
-    return upload(files, {title, pin})
+const uploadFilesAndUpdateTags = async (files, {tags, pin}) => {
+    return upload(files, {tags, pin})
 }
 
-function Albums() {
+const defaultTags = [ {key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}]
+function Albums({pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Albums', title = 'Upload Albums'}) {
     const [files, setFiles] = useState([])
     const [showPreview, setPreview] = useState(false)
     const togglePreview = (formData) => {
@@ -40,18 +41,22 @@ function Albums() {
         setPreview(formData)
     }
     const onSubmit = async (formData) => {
-        let {pin, title} = formData
-        pin = pin.toLowerCase()
+        let {pin} = formData
+        let t = tags.map(({key}) => {
+            let tag = formData[key]
+            if (tag) {
+                tag = tag.trim()
+            }
+            return tag
+        }).filter(x => !!x)
+        pin = pinPrepend + pin.toLowerCase()
         const {duplicate} = await getFiles(pin)
         if (duplicate) {
             window.alert('This PIN already exists.')
         } else {
-            // upload flow
-            // await uploadFiles(formData)
-            // update tags
             const f = files.filter(f => !f.deleted)
             if (f.length) {
-                await uploadFilesAndUpdateTags(f, {pin, title})
+                await uploadFilesAndUpdateTags(f, {pin, tags: t})
             }
             setFiles([])
             alert('Album uploaded')
@@ -115,11 +120,11 @@ function Albums() {
                 {label: 'Preview', action: togglePreview}
             ]}
                 onSubmit={invalid ? undefined : onSubmit}
-                title='Upload Albums'
+                title={title}
                 submitText={'Upload'}
-                subTitle={'Upload New Albums'}
+                subTitle={subTitle}
                 fields={[
-                        {key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'},
+                    ...tags,
                         {key: 'pin', type: 'text', placeholder: 'Enter PIN'},
                         {
                             key: 'files',
@@ -161,8 +166,9 @@ function Albums() {
     )
 }
 
-export default function UploadAlbum () {
-    return <Login component={Albums} />
+export default function UploadAlbum ({pinPrepend, tags, title, subTitle}) {
+    const C = () => <Albums pinPrepend={pinPrepend} tags={tags} subTitle={subTitle} title={title} />
+    return <Login component={C} />
 }
 // prevent duplicate pin update
 // upload mode -> no delete option, just check if pin exists dont allow, if doesnt exists upload files and show success message

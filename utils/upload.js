@@ -20,19 +20,19 @@ const getImageKit = function (pin) {
         obj.imageKit = imageKit = new ImageKit({
             publicKey : obj.publicKey,
             urlEndpoint : obj.urlEndpoint,
-            authenticationEndpoint : `${window.location.origin}/api/get-creds/${pin}`
+            authenticationEndpoint : `${window.location.origin}/api/get-creds/${encodeURIComponent(pin)}`
         })
     }
     return obj.imageKit
 }
 
-export function upload(files, {title, pin}) {
+export function upload(files, {tags = [], pin}) {
     pin = pin.toLowerCase()
     const timestamp = '.' + (new Date()).getTime()
     return runBatch(files.map(({file, ext, key, newTags = []}) => {
         return () => getImageKit(pin).upload({
             file,
-            tags: newTags.length ? newTags : (title ? [title] : undefined),
+            tags: newTags.length ? newTags : (tags.length ? tags : undefined),
             folder: `/data1/${pin}/`,
             useUniqueFileName: false,
             fileName: `${key}${timestamp}${ext}`

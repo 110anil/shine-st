@@ -5,6 +5,41 @@ const privateKey = "private_jfETJAYcgdr/pGMOaB31ljVkVGI=";
 const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I=";
 import {runBatch} from "@/utils/runBatch";
 
+const account1 = {
+    email: "smilegarg110@gmail.com",
+    publicKey: "public_/ByX9Tb7/wjtatzTatuaH9115Zw=",
+    privateKey: "private_ja7QQlIHYwVBptIuIgTQoNePh10=",
+    urlEndpoint: "https://ik.imagekit.io/shine110/"
+}
+
+const account2 = {
+    email: "shinegarg111@gmail.com",
+    publicKey: "public_C1W/B5zH1/q3WAGB0aZRedTqKxU=",
+    privateKey: "private_UMn4hkKuZK7cbcarRYOA9gTxzjk=",
+    urlEndpoint: "https://ik.imagekit.io/shine111/"
+}
+
+const account3 = {
+    email: "110anilgarg@gmail.com",
+    publicKey: "public_LUrXWc5fS0ssZQ5TtB3cXOBzg7k=",
+    privateKey: "private_JcePNa0446rsB4q7/+yGD695VSc=",
+    urlEndpoint: "https://ik.imagekit.io/110anil/"
+}
+
+const account4 = {
+    email: "shinegarg110@gmail.com",
+    publicKey: "public_S0w+m0H8pj2hcT6lp9tP9+8Me78=",
+    privateKey: "private_opS+jCX+RymyDxa60tg/KSe63pw=",
+    urlEndpoint: "https://ik.imagekit.io/smile110/"
+}
+
+const account5 = {
+    email: "smile@shinestudio.in",
+    publicKey: "public_rfcRd0HCp2TfvtrNW5EqPkQ23Mg=",
+    privateKey: "private_edCDthVtElLcUb8fNClQAP+/G00=",
+    urlEndpoint: "https://ik.imagekit.io/110smile/"
+}
+
 const temp = {urlEndpoint: endpoint, privateKey, publicKey}
 const imageKitMap = [temp, temp, temp, temp, temp]
 
@@ -169,7 +204,7 @@ export function changeTags (req, res) {
 
 }
 export function getCreds (req, res) {
-    res.status(200).json(getImageKit(req.query.pin.toLowerCase()).imageKit.getAuthenticationParameters())
+    res.status(200).json(getImageKit(decodeURIComponent(req.query.pin).toLowerCase()).imageKit.getAuthenticationParameters())
 }
 export function renameFiles (req, res) {
     const {files, pin, hash} = req.body
