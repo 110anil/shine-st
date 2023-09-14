@@ -134,8 +134,28 @@
     height: 100px;
     overflow: hidden;
     position: relative;
-    overflow-x: auto;
     margin: 20px auto;
+}
+.dotsContainer {
+    width: 80vw;
+    margin: 10px auto 0;
+    text-align: center;
+}
+.dotsContainer>div {
+    display: inline-block;
+}
+.dotsContainer>div>div {
+    width: 50px;
+    height: 10px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 5px;
+    margin-right: 15px;
+    cursor: pointer;
+    background: #262626;
+}
+.dotsContainer>div>div.activeDot {
+    background: #676767;
 }
 .cont {
     position: absolute;
@@ -143,6 +163,7 @@
     top: 0;
     height: 105px;
     white-space: nowrap;
+    transition: transform .5s;
 
 }
 .legend {

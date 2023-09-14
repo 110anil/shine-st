@@ -10,6 +10,7 @@ import play from './icons/play.png'
 import restart from './icons/restart.png'
 import thumb from './icons/thumb.png'
 import cs from 'classnames'
+import {act} from "react-dom/test-utils";
 
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
@@ -18,15 +19,61 @@ function toggleFullScreen() {
         document.exitFullscreen();
     }
 }
+
 const Legends = ({children, onClick, active, legendStyles = {}, legendContStyles = {}, legendClass = ''}) => {
+    const ref = useRef(null)
+    const [width, setWidth] = useState(100)
+    const [containerWidth, setContainerWidth] = useState(300)
+    const containerRef = useRef(null)
+    useEffect(() => {
+        if (ref && ref.current) {
+            setWidth(ref.current.clientWidth / children.length)
+        }
+    }, [ref.current, children.length])
+
+    useEffect(() => {
+        if (containerRef && containerRef.current) {
+            setContainerWidth(containerRef.current.clientWidth)
+        }
+    }, [containerRef.current])
+
+    const totalWidth = width * children.length
+    let left = containerWidth / 2 - active * width - width / 2
+    if (left > 0) {
+        left = 0
+    }
+
+    if (totalWidth + left < containerWidth) {
+        left = containerWidth - totalWidth
+    }
+
+    // 40 slides
+    // we want to show 12 dots
+
+    let numDots = 12
+    if (numDots > children.length) {
+        numDots = children.length
+    }
+    const factor = children.length / numDots // 3.3333
+    const currentFactor = Math.floor(active / factor)
+
     return (
-        <div className={cs(styles.legendContainer, 'legend-container')} style={legendContStyles}><div className={styles.cont} style={legendContStyles}>
-            {
-                children.map((item, index) => (
-                    <div className={cs(styles.legend, active === index && styles.active, legendClass)} style={legendStyles} key={index} onClick={() => onClick(index)}>{item}</div>
-                ))
-            }
-        </div></div>
+        <>
+            <div ref={containerRef} className={cs(styles.legendContainer, 'legend-container')} style={legendContStyles}>
+                <div ref={ref} className={styles.cont} style={legendContStyles} style={{
+                    transform: `translateX(${left}px)`
+                }}>
+                    {
+                        children.map((item, index) => (
+                            <div className={cs(styles.legend, active === index && styles.active, legendClass)} style={legendStyles} key={index} onClick={() => onClick(index)}>{item}</div>
+                        ))
+                    }
+                </div>
+            </div>
+            <div className={styles.dotsContainer}>
+               <div> {[...new Array(numDots)].map((x, index) => <div className={cs(currentFactor === index && styles.activeDot)} onClick={() => onClick(Math.ceil(index * factor))} key={index} />)}</div>
+            </div>
+        </>
     )
 }
 const keyFunction = (active, setActive, children) => (e) => {
