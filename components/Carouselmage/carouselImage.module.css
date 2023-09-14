@@ -1,12 +1,11 @@
 .test {
     height: 100vh;
-
+    width: 100vw;
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    position: relative;
     background-image: var(--background);
 }
 
@@ -62,15 +61,13 @@
     left: 10%;
 }
 
-.data.top {
+.data.top.firstFold {
     margin-top: 88px;
 }
 .data.center>div,.data.middle>div, .data.top>div, .data.bottom>div {
     left: 50%;
     transform: translateY(-50%) translateX(-50%);
 }
-
-
 
 .data.right {
     right: 0;

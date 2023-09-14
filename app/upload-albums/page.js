@@ -30,7 +30,7 @@ const uploadFilesAndUpdateTags = async (files, {tags, pin}) => {
 }
 
 const defaultTags = [ {key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}]
-function Albums({initialValue: defaultInitialValue, pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Albums', title = 'Upload Albums'}) {
+function Albums({PreviewComponent: PreviewComp = AlbumsRenderer, initialValue: defaultInitialValue, pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Albums', title = 'Upload Albums'}) {
     const [files, setFiles] = useState([])
     const [showPreview, setPreview] = useState(false)
     const togglePreview = (formData) => {
@@ -117,6 +117,17 @@ function Albums({initialValue: defaultInitialValue, pinPrepend = '', tags = defa
         )}
     </>
     const invalid = numFiles > 50 || duplicateNewNameFound || !numeric
+    let t = []
+    if (showPreview) {
+        t = tags.map(({key}) => {
+            let tag = showPreview[key]
+            if (tag) {
+                tag = tag.trim()
+            }
+            return tag || ''
+        }).filter(x => !!x)
+    }
+
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
@@ -156,15 +167,14 @@ function Albums({initialValue: defaultInitialValue, pinPrepend = '', tags = defa
             </SearchInput>
             <div id='Contact'><Footer /></div>
             {showPreview &&
-                <AlbumsRenderer
+                <PreviewComp
                     onClose={() => togglePreview()}
-                    logoMap={{whiteLogo: white.src}}
+                    logoMap={{whiteLogo: white.src, mainLogo: logo.src}}
                     title={showPreview.title}
                     images={files
-                        .map(({url, objectUrl, key, deleted}) => ({url: url || objectUrl, key, deleted}))
+                        .map(({url, objectUrl, key, deleted, ...rest}) => ({...rest, url: url || objectUrl, key, deleted, tags: t}))
                         .filter(({deleted}) => !deleted)
                         .sort((x, y) => x.key > y.key ? 1 : -1)
-                        .map(x => x.url)
                     }
                 />
             }
@@ -172,8 +182,8 @@ function Albums({initialValue: defaultInitialValue, pinPrepend = '', tags = defa
     )
 }
 
-export default function UploadAlbum ({pinPrepend, tags, title, subTitle, initialValue}) {
-    const C = () => <Albums pinPrepend={pinPrepend} tags={tags} initialValue={initialValue} subTitle={subTitle} title={title} />
+export default function UploadAlbum ({pinPrepend, tags, title, subTitle, initialValue, PreviewComponent}) {
+    const C = () => <Albums pinPrepend={pinPrepend} tags={tags} initialValue={initialValue} subTitle={subTitle} title={title} PreviewComponent={PreviewComponent} />
     return <Login component={C} />
 }
 // prevent duplicate pin update

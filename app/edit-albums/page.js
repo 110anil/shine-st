@@ -32,7 +32,7 @@ const AlteredAlbum = (props) => {
 const AlteredHome = (props) => {
     const {onClose} = props
     const right = [{text: 'Albums', url: '/albums'}, {text: 'Close Preview', onClick: onClose}]
-    return <Home {...props} rightItems={right} />
+    return <Home {...props} preview rightItems={right} />
 }
 
 const logoValidator = (existingData, files) => {
@@ -221,7 +221,7 @@ const getFiles = async (pin) => {
 }
 
 
-const PreviewComp = ({specialItem, togglePreview, data, existingData, files}) => {
+const PreviewComp = ({specialItem, togglePreview, data, existingData, files, tags, Comp = AlbumsRenderer}) => {
     const {preview: Preview = AlteredHome} = specialItem
     if (specialItem) {
         files = files.filter(f => !f.deleted).map(x => unParse(x, existingData.pin)).map(x => ({...x, tags: x.newTags, url: x.objectUrl}))
@@ -236,13 +236,20 @@ const PreviewComp = ({specialItem, togglePreview, data, existingData, files}) =>
         }
         return <PreviewTemp onClose={() => togglePreview()} component={Preview} modifiedData={dta} keys={specialItem.dataKeys} />
     } else if (!specialItem) {
-        return <AlbumsRenderer onClose={() => togglePreview()} logoMap={{whiteLogo: white.src}} title={data.title} images={[...((existingData || {}).images || []), ...files].map(({url, objectUrl, key, deleted}) => ({url: url || objectUrl, key, deleted})).filter(x => !x.deleted).sort((x, y) => x.key > y.key ? 1 : -1).map(x => x.url)} />
+        let t = tags.map(({key}) => {
+            let tag = data[key]
+            if (tag) {
+                tag = tag.trim()
+            }
+            return tag || ''
+        }).filter(x => !!x)
+        return <Comp onClose={() => togglePreview()} logoMap={{whiteLogo: white.src, mainLogo: logo.src}} title={data.title} images={[...((existingData || {}).images || []), ...files].map(({url, objectUrl, key, deleted, ...rest}) => ({...rest, tags: t || [], url: url || objectUrl, key, deleted})).filter(x => !x.deleted).sort((x, y) => x.key > y.key ? 1 : -1)} />
     }
     return null
 }
 const defaultTags = [{key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}]
 
-function Edit({role = 'user', pinPrepend = '', tags = defaultTags, subTitle = 'Edit Album', title: title1 = 'Edit Album', submitText: submitText1 = 'Update Album'}) {
+function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultTags, subTitle = 'Edit Album', title: title1 = 'Edit Album', submitText: submitText1 = 'Update Album'}) {
     const [files, setFiles] = useState([])
     const [existingData, setExistingData] = useState(null)
     const [showPreview, setPreview] = useState(false)
@@ -539,12 +546,12 @@ function Edit({role = 'user', pinPrepend = '', tags = defaultTags, subTitle = 'E
             </>}
             {!roleMatch && <div className={styles.roleError}>You are not authorised for this action. Users with following roles can view this content: `{requiredRoles.join(', ')}`</div>}
             <div id='Contact'><Footer /></div>
-            {showPreview && <PreviewComp specialItem={specialItem} togglePreview={togglePreview} data={showPreview} existingData={existingData} files={files} />}
+            {showPreview && <PreviewComp Comp={PreviewComponent} specialItem={specialItem} togglePreview={togglePreview} tags={tags} data={showPreview} existingData={existingData} files={files} />}
         </>
     )
 }
 
-export default function EditPage ({submitText, tags, title, pinPrepend, subTitle}) {
-    const Comp = ({role}) => <Edit  role={role} submitText={submitText} tags={tags} title={title} pinPrepend={pinPrepend} subTitle={subTitle} />
+export default function EditPage ({submitText, tags, title, pinPrepend, subTitle, PreviewComponent}) {
+    const Comp = ({role}) => <Edit PreviewComponent={PreviewComponent} role={role} submitText={submitText} tags={tags} title={title} pinPrepend={pinPrepend} subTitle={subTitle} />
     return <Login component={Comp} />
 }

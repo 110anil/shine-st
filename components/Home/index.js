@@ -1,5 +1,4 @@
 'use client'
-import styles from './home.module.css'
 import Carousel from '@/components/Carousel'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
@@ -22,7 +21,7 @@ const tagParser = ([location, title, description] = []) => {
     return {title, description, location}
 }
 
-export default function Home({logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages, rightItems}) {
+export default function Home({preview = false, logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages, rightItems}) {
     const [active, setActive] = useState('')
     const refAbout = useRef(null)
     const featuredRef = useRef(null)
@@ -46,7 +45,7 @@ export default function Home({logoMap, topimages, bottomimages, scrollframes, se
                     //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
                     // </video>,
                     ...topimages.map(x => {
-                        return <CarouselImage data={x} tagParser={tagParser} />
+                        return <CarouselImage key={x.url} data={x} tagParser={tagParser} />
                         // return <div className={styles.test} style={{
                         //     '--background': `url('${x.url}')`
                         // }}  key={x.url} />
@@ -57,7 +56,7 @@ export default function Home({logoMap, topimages, bottomimages, scrollframes, se
             </div>
             <ScrollSeek scrollframes={scrollframes} />
             <div id='Recognition' ref={featuredRef}><Featured featuredImages={featured} /></div>
-            <Gallery images={galleryimages} />
+            <Gallery preview={preview} images={galleryimages} />
             <div id='Testimonials' ref={reviewsRef}><Reviews testimonials={testimonials} /></div>
             <Carousel id={'banner'} showControls>
                 {...[
@@ -66,7 +65,7 @@ export default function Home({logoMap, topimages, bottomimages, scrollframes, se
                     //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
                     // </video>,
                     ...bottomimages.map(x => {
-                        return <CarouselImage data={x} tagParser={tagParser} />
+                        return <CarouselImage key={x.url} firstFold={false} data={x} tagParser={tagParser} />
                         // return <div className={styles.test} style={{
                         //     '--background': `url('${x.url}')`
                         // }}  key={x.url} />

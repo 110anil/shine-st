@@ -29,7 +29,20 @@
     height: 90vh;
     width: 100%;
 }
-
+.preview>div>div:hover:before {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    padding-top: 50px;
+    font-size: 50px;
+    content: var(--num);
+    display: block;
+    background: #0005;
+    color: white;
+}
 @keyframes marquee {
     0% { left: 0; }
     100% { left: -200%; }
