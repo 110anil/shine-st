@@ -39,7 +39,7 @@
 .image {
     background-image: var(--bg);
     width: calc(100vw - 80px);
-    min-height: 60vh;
+    min-height: 75vh;
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;

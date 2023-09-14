@@ -119,7 +119,7 @@ const handle = (pin, meta) => {
             if (back) {
                 imgs.push(back)
             }
-            const [{width, height, tags} = {}] = normalFiles
+            const [{width, height, tags} = {}] = imgs
             const t = (tags || []).filter(tag => !['front', 'back'].includes(tag))
             r({song, done: true, width, height, images: imgs.map(x => meta ? ({url: x.url, id: x.fileId, tags: x.tags ? x.tags : []}) : x.url), tags: t})
         })

@@ -18,9 +18,9 @@ function toggleFullScreen() {
         document.exitFullscreen();
     }
 }
-const Legends = ({children, onClick, active, legendStyles = {}, legendClass = ''}) => {
+const Legends = ({children, onClick, active, legendStyles = {}, legendContStyles = {}, legendClass = ''}) => {
     return (
-        <div className={cs(styles.legendContainer, 'legend-container')}><div className={styles.cont}>
+        <div className={cs(styles.legendContainer, 'legend-container')} style={legendContStyles}><div className={styles.cont} style={legendContStyles}>
             {
                 children.map((item, index) => (
                     <div className={cs(styles.legend, active === index && styles.active, legendClass)} style={legendStyles} key={index} onClick={() => onClick(index)}>{item}</div>
@@ -45,7 +45,7 @@ const keyFunction = (active, setActive, children) => (e) => {
         setActive(value)
     }
 }
-const Carousel = ({keyboard = false, legendClass, legendStyles = {}, showBtns = false, showLegends = false, children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
+const Carousel = ({legendContStyles, keyboard = false, legendClass, legendStyles = {}, showBtns = false, showLegends = false, children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
 
     const ref = useRef(null)
     const keyRef = useRef(null)
@@ -98,7 +98,7 @@ const Carousel = ({keyboard = false, legendClass, legendStyles = {}, showBtns = 
             <div className={styles.carouselInner}>
                 {children.map((item, index) => {
                    return (
-                           <div key={`carousel-items-${index}`} className={classNames(styles.carouselItem, active === index && styles.carouselItemActive)}>
+                           <div key={`carousel-items-${index}`} className={classNames(styles.carouselItem, active === index && styles.carouselItemActive, isShowLegends && styles.legendShown)}>
                                {item}
                            </div>
                    )
@@ -121,7 +121,7 @@ const Carousel = ({keyboard = false, legendClass, legendStyles = {}, showBtns = 
 
                     </ol>
                 )}
-                {showLegends && isShowLegends && <Legends legendClass={legendClass} legendStyles={legendStyles} active={active} onClick={setActive}>{children}</Legends>}
+                {showLegends && isShowLegends && <Legends legendContStyles={legendContStyles} legendClass={legendClass} legendStyles={legendStyles} active={active} onClick={setActive}>{children}</Legends>}
                 {showBtns && (
                     <ol className={styles.btns}>
                         {btns.map(({text, icon, onClick}, index) => {
