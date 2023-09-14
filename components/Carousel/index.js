@@ -29,9 +29,26 @@ const Legends = ({children, onClick, active, legendStyles = {}, legendClass = ''
         </div></div>
     )
 }
-const Carousel = ({legendClass, legendStyles = {}, showBtns = false, showLegends = false, children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
+const keyFunction = (active, setActive, children) => (e) => {
+    const map = {
+        ArrowLeft: -1,
+        ArrowRight: 1
+    }
+    let value = map[e.key]
+    if (value) {
+        value = value + active
+        if (value < 0) {
+            value = 0
+        } else if (value >= children.length - 1) {
+            value = children.length - 1
+        }
+        setActive(value)
+    }
+}
+const Carousel = ({keyboard = false, legendClass, legendStyles = {}, showBtns = false, showLegends = false, children, autoPlay = false, showControls = false, showBullets = false, activeId = 0}) => {
 
     const ref = useRef(null)
+    const keyRef = useRef(null)
     const [active, setActive] = useState(activeId)
     const [isAutoPlay, setAutoPlay] = useState(autoPlay)
     const [isShowLegends, toggleLegends] = useState(false)
@@ -60,6 +77,20 @@ const Carousel = ({legendClass, legendStyles = {}, showBtns = false, showLegends
         }
 
     }, [children.length, active, isAutoPlay])
+
+    useEffect(() => {
+        keyRef.current && window.removeEventListener('keydown', keyRef.current)
+        keyRef.current = null
+        if (keyboard) {
+            const func = keyFunction(active, setActive, children)
+            keyRef.current = func
+            window.addEventListener('keydown', func)
+        }
+        return () => {
+            keyRef.current && window.removeEventListener('keydown', keyRef.current)
+            keyRef.current = null
+        }
+    }, [keyboard, children.length, active])
 
     return (
 

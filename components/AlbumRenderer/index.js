@@ -16,7 +16,7 @@ const AlbumRenderer = ({title, images, height = 105, width = 210, logoMap, onClo
             }}>
                 <label onClick={onClose}>Close</label>
                 <div className={styles.title}>{title}</div>
-                <Carousel showBtns showControls showLegends legendClass={styles.legend} legendStyles={{
+                <Carousel keyboard showBtns showControls showLegends legendClass={styles.legend} legendStyles={{
                     '--h': `${h}px`,
                     '--w': `${w}px`
                 }}>
