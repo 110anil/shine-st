@@ -11,10 +11,11 @@ const leftItems = ['Contact', {name: 'Logout', onClick: () => {
     }}]
 
 
-const actions = [
+const defaultActions = [
     {key: 'logos', text: 'Website Logos / Icons'},
     {key: 'topimages', text: 'Images in top section'},
-    {key: 'servicethumbnails', text: 'Services offered'},
+    {key: 'servicethumbnails', text: 'Service Thumbnails'},
+    {key: 'services', url: '/dashboard/services', text: 'Service Page Images'},
     {key: 'scrollframes', text: 'Scroll controlled video'},
     {key: 'featured', text: 'Featured Section'},
     {key: 'galleryimages', text: 'Image Gallery'},
@@ -23,17 +24,17 @@ const actions = [
     {key: 'albumthumbnail', text: 'Thumbnail on the Albums page'},
     {key: 'usermanagement', text: 'Update Users'}
 ]
-function Admin() {
+function Admin({actions = defaultActions, title = 'Update Website', subTitle = 'Choose a section to update'}) {
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
             <div className={styles.container}>
                 <div>
-                    <div className={styles.title}>Update Website</div>
-                    <div className={styles.review}>
+                    <div className={styles.title}>{title}</div>
+                    <div>
                         <div className={styles.textContainer}>
-                            <div className={styles.name}>Choose a section to update</div>
-                            {actions.map(({key, text}) => <a className={styles.action} href={`/edit-albums/${key}`} target='_blank' key={key}>{text}</a>)}
+                            <div className={styles.name}>{subTitle}</div>
+                            {actions.map(({key, text, url}) => <a className={styles.action} href={url || `/edit-albums/${key}`} target='_blank' key={key}>{text}</a>)}
                         </div>
                     </div>
                 </div>
@@ -43,8 +44,9 @@ function Admin() {
     )
 }
 
-export default function AdminPage () {
-    return <Login component={Admin} />
+export default function AdminPage ({actions, subTitle, title}) {
+    const comp = () => <Admin actions={actions} title={title} subTitle={subTitle} />
+    return <Login component={comp} />
 }
 
 // prevent duplicate pin update

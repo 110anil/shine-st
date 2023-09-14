@@ -14,7 +14,6 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
         setData({...formData, [key]: value})
     }
     const [btnState, setBtnState] = useState(null)
-    console.log(onSubmit)
     const submit = () => {
         setBtnState('LOADING')
         const dta = {...formData}
@@ -30,17 +29,25 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
             <div className={styles.container}>
                 <div>
                     <div className={styles.title}>{title}</div>
-                    <div className={styles.review}>
                         <div className={styles.textContainer}>
                             <div className={styles.name}>{subTitle}</div>
 
-                            {fields.map(({type = 'text', key, value: val, placeholder, onChange, disabled = false}) => {
+                            {fields.map(({options = [], type = 'text', key, value: val, placeholder, onChange, disabled = false}) => {
                                 switch (type) {
                                     case 'text':
                                     case 'password':
                                         return (
                                             <div className={styles.field} key={key}>
                                                 <input type={type} disabled={disabled} placeholder={placeholder} value={val !== undefined ? val : formData[key]} onChange={(e) => setFormData(key, e.target.value)} />
+                                            </div>
+                                        )
+                                    case 'radio':
+                                        return (
+                                            <div className={styles.radioField} key={key}>
+                                                <label>{placeholder}</label>
+                                                <ul>
+                                                    {options.map(({key: k, text}) => <li key={k} className={cs(k === formData[key] && styles.radioSelected)} onClick={() => setFormData(key, k)}>{text || k}</li>)}
+                                                </ul>
                                             </div>
                                         )
                                     case 'file':
@@ -65,14 +72,11 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                 </button>
                             ))}
                         </div>
-                    </div>
                     {children && (
-                        <div className={styles.review}>
                             <div className={styles.textContainer}>
                                 {children}
 
                             </div>
-                        </div>
                     )}
                 </div>
             </div>

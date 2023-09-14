@@ -26,7 +26,7 @@ export default function AlbumPage({logoMap}) {
     return (
         <>
             {state !== 'LOADED' && <div className={styles.loaderContainer}><div className={styles.loader} /></div>}
-            {state === 'LOADED' && <AlbumsRenderer logoMap={logoMap} title={dta.title} images={dta.images} height={dta.height} width={dta.width} />}
+            {state === 'LOADED' && <AlbumsRenderer logoMap={logoMap} title={dta.tags[0]} images={dta.images} height={dta.height} width={dta.width} />}
         </>
     )
 }

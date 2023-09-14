@@ -10,11 +10,16 @@ import About from '@/components/About'
 import ScrollSeek from "@/components/ScrollSeek"
 import {useOnScreen} from "@/utils/useOnScreen";
 import {useRef, useState} from "react";
+import CarouselImage from "@/components/Carouselmage";
 
 let options = {
     root: null,
     rootMargin: "0px",
     threshold: 0.7
+}
+
+const tagParser = ([location, title, description] = []) => {
+    return {title, description, location}
 }
 
 export default function Home({logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages, rightItems}) {
@@ -30,6 +35,7 @@ export default function Home({logoMap, topimages, bottomimages, scrollframes, se
     useOnScreen(reviewsRef, options, cb('Testimonials'))
     useOnScreen(contactRef, options, cb('Contact'))
 
+
     return (
         <>
             <Header rightItems={rightItems} activeTab={active} logoMap={logoMap} />
@@ -39,9 +45,12 @@ export default function Home({logoMap, topimages, bottomimages, scrollframes, se
                     //                  src="https://www.kia.com/content/dam/kia2/in/en/our-vehicles/showroom/selto-teaser/seltos-xline/Desktop_1_new.mp4">
                     //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
                     // </video>,
-                    ...topimages.map(x => <div className={styles.test} style={{
-                        '--background': `url('${x.url}')`
-                    }}  key={x.url} />)]}
+                    ...topimages.map(x => {
+                        return <CarouselImage data={x} tagParser={tagParser} />
+                        // return <div className={styles.test} style={{
+                        //     '--background': `url('${x.url}')`
+                        // }}  key={x.url} />
+                    })]}
             </Carousel>
             <div id='Services' ref={refAbout}>
                 <About servicethumbnails={servicethumbnails} />
@@ -56,9 +65,12 @@ export default function Home({logoMap, topimages, bottomimages, scrollframes, se
                     //                  src="https://www.kia.com/content/dam/kia2/in/en/our-vehicles/showroom/selto-teaser/seltos-xline/Desktop_1_new.mp4">
                     //     {/*</video>, ...types.map(id => <img alt={id} src={`http://fakeimg.pl/2000x800/0079D8/fff/?text=${id}}`} key={id} />)]}*/}
                     // </video>,
-                    ...bottomimages.map(x => <div className={styles.test} style={{
-                        '--background': `url('${x.url}')`
-                    }}  key={x.url} />)]}
+                    ...bottomimages.map(x => {
+                        return <CarouselImage data={x} tagParser={tagParser} />
+                        // return <div className={styles.test} style={{
+                        //     '--background': `url('${x.url}')`
+                        // }}  key={x.url} />
+                    })]}
             </Carousel>
             <div id='Contact' ref={contactRef}><Footer /></div>
         </>

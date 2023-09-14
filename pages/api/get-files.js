@@ -4,7 +4,6 @@ const endpoint = "https://ik.imagekit.io/shinest/"
 const privateKey = process.env.TEMP_KEY;
 const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I=";
 import {runBatch} from "@/utils/runBatch";
-console.log(process.env.ACCOUNT1_KEY, process.env.ACCOUNT2_KEY, process.env.ACCOUNT3_KEY, process.env.ACCOUNT4_KEY, process.env.ACCOUNT5_KEY)
 const account1 = {
     email: "smilegarg110@gmail.com",
     publicKey: "public_/ByX9Tb7/wjtatzTatuaH9115Zw=",
@@ -121,8 +120,8 @@ const handle = (pin, meta) => {
                 imgs.push(back)
             }
             const [{width, height, tags} = {}] = normalFiles
-            const [title] = (tags || []).filter(tag => !['front', 'back'].includes(tag))
-            r({song, done: true, width, height, images: imgs.map(x => meta ? ({url: x.url, id: x.fileId, tags: x.tags ? x.tags : []}) : x.url), title})
+            const t = (tags || []).filter(tag => !['front', 'back'].includes(tag))
+            r({song, done: true, width, height, images: imgs.map(x => meta ? ({url: x.url, id: x.fileId, tags: x.tags ? x.tags : []}) : x.url), tags: t})
         })
     })
 }
@@ -191,12 +190,12 @@ export function deleteFiles (req, res) {
         });
 }
 export function changeTitle (req, res) {
-    const {fileIds, title, oldTitle, pin} = req.body
+    const {fileIds, tags = [], oldTags = [], pin} = req.body
     let promise = Promise.resolve()
-    if (oldTitle) {
-        promise = getImageKit(pin.toLowerCase()).imageKit.bulkRemoveTags(fileIds, [oldTitle])
+    if (oldTags.length) {
+        promise = getImageKit(pin.toLowerCase()).imageKit.bulkRemoveTags(fileIds, oldTags)
     }
-    promise.then(() => getImageKit(pin.toLowerCase()).imageKit.bulkAddTags(fileIds, [title])).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
+    promise.then(() => getImageKit(pin.toLowerCase()).imageKit.bulkAddTags(fileIds, tags)).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
 }
 export function changeTags (req, res) {
     const {files, pin} = req.body
@@ -260,7 +259,24 @@ export function findAlbum (req, res) {
             }
         })
     }))).then(() => {
-        res.status(500).json({done: true, result: Object.keys(obj).map(pin => ({pin, title: obj[pin], url: `/albums/${pin}`}))})
+        res.status(200).json({done: true, result: Object.keys(obj).map(pin => ({pin, title: obj[pin], url: `/albums/${pin}`}))})
+    }).catch((error) => res.status(500).json({done: false, error}))
+}
+
+export function findServices (req, res) {
+    const obj = {}
+    return Promise.all(initAll().map(({imageKit}) => imageKit.listFiles({
+        tags: ['service_tag']
+    }).then(result => {
+        result.forEach((file) => {
+            let {tags, filePath} = file
+            const {groups: {pin} = {}} = filePath.match(/\/data1\/services\/(?<pin>(.)+)\/.+\..+$/) || {}
+            if (!obj[pin]) {
+                obj[pin] = tags[1]
+            }
+        })
+    }))).then(() => {
+        res.status(200).json({done: true, result: Object.keys(obj).map(pin => ({key: pin, text: obj[pin], url: `/edit-services/${pin}`}))})
     }).catch((error) => res.status(500).json({done: false, error}))
 }
 

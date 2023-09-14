@@ -132,15 +132,49 @@ const userValidator = (existingData, files) => {
     }
     return {valid: true}
 }
+
+const carouselImagesValidator = (existingData, files) => {
+    const {images = []} = existingData || {}
+    let regexFail = false
+    let locationFail = false
+    let descFail = false
+    const locations = ['top', 'right', 'bottom', 'left', 'middle', 'center']
+    const val = ({tempTags: {title, description, textLocation} = {}}) => {
+        [textLocation].find(x => /[ \n\t\r]/.test(x)) && (regexFail = true);
+        if (!title && description) {
+            descFail = true
+        }
+        (!((!title && !description) || locations.includes(textLocation))) && (locationFail = true)
+    }
+    images.filter(x => !x.deleted).forEach(val)
+    files.filter(x => !x.deleted).forEach(val)
+
+    const errors = []
+
+    if (regexFail) {
+        errors.push('Whitespaces not allowed in textLocation.')
+    }
+
+    if (locationFail) {
+        errors.push(`textLocation is mandatory when entering title or description. textLocation must be one of ${locations.join(', ')}.`)
+    }
+    if (descFail) {
+        errors.push(`Decription can only be added along with title.`)
+    }
+    if (errors.length) {
+        return {valid: false, error: errors.join(' ')}
+    }
+    return {valid: true}
+}
 const specialItems = {
     featured: {title: 'Edit Featured Section', subtitle: 'Edit Featured Section', submitText: 'Update'}, // nothing required
     galleryimages: {title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
     testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}]}, // required 2 tags: name, description. parser and deParser required
-    servicethumbnails: {validator: serviceValidator, title: 'Edit Services Offered', subtitle: 'Edit Services Offered', submitText: 'Update', tags: [{key: 'serviceName', required: true}, {key: 'pin', required: true}]}, // required 1 tag
+    servicethumbnails: {validator: serviceValidator, title: 'Edit Service Thumbnails', subtitle: 'Edit Services Offered thumbnails on homepage', submitText: 'Update', tags: [{key: 'serviceName', required: true}, {key: 'pin', required: true}]}, // required 1 tag
     scrollframes: {title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update'}, // nothing required
     albumthumbnail: {dataKeys: ['logos'], preview: AlteredAlbum, title: 'Edit Album Page Thumbnail', subtitle: 'Edit Album Page Thumbnail Image', submitText: 'Update'}, // nothing required
-    bottomimages: {title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
-    topimages: {title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'title', required: false}]}, // optional tag
+    bottomimages: {validator: carouselImagesValidator, title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
+    topimages: {validator: carouselImagesValidator, title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
     logos: {validator: logoValidator, title: 'Edit Website Logos', subtitle: 'Edit Website logos', submitText: 'Update', tags: [{key: 'title', required: true, disabled: true}]}, // required 1 tag,
     usermanagement: {validator: userValidator, preview: false, roles: ['admin'], title: 'Edit Users', subtitle: 'Add / Remove users', submitText: 'Update', tags: [{key: 'username', required: true}, {key: 'password', required: true, type: 'password'}, {key: 'role', required: true}]}
 }
@@ -206,14 +240,16 @@ const PreviewComp = ({specialItem, togglePreview, data, existingData, files}) =>
     }
     return null
 }
+const defaultTags = [{key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}]
 
-function Edit({role = 'user', username}) {
+function Edit({role = 'user', pinPrepend = '', tags = defaultTags, subTitle = 'Edit Album', title: title1 = 'Edit Album', submitText: submitText1 = 'Update Album'}) {
     const [files, setFiles] = useState([])
     const [existingData, setExistingData] = useState(null)
     const [showPreview, setPreview] = useState(false)
     let {pin: urlPin} = useParams()
     if (urlPin) {
         urlPin = urlPin.toLowerCase()
+        urlPin = pinPrepend + urlPin
     }
     let specialItem = false
     let requiredRoles = ['user', 'admin']
@@ -224,7 +260,7 @@ function Edit({role = 'user', username}) {
 
     const roleMatch = requiredRoles.includes(role)
 
-    const {tags: specialTags = [], title = 'Edit Album', subtitle = 'Edit Album', submitText = 'Update Album', preview: showSpecialView = true} = specialItem || {}
+    const {tags: specialTags = [], title = title1, subtitle = subTitle, submitText = submitText1, preview: showSpecialView = true} = specialItem || {}
 
     const togglePreview = (formData) => {
         if (showPreview) {
@@ -260,14 +296,14 @@ function Edit({role = 'user', username}) {
         return fetch('/api/rename-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({files, pin, hash: '.' + (new Date()).getTime()})}).then(res => res.json())
     }
 
-    const uploadFilesAndUpdateTags = async (files, {title, pin}) => {
-        return upload(files, {title, pin})
+    const uploadFilesAndUpdateTags = async (files, {tags, pin}) => {
+        return upload(files, {tags, pin})
     }
 
 
 
-    const updateTitleOnOldFiles = (fileIds, {pin, title, oldTitle}) => {
-        return fetch('/api/change-title', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin, fileIds, title, oldTitle})}).then(res => res.json())
+    const updateTitleOnOldFiles = (fileIds, {pin, tags, oldTags}) => {
+        return fetch('/api/change-title', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin, fileIds, tags, oldTags})}).then(res => res.json())
     }
 
     const updateTags = (files, pin) => {
@@ -275,7 +311,13 @@ function Edit({role = 'user', username}) {
     }
 
     const onSubmit = async (formData) => {
-        let {title} = formData
+        let t = tags.map(({key}) => {
+            let tag = formData[key]
+            if (tag) {
+                tag = tag.trim()
+            }
+            return tag || ''
+        }).filter(x => !!x)
         let {images, pin} = existingData
         pin = pin.toLowerCase()
         let imagesToDelete = images.filter(x => x.deleted)
@@ -291,13 +333,21 @@ function Edit({role = 'user', username}) {
         let f = files.filter(x => !x.deleted)
 
         if (f.length) {
-            await uploadFilesAndUpdateTags(f.filter(x => !x.deleted).map(x => unParse(x, pin)), {title, pin})
+            await uploadFilesAndUpdateTags(f.filter(x => !x.deleted).map(x => unParse(x, pin)), {tags: t, pin})
         }
 
         const unchangedFiles = images.filter(x => !x.deleted)
 
-        if (!specialItem && unchangedFiles.length && title !== existingData.title) {
-                await updateTitleOnOldFiles(unchangedFiles.map(x => x.fileId), {pin: existingData.pin, title, oldTitle: existingData.title})
+        const lengthSame = (existingData.tags || []).length === t.length
+            let tagsSame = true;
+        tags.forEach(({key}, index) => {
+            if ((existingData.tags || [])[index] !== t[index]) {
+                tagsSame = false
+            }
+        })
+        const tagsChanged = !lengthSame || !tagsSame
+        if (!specialItem && unchangedFiles.length && tagsChanged) {
+                await updateTitleOnOldFiles(unchangedFiles.map(x => x.fileId), {pin: existingData.pin, tags: t, oldTags: existingData.tags})
         } else if (specialItem) {
             const f = unchangedFiles.map(x => unParse(x, pin)).filter(x => (x.newTags || []).length > 0)
             if (f.length) {
@@ -314,6 +364,7 @@ function Edit({role = 'user', username}) {
     let duplicateNewNameFound = false
     let lastIndex = -1
 
+    let numFiles = 0
     let res = {valid: true}
     if (specialItem.validator) {
         res = specialItem.validator(existingData, files)
@@ -342,6 +393,9 @@ function Edit({role = 'user', username}) {
                         if (k > lastIndex) {
                             lastIndex = k
                         }
+                        if (!deleted) {
+                            numFiles++
+                        }
                     }
                     return (
                         <div className={cs((!localNumeric || localDuplicate) && styles.duplicateNameFile, styles.fileContainer, deleted && styles.deleted)} key={url}>
@@ -359,20 +413,22 @@ function Edit({role = 'user', username}) {
                                     })
                                 }
                             } />
-                            {specialTags.map(({key, maxLength = 470, type = 'text', disabled = false}) => <input disabled={disabled} type={type} maxLength={maxLength} placeholder={key} key={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
-                                setExistingData({
-                                    ...existingData,
-                                    images: existingData.images.map((f) => {
-                                        return {
-                                            ...f,
-                                            tempTags: url === f.url ? {
-                                                ...(f.tempTags || {}),
-                                                [key]: e.target.value
-                                            } : f.tempTags
-                                        }
-                                    })
-                                })
-                            }} />)}
+                            {specialTags.map(({options = [], key, maxLength = 470, type = 'text', disabled = false}) => {
+                                        return <input disabled={disabled} type={type} maxLength={maxLength} placeholder={key} key={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
+                                            setExistingData({
+                                                ...existingData,
+                                                images: existingData.images.map((f) => {
+                                                    return {
+                                                        ...f,
+                                                        tempTags: url === f.url ? {
+                                                            ...(f.tempTags || {}),
+                                                            [key]: e.target.value
+                                                        } : f.tempTags
+                                                    }
+                                                })
+                                            })
+                                        }} />
+                            })}
                             <div className={styles.delete} onClick={() => {
                                 setExistingData({...existingData, images: existingData.images.map(f => ({...f, deleted: url === f.url ? !f.deleted : f.deleted}))})
                             }}>{deleted ? 'Restore' : 'Delete'}</div>
@@ -402,6 +458,9 @@ function Edit({role = 'user', username}) {
                     if (k > lastIndex) {
                         lastIndex = k
                     }
+                    if (!file.deleted) {
+                        numFiles++
+                    }
                     return (
                         <div className={cs((!localNumeric || localDuplicate) && styles.duplicateNameFile, styles.fileContainer, file.deleted && styles.deleted)} key={file.objectUrl}>
                             <div className={styles.file} style={{'--bg': `url('${file.objectUrl}')`}} />
@@ -411,18 +470,22 @@ function Edit({role = 'user', username}) {
                                     key: f.objectUrl === file.objectUrl ? e.target.value : f.key
                                 })))
                             } />
-                            {specialTags.map(({key, maxLength = 470, type = 'text'}) => <input type={type} maxLength={maxLength} key={key} placeholder={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
-                                setFiles(files.map((f) => {
-                                    return {
-                                        ...f,
-                                        tempTags: file.objectUrl === f.objectUrl ? {
-                                            ...(f.tempTags || {}),
-                                            [key]: e.target.value
-                                        } : f.tempTags
-                                    }
-                                })
-                                )
-                            }} />)}
+                            {specialTags.map(({key, options = [], maxLength = 470, type = 'text'}) => {
+                                        return (
+                                            <input type={type} maxLength={maxLength} key={key} placeholder={key} className={styles.input} value={tempTags[key] || ''} onChange={e => {
+                                                setFiles(files.map((f) => {
+                                                        return {
+                                                            ...f,
+                                                            tempTags: file.objectUrl === f.objectUrl ? {
+                                                                ...(f.tempTags || {}),
+                                                                [key]: e.target.value
+                                                            } : f.tempTags
+                                                        }
+                                                    })
+                                                )
+                                            }} />
+                                        )
+                            })}
                             <div className={styles.delete} onClick={() => {
                                 setFiles(files.map(f => ({
                                     ...f,
@@ -437,22 +500,31 @@ function Edit({role = 'user', username}) {
         {duplicateNewNameFound && <div className={styles.duplicateName}>Duplicate names found. Names must be unique</div>}
         {!numeric && <div className={styles.duplicateName}>Names of the files must be numeric</div>}
         {!resValid && error && <div className={styles.duplicateName}>{error}</div>}
+        {numFiles > 50 && <div className={styles.duplicateName}>Maximum 50 files are allowed</div>}
     </>
-    const invalid = !resValid || duplicateNewNameFound || !numeric
+    const invalid = numFiles > 50 || !resValid || duplicateNewNameFound || !numeric
+    let initialVal = {}
+    if (existingData) {
+        initialVal = tags.reduce((res, item, index) => {
+            res[item.key] = (existingData.tags || [])[index]
+            return res
+        }, {})
+    }
+
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
             {urlPin && !existingData && <div className={styles2.loaderContainer}><div className={styles2.loader} /></div>}
             {roleMatch && <>
                 {!urlPin && <SearchInput
-                    onSubmit={findAlbum}
+                    onSubmit={({pin, ...data}) => findAlbum({...data, pin: pinPrepend + pin})}
                     title={title} subTitle={subtitle} fields={[{key: 'pin', type: 'text', placeholder: 'Enter PIN'}]} />}
                 {existingData && (
                     <SearchInput actions={invalid || !showSpecialView ? undefined : [{label: 'Preview', action: togglePreview}]}
                                  onSubmit={invalid ? undefined : onSubmit}
                                  submitText={submitText}
-                                 initialValue={{title: existingData.title}}
-                                 title={urlPin ? title : ''} subTitle={subtitle} fields={[...(!specialItem ? [{key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}] : []), {key: 'files', type: 'file', placeholder: 'Select Files', validator: () => true, onChange: (e) => {
+                                 initialValue={initialVal}
+                                 title={urlPin ? title : ''} subTitle={subtitle} fields={[...(!specialItem ? tags : []), {key: 'files', type: 'file', placeholder: 'Select Files', validator: () => true, onChange: (e) => {
                             const f = [...e.target.files].map((file, index) => {
                                 let [ext] = file.name.match(/\.[a-zA-Z0-9]+$/)
                                 let name = file.name.replace(/\.[a-zA-Z0-9]+$/, '')
@@ -472,6 +544,7 @@ function Edit({role = 'user', username}) {
     )
 }
 
-export default function EditPage () {
-    return <Login component={Edit} />
+export default function EditPage ({submitText, tags, title, pinPrepend, subTitle}) {
+    const Comp = ({role}) => <Edit  role={role} submitText={submitText} tags={tags} title={title} pinPrepend={pinPrepend} subTitle={subTitle} />
+    return <Login component={Comp} />
 }

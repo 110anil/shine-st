@@ -30,7 +30,7 @@ const uploadFilesAndUpdateTags = async (files, {tags, pin}) => {
 }
 
 const defaultTags = [ {key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}]
-function Albums({pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Albums', title = 'Upload Albums'}) {
+function Albums({initialValue: defaultInitialValue, pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Albums', title = 'Upload Albums'}) {
     const [files, setFiles] = useState([])
     const [showPreview, setPreview] = useState(false)
     const togglePreview = (formData) => {
@@ -67,6 +67,7 @@ function Albums({pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Alb
     let numeric = true
     let duplicateNewNameFound = false
     let lastIndex = -1
+    let numFiles = 0
     const children = <>
         {files.length > 0 && (
             <div>
@@ -88,6 +89,9 @@ function Albums({pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Alb
                     if (k > lastIndex) {
                         lastIndex = k
                     }
+                    if (!file.deleted) {
+                        numFiles++
+                    }
                     return (
                         <div className={cs((!localNumeric || localDuplicate) && styles.duplicateNameFile, styles.fileContainer, file.deleted && styles.deleted)} key={file.objectUrl}>
                             <div className={styles.file} style={{'--bg': `url('${file.objectUrl}')`}} />
@@ -108,10 +112,11 @@ function Albums({pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Alb
                 })}
                 {duplicateNewNameFound && <div className={styles.duplicateName}>Duplicate names found. Names must be unique</div>}
                 {!numeric && <div className={styles.duplicateName}>Names of the files must be numeric</div>}
+                {numFiles > 50 && <div className={styles.duplicateName}>Maximum 50 files are allowed</div>}
             </div>
         )}
     </>
-    const invalid = duplicateNewNameFound || !numeric
+    const invalid = numFiles > 50 || duplicateNewNameFound || !numeric
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
@@ -121,6 +126,7 @@ function Albums({pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Alb
             ]}
                 onSubmit={invalid ? undefined : onSubmit}
                 title={title}
+                initialValue={defaultInitialValue}
                 submitText={'Upload'}
                 subTitle={subTitle}
                 fields={[
@@ -166,8 +172,8 @@ function Albums({pinPrepend = '', tags = defaultTags, subTitle = 'Upload New Alb
     )
 }
 
-export default function UploadAlbum ({pinPrepend, tags, title, subTitle}) {
-    const C = () => <Albums pinPrepend={pinPrepend} tags={tags} subTitle={subTitle} title={title} />
+export default function UploadAlbum ({pinPrepend, tags, title, subTitle, initialValue}) {
+    const C = () => <Albums pinPrepend={pinPrepend} tags={tags} initialValue={initialValue} subTitle={subTitle} title={title} />
     return <Login component={C} />
 }
 // prevent duplicate pin update
