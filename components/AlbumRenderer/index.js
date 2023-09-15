@@ -5,10 +5,12 @@ import cs from 'classnames'
 import styles from './albumRenderer.module.css'
 import {useEffect, useState} from "react";
 import Loader from "@/components/Loader";
-
+import musicAnimation from './music_animation.gif'
+import defaultSong from './defaultMusic.mp3'
 const defaultOnClose = () => window.location.href = '/albums'
-const AlbumRenderer = ({title, images = [], height: h, width: w, logoMap, onClose = defaultOnClose}) => {
+const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width: w, logoMap, onClose = defaultOnClose}) => {
     const [data, setData] = useState(h && w ? {height: h, width: w} : null)
+    const [play, toggleMusic] = useState(true)
 
     const [firstImage] = images || []
     const firstImageUrl = firstImage.url || firstImage
@@ -47,6 +49,13 @@ const AlbumRenderer = ({title, images = [], height: h, width: w, logoMap, onClos
                 }}>
                     {images.map(img => <div className={styles.image} style={{'--bg': `url('${img.url || img}')`}} key={img.url || img} />)}
                 </Carousel>
+                <div className={cs(styles.music, play ? styles.play : styles.pause)} style={{
+                    '--bg': `url('${musicAnimation.src}')`
+                }} onClick={() => toggleMusic(!play)}>
+                    {play && <audio controls autoPlay loop>
+                        <source src={song} type="audio/mpeg" />
+                    </audio>}
+                </div>
             </div>
         </Modal>
     )

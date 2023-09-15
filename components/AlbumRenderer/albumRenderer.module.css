@@ -50,3 +50,36 @@
     width: var(--w);
     min-height: var(--h);
 }
+
+.music {
+    width: 20px;
+    height: 20px;
+    background-position: 0 0;
+    cursor: pointer;
+    background: var(--bg);
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 10;
+    margin: 20px;
+}
+
+.music audio {
+    display: none;
+}
+
+.music.play {
+    background-position: 0 0;
+}
+
+.music.play:hover {
+    background-position: 0 20px;
+}
+
+.music.pause {
+    background-position: 0 20px;
+}
+
+.music.pause:hover {
+    background-position: 0 0;
+}
