@@ -40,29 +40,39 @@
     top: 50%;
     z-index: 10;
     fill: #fff;
-    opacity: 0.5;
+    padding: 40px;
+    height: 80%;
+    display: flex;
+    justify-content: center;
+    transform: translateY(-50%);
+    align-items: center;
+
+}
+
+.carouselControl:hover {
+    background: #0005;
+}
+
+.carouselControl svg {
     transition: scale .3s, opacity .3s;
+    opacity: 0.5;
 }
 
 .carouselControlPrev {
     left: 2%;
-    transform: rotate(-180deg);
+    top: 50%;
+    transform: translateY(-50%) rotate(-180deg);
 }
 
 .carouselControlNext {
     right: 2%;
 }
 
-.carouselControl:hover {
+.carouselControl:hover svg {
     transform: scale(120%);
 }
 
-.carouselControlPrev.carouselControl:hover {
-    transform: rotate(-180deg) scale(120%);
-}
-
 .carouselControlActive {
-    display: block;
     opacity: 1;
 }
 
