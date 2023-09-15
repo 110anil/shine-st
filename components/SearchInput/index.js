@@ -8,6 +8,18 @@ const defaultValidator = (formData, fields) => {
     }).length === 0
 }
 
+const PlaySong = ({objectUrl, onChange,  url = objectUrl}) => {
+    const [play, setPlay] = useState(false)
+    return <div className={styles.musicCont}>
+        <div onClick={() => setPlay(!play)} className={cs(styles.music, play ? styles.play : styles.pause)}>Play / Pause Selected Song
+            {play && <audio controls autoPlay loop>
+                <source src={url} type="audio/mpeg" />
+            </audio>}
+        </div>
+        <div className={styles.delete} onClick={() => onChange()}>Delete</div>
+    </div>
+}
+
 const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums', subTitle = 'Find Your Albums', submitText = 'Find It', children, onSubmit, fields = [], validator = defaultValidator}) => {
     const [formData, setData] = useState(initialValue)
     const setFormData = (key, value) => {
@@ -32,7 +44,7 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                         <div className={styles.textContainer}>
                             <div className={styles.name}>{subTitle}</div>
 
-                            {fields.map(({options = [], type = 'text', key, value: val, placeholder, onChange, disabled = false}) => {
+                            {fields.map(({multiple = true, options = [], type = 'text', key, value: val, placeholder, onChange, disabled = false}) => {
                                 switch (type) {
                                     case 'text':
                                     case 'password':
@@ -50,13 +62,25 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                                 </ul>
                                             </div>
                                         )
+                                    case 'song':
+                                        return (
+                                            <div className={styles.field} key={key}>
+                                                <input className={styles.fileInput} onChange={e => {
+                                                    const files = onChange(e)
+                                                    setFormData(key, files)
+                                                }} id={key} type='file' placeholder={placeholder} multiple={multiple} />
+                                                <label htmlFor={key}>{placeholder}</label>
+                                                {formData[key] && <PlaySong onChange={() => setFormData(key, undefined)} {...formData[key]} />}
+                                            </div>
+
+                                        )
                                     case 'file':
                                         return (
                                             <div className={styles.field} key={key}>
                                                 <input className={styles.fileInput} onChange={e => {
                                                     const files = onChange(e)
                                                     setFormData(key, files)
-                                                }} id={key} type='file' placeholder={placeholder} multiple />
+                                                }} id={key} type='file' placeholder={placeholder} multiple={multiple} />
                                                 <label htmlFor={key}>{placeholder}</label>
                                             </div>
 
@@ -75,7 +99,6 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                     {children && (
                             <div className={styles.textContainer}>
                                 {children}
-
                             </div>
                     )}
                 </div>

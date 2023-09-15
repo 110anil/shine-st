@@ -193,7 +193,7 @@ const unParse = (item, pin) => {
 }
 
 const getFiles = async (pin) => {
-        let {done, images = [], ...dta} = await fetch('/api/get-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin, meta: true})}).then(res => res.json())
+        let {done, images = [], song, ...dta} = await fetch('/api/get-files', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({pin, meta: true})}).then(res => res.json())
         if (!done) {
             return Promise.reject('Something went wrong')
         }
@@ -217,7 +217,14 @@ const getFiles = async (pin) => {
 
         return {url:x.url, fileId: x.id, originalKey: key.toString(), key, ext, deleted: false, tempTags: parse(x.tags)}
     })
-        return Promise.resolve({pin, images, ...dta})
+    if (song) {
+        let {groups: {key, ext}} = song.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+        ext = `.${ext}`
+        key = parseInt(key)
+
+        song = {url:song.url, fileId: song.id, originalKey: key.toString(), key, ext, deleted: false, tempTags: parse(song.tags)}
+    }
+    return Promise.resolve({pin, images, song, ...dta})
 }
 
 
@@ -243,7 +250,8 @@ const PreviewComp = ({specialItem, togglePreview, data, existingData, files, tag
             }
             return tag || ''
         }).filter(x => !!x)
-        return <Comp onClose={() => togglePreview()} logoMap={{whiteLogo: white.src, mainLogo: logo.src}} title={data.title} images={[...((existingData || {}).images || []), ...files].map(({url, objectUrl, key, deleted, ...rest}) => ({...rest, tags: t || [], url: url || objectUrl, key, deleted})).filter(x => !x.deleted).sort((x, y) => x.key > y.key ? 1 : -1)} />
+        const {objectUrl, url = objectUrl} = data.song || {}
+        return <Comp song={url} onClose={() => togglePreview()} logoMap={{whiteLogo: white.src, mainLogo: logo.src}} title={data.title} images={[...((existingData || {}).images || []), ...files].map(({url, objectUrl, key, deleted, ...rest}) => ({...rest, tags: t || [], url: url || objectUrl, key, deleted})).filter(x => !x.deleted).sort((x, y) => x.key > y.key ? 1 : -1)} />
     }
     return null
 }
@@ -325,9 +333,21 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
             }
             return tag || ''
         }).filter(x => !!x)
+        const {song} = formData
         let {images, pin} = existingData
         pin = pin.toLowerCase()
+
         let imagesToDelete = images.filter(x => x.deleted)
+        let f = files.filter(x => !x.deleted)
+
+        let deleteAlbum = false
+        if (f.length === 0 && images.filter(x => !x.deleted).length === 0) {
+            deleteAlbum = true
+        }
+
+        if (existingData.song && (deleteAlbum || !song || song.objectUrl)) {
+            imagesToDelete = [...imagesToDelete, existingData.song]
+        }
         if (imagesToDelete.length) {
             await deleteFiles(imagesToDelete, pin)
         }
@@ -337,10 +357,14 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
             await renameFiles(imagesToRename, existingData.pin)
         }
 
-        let f = files.filter(x => !x.deleted)
 
-        if (f.length) {
-            await uploadFilesAndUpdateTags(f.filter(x => !x.deleted).map(x => unParse(x, pin)), {tags: t, pin})
+
+        if (!deleteAlbum && (f.length || song)) {
+            let f1 = f.map(x => unParse(x, pin)) || []
+            if (song && song.objectUrl) {
+                f1 = [...f1, song]
+            }
+            await uploadFilesAndUpdateTags(f1, {tags: t, pin})
         }
 
         const unchangedFiles = images.filter(x => !x.deleted)
@@ -516,6 +540,9 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
             res[item.key] = (existingData.tags || [])[index]
             return res
         }, {})
+        if (existingData.song) {
+            initialVal.song = existingData.song
+        }
     }
 
     return (
@@ -531,7 +558,16 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
                                  onSubmit={invalid ? undefined : onSubmit}
                                  submitText={submitText}
                                  initialValue={initialVal}
-                                 title={urlPin ? title : ''} subTitle={subtitle} fields={[...(!specialItem ? tags : []), {key: 'files', type: 'file', placeholder: 'Select Files', validator: () => true, onChange: (e) => {
+                                 title={urlPin ? title : ''} subTitle={subtitle} fields={
+                        [...(!specialItem ? tags : []),
+                        ...(pinPrepend || specialItem ? [] : [
+                            {key: 'song', type: 'song', allowReset: true, placeholder: 'Select Song', multiple: false, validator: () => true, onChange: e => {
+                                    const f = e.target.files[0]
+                                    let [ext] = f.name.match(/\.[a-zA-Z0-9]+$/)
+                                    return {ext, file: f, objectUrl: URL.createObjectURL(f), key: 'song'}
+                                }}
+                        ]),
+                            {key: 'files', type: 'file', placeholder: 'Select Files', validator: () => true, onChange: (e) => {
                             const f = [...e.target.files].map((file, index) => {
                                 let [ext] = file.name.match(/\.[a-zA-Z0-9]+$/)
                                 let name = file.name.replace(/\.[a-zA-Z0-9]+$/, '')

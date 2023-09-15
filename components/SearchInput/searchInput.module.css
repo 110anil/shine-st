@@ -52,6 +52,7 @@
     vertical-align: top;
     margin-right: 10px;
     margin-top: 60px;
+    position: relative;
 }
 
 .radioField {
@@ -120,6 +121,55 @@
     display: block;
     color: white;
     width: 100%;
+}
+
+.musicCont {
+    position: absolute;
+    right: 0;
+    top: 10px;
+}
+.music {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+    margin-right: 10px;
+}
+.delete {
+    color: red;
+    display: inline-block;
+    cursor: pointer;
+    vertical-align: top;
+}
+.music:before {
+    width: 20px;
+    content: " ";
+    height: 20px;
+    background-position: 0 0;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 10px;
+    background-image: url(./music_animation.gif);
+
+}
+
+.music audio {
+    display: none;
+}
+
+.music.play:before {
+    background-position: 0 0;
+}
+
+.music.play:before:hover {
+    background-position: 0 20px;
+}
+
+.music.pause:before {
+    background-position: 0 20px;
+}
+
+.music.pause:before:hover {
+    background-position: 0 0;
 }
 
 

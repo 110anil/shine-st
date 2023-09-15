@@ -3,7 +3,7 @@ import Carousel from "@/components/Carousel";
 import Modal from "@/components/Modal";
 import cs from 'classnames'
 import styles from './albumRenderer.module.css'
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import Loader from "@/components/Loader";
 import musicAnimation from './music_animation.gif'
 import defaultSong from './defaultMusic.mp3'
@@ -11,7 +11,8 @@ const defaultOnClose = () => window.location.href = '/albums'
 const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width: w, logoMap, onClose = defaultOnClose}) => {
     const [data, setData] = useState(h && w ? {height: h, width: w} : null)
     const [play, toggleMusic] = useState(true)
-
+    const ref = useRef(null)
+    const ref2 = useRef(null)
     const [firstImage] = images || []
     const firstImageUrl = firstImage.url || firstImage
 
@@ -24,6 +25,22 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
             img.src = firstImageUrl
         }
     }, [h, w, firstImageUrl])
+
+    useEffect(() => {
+        ref && ref.current && document.body.removeEventListener('click', ref.current)
+        ref.current = null
+        if (play && ref2 && ref2.current) {
+            ref.current = function () {
+                ref2 && ref2.current && ref2.current.play()
+            }
+            document.body.addEventListener("click", ref.current)
+        }
+
+        return () => {
+            ref && ref.current && document.body.removeEventListener('click', ref.current)
+            ref.current = null
+        }
+    }, [])
 
     if (!data) {
         return <Loader />
@@ -52,8 +69,8 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
                 <div className={cs(styles.music, play ? styles.play : styles.pause)} style={{
                     '--bg': `url('${musicAnimation.src}')`
                 }} onClick={() => toggleMusic(!play)}>
-                    {play && <audio controls autoPlay loop>
-                        <source src={song} type="audio/mpeg" />
+                    {play && <audio ref={ref2} controls autoPlay loop preload>
+                        <source src={song} type="audio/mpeg"/>
                     </audio>}
                 </div>
             </div>

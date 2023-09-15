@@ -41,7 +41,7 @@ function Albums({PreviewComponent: PreviewComp = AlbumsRenderer, initialValue: d
         setPreview(formData)
     }
     const onSubmit = async (formData) => {
-        let {pin} = formData
+        let {pin, song} = formData
         let t = tags.map(({key}) => {
             let tag = formData[key]
             if (tag) {
@@ -54,8 +54,11 @@ function Albums({PreviewComponent: PreviewComp = AlbumsRenderer, initialValue: d
         if (duplicate) {
             window.alert('This PIN already exists.')
         } else {
-            const f = files.filter(f => !f.deleted)
+            let f = files.filter(f => !f.deleted)
             if (f.length) {
+                if (song) {
+                    f = [...f, song]
+                }
                 await uploadFilesAndUpdateTags(f, {pin, tags: t})
             }
             setFiles([])
@@ -143,6 +146,11 @@ function Albums({PreviewComponent: PreviewComp = AlbumsRenderer, initialValue: d
                 fields={[
                     ...tags,
                         {key: 'pin', type: 'text', placeholder: 'Enter PIN'},
+                    ...(pinPrepend ? [] : [{key: 'song', type: 'song', allowReset: true, placeholder: 'Select Song', multiple: false, validator: () => true, onChange: e => {
+                            const f = e.target.files[0]
+                                let [ext] = f.name.match(/\.[a-zA-Z0-9]+$/)
+                                return {ext, file: f, objectUrl: URL.createObjectURL(f), key: 'song'}
+                            }}]),
                         {
                             key: 'files',
                             type: 'file',
@@ -171,6 +179,7 @@ function Albums({PreviewComponent: PreviewComp = AlbumsRenderer, initialValue: d
                     onClose={() => togglePreview()}
                     logoMap={{whiteLogo: white.src, mainLogo: logo.src}}
                     title={showPreview.title}
+                    song={(showPreview.song || {}).objectUrl}
                     images={files
                         .map(({url, objectUrl, key, deleted, ...rest}) => ({...rest, url: url || objectUrl, key, deleted, tags: t}))
                         .filter(({deleted}) => !deleted)
