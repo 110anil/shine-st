@@ -64,7 +64,7 @@ const Carousel = ({keyboard = false,  children, autoPlay = false, showControls =
             <div className={styles.carouselInner}>
                 {children.map((item, index) => {
                    return (
-                           <div key={`carousel-items-${index}`} className={classNames(styles.carouselItem, active === index && styles.carouselItemActive, isShowLegends && styles.legendShown)}>
+                           <div key={`carousel-items-${index}`} className={classNames(styles.carouselItem, active === index && styles.carouselItemActive)}>
                                {item}
                            </div>
                    )
