@@ -36,21 +36,6 @@
     margin: 0 auto 40px;
 }
 
-.image {
-    background-image: var(--bg);
-    width: calc(100vw - 80px);
-    min-height: 75vh;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
-}
-
-.legend>div {
-    min-width: var(--w);
-    width: var(--w);
-    min-height: var(--h);
-}
-
 .music {
     width: 20px;
     height: 20px;

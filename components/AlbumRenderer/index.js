@@ -1,5 +1,5 @@
 'use client'
-import Carousel from "@/components/Carousel";
+import Carousel from "@/components/AlbumCarousel";
 import Modal from "@/components/Modal";
 import cs from 'classnames'
 import styles from './albumRenderer.module.css'
@@ -58,18 +58,11 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
             }}>
                 <label onClick={onClose}>Close</label>
                 <div className={styles.title}>{title}</div>
-                <Carousel keyboard showBtns showControls showLegends legendClass={styles.legend} legendContStyles={{
-                    height: `${h1 === 200 ? 215 : 115}px`
-                }} legendStyles={{
-                    '--h': `${h1 + 6}px`,
-                    '--w': `${w1 + 6}px`
-                }}>
-                    {images.map(img => <div className={styles.image} style={{'--bg': `url('${img.url || img}')`}} key={img.url || img} />)}
-                </Carousel>
+                <Carousel keyboard showControls dimensions={{h: h1, w: w1}} images={images} />
                 <div className={cs(styles.music, play ? styles.play : styles.pause)} style={{
                     '--bg': `url('${musicAnimation.src}')`
                 }} onClick={() => toggleMusic(!play)}>
-                    {play && <audio ref={ref2} controls autoPlay loop preload>
+                    {false && <audio ref={ref2} controls autoPlay loop preload>
                         <source src={song} type="audio/mpeg"/>
                     </audio>}
                 </div>
