@@ -27,7 +27,7 @@ function ChangePin() {
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
-            <SearchInput onSubmit={obSubmit} fields={[{key: 'pin', type: 'text', placeholder: 'Enter existing PIN'}, {key: 'newPin', type: 'text', placeholder: 'Enter New PIN'}]} />
+            <SearchInput title={'Change PIN'} subTitle={'Change PIN of existing albums'} submitText={'Change PIN'} onSubmit={obSubmit} fields={[{key: 'pin', type: 'text', placeholder: 'Enter existing PIN'}, {key: 'newPin', type: 'text', placeholder: 'Enter New PIN'}]} />
             <div id='Contact'><Footer /></div>
         </>
     )
