@@ -13,7 +13,9 @@ const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
     }
     return (
             <header className={styles.header}>
-                <div className={styles.logoContainer}>
+                <div className={styles.logoContainer} onClick={() => {
+                    window.location.href = '/'
+                }}>
                     <div><span style={{
                         '--bg': `url('${logoMap.mainLogo}')`
                     }} /></div>

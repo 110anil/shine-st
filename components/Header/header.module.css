@@ -90,6 +90,7 @@
     border-bottom-right-radius: 26px;
     width: 250px;
     background: white;
+    cursor: pointer;
 }
 
 .logoContainer div:before {
