@@ -66,11 +66,14 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                         return (
                                             <div className={styles.field} key={key}>
                                                 <input className={styles.fileInput} onChange={e => {
-                                                    const files = onChange(e)
-                                                    setFormData(key, files)
-                                                }} id={key} type='file' placeholder={placeholder} multiple={multiple} />
+                                                    const file = onChange(e)
+                                                    setFormData(key, file)
+                                                }} id={key} type='file' accept="audio/*" placeholder={placeholder} multiple={multiple} />
                                                 <label htmlFor={key}>{placeholder}</label>
-                                                {formData[key] && <PlaySong onChange={() => setFormData(key, undefined)} {...formData[key]} />}
+                                                {formData[key] && <PlaySong onChange={(e) => {
+                                                    setFormData(key, undefined)
+                                                    e.target.files = undefined
+                                                }} {...formData[key]} />}
                                             </div>
 
                                         )
@@ -80,7 +83,7 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                                 <input className={styles.fileInput} onChange={e => {
                                                     const files = onChange(e)
                                                     setFormData(key, files)
-                                                }} id={key} type='file'  accept="image/*" placeholder={placeholder} multiple={multiple} />
+                                                }} id={key} type='file'  accept="image/*, video/*" placeholder={placeholder} multiple={multiple} />
                                                 <label htmlFor={key}>{placeholder}</label>
                                             </div>
 
