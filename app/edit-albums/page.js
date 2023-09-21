@@ -15,7 +15,7 @@ import logo from '@/images/logo.png'
 import white from '@/images/white.webp'
 import {upload} from "@/utils/upload";
 import { useParams } from 'next/navigation'
-const items = [{text: 'Home', url: '/'}, {text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
+const items = [{text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}, {text: 'Change Pin', url: '/change-pin'}]
 const leftItems = ['Contact', {name: 'Logout', onClick: () => {
         localStorage.removeItem('authToken')
         window.location.reload()
@@ -168,10 +168,10 @@ const carouselImagesValidator = (existingData, files) => {
 }
 const specialItems = {
     featured: {title: 'Edit Featured Section', subtitle: 'Edit Featured Section', submitText: 'Update'}, // nothing required
-    galleryimages: {title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
+    galleryimages: {allowDeleteAll: true, title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
     testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}]}, // required 2 tags: name, description. parser and deParser required
     servicethumbnails: {validator: serviceValidator, title: 'Edit Service Thumbnails', subtitle: 'Edit Services Offered thumbnails on homepage', submitText: 'Update', tags: [{key: 'serviceName', required: true}, {key: 'pin', required: true}]}, // required 1 tag
-    scrollframes: {title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update'}, // nothing required
+    scrollframes: {allowDeleteAll: true, title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update'}, // nothing required
     albumthumbnail: {dataKeys: ['logos'], preview: AlteredAlbum, title: 'Edit Album Page Thumbnail', subtitle: 'Edit Album Page Thumbnail Image', submitText: 'Update'}, // nothing required
     bottomimages: {validator: carouselImagesValidator, title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
     topimages: {validator: carouselImagesValidator, title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
@@ -268,9 +268,11 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
     }
     let specialItem = false
     let requiredRoles = ['user', 'admin']
+    let allowDeleteAll = true
     if (existingData && existingData.pin && specialItems[existingData.pin]) {
         specialItem = specialItems[existingData.pin]
         requiredRoles = specialItem.roles || requiredRoles
+        allowDeleteAll = specialItem && specialItem.allowDeleteAll
     }
 
     const roleMatch = requiredRoles.includes(role)
@@ -401,6 +403,7 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
         res = specialItem.validator(existingData, files)
     }
     const {valid: resValid, error} = res
+
     const children = <>
         {existingData && (
             <div>
@@ -545,6 +548,23 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
         }
     }
 
+    let actions = []
+    if (!(invalid || !showSpecialView)) {
+        actions.push({label: 'Preview', action: togglePreview})
+    }
+    const allDeleted = numFiles === 0
+    const toggleDeleteAll = () => {
+        setFiles(files.map(f => ({
+            ...f,
+            deleted: !allDeleted
+        })))
+        setExistingData({...existingData, images: existingData.images.map(f => ({...f, deleted: !allDeleted}))})
+    }
+    if (allowDeleteAll) {
+        actions.push({label: allDeleted ? 'Restore All' : 'Delete All', action: toggleDeleteAll})
+    }
+
+
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
@@ -554,7 +574,7 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
                     onSubmit={({pin, ...data}) => findAlbum({...data, pin: pinPrepend + pin})}
                     title={title} subTitle={subtitle} fields={[{key: 'pin', type: 'text', placeholder: 'Enter PIN'}]} />}
                 {existingData && (
-                    <SearchInput actions={invalid || !showSpecialView ? undefined : [{label: 'Preview', action: togglePreview}]}
+                    <SearchInput actions={actions}
                                  onSubmit={invalid ? undefined : onSubmit}
                                  submitText={submitText}
                                  initialValue={initialVal}

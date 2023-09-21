@@ -207,6 +207,47 @@ export function changeTags (req, res) {
 export function getCreds (req, res) {
     res.status(200).json(getImageKit(decodeURIComponent(req.query.pin).toLowerCase()).imageKit.getAuthenticationParameters())
 }
+export async function changePin  (req, res) {
+    try {
+        let {newPin, pin} = req.body
+        newPin = newPin.trim().toLowerCase()
+        pin = pin.trim().toLowerCase()
+        if (!pin || !newPin) {
+            throw new Error('Pin/New Pin Missing')
+        }
+
+        const folder = `/data1/${newPin}`
+        const originalImageKit = getImageKit(pin)
+        const newImageKit = getImageKit(newPin)
+        const timestamp = '.' + (new Date()).getTime()
+
+        const data = await handle(pin, true)
+        const data1 = await handle(newPin, true)
+        if (data1 && data1.images && data1.images.length) {
+            throw new Error('Pin exists')
+        }
+
+        let files = data.images || []
+        if (data.song) {
+            files = [...files, data.song]
+        }
+        files = files.map(file => {
+            const {url} = file
+            let {groups: {key, ext}} = url.match(/(?<key>(\d+|song))(\.(?<hash>[a-zA-Z0-9_\-]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+            return {...file, key, ext}
+        })
+
+        const result = await runBatch(files.map(f => {
+            return () => newImageKit.imageKit.upload({useUniqueFileName: false, fileName: `${f.key}${timestamp}.${f.ext}`, folder, file: f.url, tags: f.tags.length ? f.tags : null})
+        }))
+
+        const res2 = await originalImageKit.imageKit.bulkDeleteFiles(files.map(f => f.id))
+        res.status(200).json({done: true, result})
+    } catch (e) {
+        res.status(500).json({done: false, error: e.message})
+    }
+
+}
 export function renameFiles (req, res) {
     const {files, pin, hash} = req.body
 

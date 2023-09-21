@@ -10,7 +10,7 @@ import cs from 'classnames'
 import logo from '@/images/logo.png'
 import white from '@/images/white.webp'
 import {upload} from "@/utils/upload";
-const items = [{text: 'Home', url: '/'}, {text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
+const items = [{text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}, {text: 'Change Pin', url: '/change-pin'}]
 const leftItems = ['Contact', {name: 'Logout', onClick: () => {
         localStorage.removeItem('authToken')
         window.location.reload()

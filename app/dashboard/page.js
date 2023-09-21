@@ -4,7 +4,7 @@ import styles from './dashboard.module.css'
 import logo from '@/images/logo.png'
 import Footer from "@/components/Footer";
 import Login from "@/components/Login";
-const items = [{text: 'Home', url: '/'}, {text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}]
+const items = [{text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}, {text: 'Change Pin', url: '/change-pin'}]
 const leftItems = ['Contact', {name: 'Logout', onClick: () => {
         localStorage.removeItem('authToken')
         window.location.reload()
