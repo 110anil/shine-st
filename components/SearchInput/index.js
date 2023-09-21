@@ -75,7 +75,6 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                                     setFormData(key, undefined)
 
                                                     songRef && songRef.current && (songRef.current.value = '')
-                                                    console.log(songRef && songRef.current, songRef.current.value, songRef.current.files, 'rest')
                                                 }} data={formData[key]} />}
                                             </div>
 
