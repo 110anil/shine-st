@@ -18,7 +18,7 @@ const tagParser = ([, title, x, y] = []) => {
 export default function AlbumPage(props) {
     const {logoMap, images, onClose, preview} = props
     const close = {text: 'Close Preview', onClick: onClose}
-    let rightItems = [{text: 'Home', url: '/'}, {text: 'Albums', url: '/albums'}]
+    let rightItems = [{text: 'Albums', url: '/albums'}]
     if (onClose) {
         rightItems = [...rightItems, close]
     }
