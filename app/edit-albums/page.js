@@ -563,8 +563,11 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
                         ...(pinPrepend || specialItem ? [] : [
                             {key: 'song', type: 'song', allowReset: true, placeholder: 'Select Song', multiple: false, validator: () => true, onChange: e => {
                                     const f = e.target.files[0]
-                                    let [ext] = f.name.match(/\.[a-zA-Z0-9]+$/)
-                                    return {ext, file: f, objectUrl: URL.createObjectURL(f), key: 'song'}
+                                    if (f) {
+                                        let [ext] = f.name.match(/\.[a-zA-Z0-9]+$/)
+                                        return {ext, file: f, objectUrl: URL.createObjectURL(f), key: 'song'}
+                                    }
+                                    return undefined
                                 }}
                         ]),
                             {key: 'files', type: 'file', placeholder: 'Select Files', validator: () => true, onChange: (e) => {

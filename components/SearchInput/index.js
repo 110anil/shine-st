@@ -1,5 +1,5 @@
 'use client'
-import React, {useState} from 'react'
+import React, {useRef, useState} from 'react'
 import styles from './searchInput.module.css'
 import cs from 'classnames'
 const defaultValidator = (formData, fields) => {
@@ -8,7 +8,7 @@ const defaultValidator = (formData, fields) => {
     }).length === 0
 }
 
-const PlaySong = ({objectUrl, onChange,  url = objectUrl}) => {
+const PlaySong = ({onChange, data: {objectUrl,  url = objectUrl} = {}}) => {
     const [play, setPlay] = useState(false)
     return <div className={styles.musicCont}>
         <div onClick={() => setPlay(!play)} className={cs(styles.music, play ? styles.play : styles.pause)}><span />Play / Pause Selected Song
@@ -25,6 +25,7 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
     const setFormData = (key, value) => {
         setData({...formData, [key]: value})
     }
+    const songRef = useRef(null)
     const [btnState, setBtnState] = useState(null)
     const submit = () => {
         setBtnState('LOADING')
@@ -65,15 +66,17 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                     case 'song':
                                         return (
                                             <div className={styles.field} key={key}>
-                                                <input className={styles.fileInput} onChange={e => {
+                                                <input className={styles.fileInput} ref={songRef} onChange={e => {
                                                     const file = onChange(e)
                                                     setFormData(key, file)
                                                 }} id={key} type='file' accept="audio/*" placeholder={placeholder} multiple={multiple} />
                                                 <label htmlFor={key}>{placeholder}</label>
-                                                {formData[key] && <PlaySong onChange={(e) => {
+                                                {formData[key] && <PlaySong onChange={() => {
                                                     setFormData(key, undefined)
-                                                    e.target.files = undefined
-                                                }} {...formData[key]} />}
+
+                                                    songRef && songRef.current && (songRef.current.value = '')
+                                                    console.log(songRef && songRef.current, songRef.current.value, songRef.current.files, 'rest')
+                                                }} data={formData[key]} />}
                                             </div>
 
                                         )
