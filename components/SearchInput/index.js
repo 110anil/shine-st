@@ -80,7 +80,7 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
                                                 <input className={styles.fileInput} onChange={e => {
                                                     const files = onChange(e)
                                                     setFormData(key, files)
-                                                }} id={key} type='file' placeholder={placeholder} multiple={multiple} />
+                                                }} id={key} type='file'  accept="image/*" placeholder={placeholder} multiple={multiple} />
                                                 <label htmlFor={key}>{placeholder}</label>
                                             </div>
 
