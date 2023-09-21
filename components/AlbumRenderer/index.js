@@ -62,7 +62,7 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
                 <div className={cs(styles.music, play ? styles.play : styles.pause)} style={{
                     '--bg': `url('${musicAnimation.src}')`
                 }} onClick={() => toggleMusic(!play)}>
-                    {play && <audio ref={ref2} controls autoPlay loop preload>
+                    {false && <audio ref={ref2} controls autoPlay loop preload>
                         <source src={song} type="audio/mpeg"/>
                     </audio>}
                 </div>

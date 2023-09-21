@@ -140,13 +140,12 @@
     cursor: pointer;
     vertical-align: top;
 }
-.music:before {
+.music>span {
     width: 20px;
-    content: " ";
     height: 20px;
     background-position: 0 0;
     display: inline-block;
-    vertical-align: middle;
+    vertical-align: top;
     margin-right: 10px;
     background-image: url(./music_animation.gif);
 
@@ -156,19 +155,19 @@
     display: none;
 }
 
-.music.play:before {
+.music.play>span {
     background-position: 0 0;
 }
 
-.music.play:before:hover {
+.music.play>span:hover {
     background-position: 0 20px;
 }
 
-.music.pause:before {
+.music.pause>span {
     background-position: 0 20px;
 }
 
-.music.pause:before:hover {
+.music.pause>span:hover {
     background-position: 0 0;
 }
 

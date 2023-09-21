@@ -11,7 +11,7 @@ const defaultValidator = (formData, fields) => {
 const PlaySong = ({objectUrl, onChange,  url = objectUrl}) => {
     const [play, setPlay] = useState(false)
     return <div className={styles.musicCont}>
-        <div onClick={() => setPlay(!play)} className={cs(styles.music, play ? styles.play : styles.pause)}>Play / Pause Selected Song
+        <div onClick={() => setPlay(!play)} className={cs(styles.music, play ? styles.play : styles.pause)}><span />Play / Pause Selected Song
             {play && <audio controls autoPlay loop>
                 <source src={url} type="audio/mpeg" />
             </audio>}
