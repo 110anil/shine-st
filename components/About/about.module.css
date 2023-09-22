@@ -3,46 +3,9 @@
     background: linear-gradient(116.41deg,#fff -67.02%,#63f3fc 23.01%,#f48d0c 155.41%,#fed775 311.85%);
     box-shadow: 4px 4px 20px rgba(0,0,0,.25);
 }
-
 .container>div {
     width: 1250px;
     margin: 0 auto;
-}
-
-.title {
-    font-size: 38px;
-    line-height: 57px;
-    color: black;
-    margin-bottom: 10px;
-}
-
-.title b {
-    font-size: 48px;
-    display: block;
-}
-
-.subTitle {
-    font-size: 16px;
-    line-height: 27px;
-    color: black;
-    margin-bottom: 20px;
-}
-
-.textContainer {
-    display: inline-block;
-    vertical-align: middle;
-    width: 35%;
-}
-
-.rightContainer {
-    display: inline-block;
-    vertical-align: middle;
-    width: calc(65% - 50px);
-    margin-left: 50px;
-}
-
-.tileContainer {
-
 }
 
 .tile {
@@ -56,6 +19,73 @@
     cursor: pointer;
     box-shadow: 4px 4px 20px rgba(0,0,0,.25);
 }
+
+@media (min-width: 1101px) {
+    .textContainer {
+        display: inline-block;
+        vertical-align: middle;
+        width: 35%;
+    }
+    .rightContainer {
+        display: inline-block;
+        vertical-align: middle;
+        width: calc(65% - 50px);
+        margin-left: 50px;
+    }
+}
+
+.title {
+    font-size: 38px;
+    line-height: 57px;
+    color: black;
+    margin-bottom: 10px;
+}
+.title b {
+    font-size: 48px;
+    display: block;
+}
+
+.subTitle {
+    font-size: 16px;
+    line-height: 27px;
+    color: black;
+    margin-bottom: 20px;
+}
+@media (max-width: 1100px) {
+    .container {
+        padding: 40px 20px;
+    }
+
+    .container>div {
+        width: initial;
+    }
+
+    .rightContainer>div {
+        width: calc(100% + 20px);
+    }
+
+    .tile {
+        width: calc(50vw - 30px);
+        height: 200px !important;
+        margin: 0 20px 20px 0;
+    }
+
+    .title {
+        font-size: 30px;
+    }
+
+    .subTitle {
+        font-size: 14px;
+        text-align: justify;
+    }
+}
+
+
+
+
+
+
+
 .tile span {
 
     width: 100%;

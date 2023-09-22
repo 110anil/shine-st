@@ -7,6 +7,7 @@
     overflow: hidden;
 }
 
+
 .mapContainer {
     width: calc(50% - 20px);
     display: inline-block;
@@ -64,6 +65,43 @@
     color: black;
     margin-bottom: 20px;
 }
+
+@media (max-width: 1100px) {
+    .footerContainer {
+        padding: 40px 20px;
+    }
+    .footer {
+        width: initial;
+    }
+    .formContainer {
+        width: 100%;
+        display: block;
+        margin: 0;
+    }
+    .mapContainer {
+        width: initial;
+        display: block;
+    }
+    .contact {
+        margin-top: 40px !important;
+    }
+    .field input {
+        width: 100%;
+    }
+    .field {
+        width: calc(50% - 10px) !important;
+    }
+
+    .title {
+        font-size: 40px;
+    }
+
+    .subTitle {
+        font-size: 16px;
+    }
+}
+
+
 
 .field {
     border-bottom: 1px solid #0000004d;

@@ -44,6 +44,9 @@ const HEader = ({leftItems = defaultLeft, rightItems = defaultItems, activeTab =
                             )
                         })}
                     </ul>
+                    {pathname !== '/albums' && <div className={styles.album} onClick={() => {
+                        window.location.href = '/albums'
+                    }} />}
                 </div>
             </header>
     )

@@ -93,6 +93,48 @@
     cursor: pointer;
 }
 
+.logoContainer span {
+    height: 100px;
+    background-image: var(--bg);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center;
+    display: block;
+    width: 100%;
+}
+
+.album {display: none}
+@media (max-width: 1100px) {
+    .logoContainer div {
+        width: 107px;
+        height: 50px;
+    }
+    .logoContainer span {
+        height: 57px;
+    }
+    .header:after {
+        height: 50px;
+    }
+    .leftContainer, .rightContainer {
+        display: none;
+    }
+
+    .headerContainer {
+        justify-content: flex-end;
+    }
+    .album {
+        background-image: url(./icon.png);
+        background-size: 50%;
+        opacity: 0.8;
+        display: block;
+        cursor: pointer;
+        background-position: center;
+        height: 50px;
+        width: 50px;
+        background-repeat: no-repeat;
+    }
+}
+
 .logoContainer div:before {
     content: ' ';
     display: block;
@@ -120,12 +162,3 @@
     z-index: -1;
 }
 
-.logoContainer span {
-    height: 100px;
-    background-image: var(--bg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    display: block;
-    width: 100%;
-}

@@ -29,6 +29,24 @@
     height: 90vh;
     width: 100%;
 }
+
+@media (max-width: 1100px) {
+    .cont,.cont2,.cont3,.container {
+        height: 140vh;
+    }
+
+    .container {
+        grid-template-areas:
+    'a a b c c'
+    'd e b c c'
+    'f g g h i'
+    'j l l m n'
+    'k l l o p'
+    'k l l q p';
+    }
+
+}
+
 .preview>div>div:hover:before {
     z-index: 1;
     position: absolute;
@@ -55,6 +73,12 @@
     font-size: 30px;
     position: relative;
     overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+    .container>div {
+        padding: 8px;
+    }
 }
 
 

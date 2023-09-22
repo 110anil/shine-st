@@ -1,32 +1,6 @@
 import React from 'react'
 import styles from './about.module.css'
 import Carousel from '@/components/Carousel'
-import img1 from './img1.jpg'
-const images = [{
-    url: img1,
-    title: 'Weddings'
-}, {
-    url: img1,
-    title: 'Portraits'
-}, {
-    url: img1,
-    title: 'Pre Wedding'
-}, {
-    url: img1,
-    title: 'Couples'
-}, {
-    url: img1,
-    title: 'Films'
-}, {
-    url: img1,
-    title: 'Shoots'
-}, {
-    url: img1,
-    title: 'Babies'
-}, {
-    url: img1,
-    title: 'Commercials'
-}]
 
 const getChunks = (array) => {
     const arr = []
