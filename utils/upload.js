@@ -31,14 +31,15 @@ const account5 = {
     urlEndpoint: "https://ik.imagekit.io/110smile/"
 }
 
-const accounts = [account1, account2, account3, account4, account5]
+const map = [account1, account2, account3, account4, account5]
 
 const temp = {publicKey, urlEndpoint}
-const map = [temp, temp, temp, temp, temp]
+const accounts = [temp, temp, temp, temp, temp]
 
 const getImageKit = function (pin) {
     let index = 0
     if (pin) {
+        pin = pin.replace('/', '')
         index = parseInt(pin, 36) % 5
     }
     let obj = map[index]
