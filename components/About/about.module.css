@@ -1,6 +1,7 @@
 .container {
     padding: 60px;
-    background: linear-gradient(116.41deg,#fff -67.02%,#63f3fc 23.01%,#f48d0c 155.41%,#fed775 311.85%);
+    /*background: linear-gradient(116.41deg,#fff -67.02%,#63f3fc 23.01%,#f48d0c 155.41%,#fed775 311.85%);*/
+    background: linear-gradient(116.41deg,#000000 -67.02%,#8c172e 23.01%,#a21bb7 155.41%,#9b0938 311.85%);
     box-shadow: 4px 4px 20px rgba(0,0,0,.25);
 }
 .container>div {
