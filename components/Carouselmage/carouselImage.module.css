@@ -108,13 +108,13 @@
 
 .title {
     margin-bottom: 30px;
-    font-size: 60px;
+    font-size: 30px;
     font-weight: 300;
     color: #fff9;
 }
 
 .description {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 300;
     line-height: 30px;
     color: #fff9;
@@ -133,5 +133,13 @@
 
     .right .title, .right .description {
         text-align: left;
+    }
+
+    .title {
+        font-size: 60px;
+    }
+
+    .description {
+        font-size: 18px;
     }
 }
