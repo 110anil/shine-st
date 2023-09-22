@@ -9,6 +9,12 @@
     background-image: var(--background);
 }
 
+@supports (-webkit-touch-callout: none) {
+    .test {
+        background-attachment: initial;
+    }
+}
+
 .data {
     background: #0005;
     position: absolute;

@@ -238,3 +238,9 @@
 
     background-image: var(--background);
 }
+
+@supports (-webkit-touch-callout: none) {
+    .test {
+        background-attachment: initial;
+    }
+}
