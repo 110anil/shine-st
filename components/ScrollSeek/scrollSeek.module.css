@@ -21,7 +21,7 @@
     background-image: var(--background);
 }
 @supports (-webkit-touch-callout: none) {
-    .test {
+    .frame {
         background-attachment: initial;
     }
 }
