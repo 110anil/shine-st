@@ -331,22 +331,6 @@ const keys = {
         '-----END PUBLIC KEY-----\n',
 
     privateKey: process.env.RSA_KEY
-    // privateKey: '-----BEGIN PRIVATE KEY-----\n' +
-    //     'MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAK5ZGDv4+Y6ADYGu\n' +
-    //     'o4OYzjwwaH7Kp28oKnv6M9HpO4W4T86cXvZ135m3xw6g6w25fTPCm0L98mMilqOD\n' +
-    //     'oc7ToufB5D2AoCX6gCNMq3f92CtUSmJ7tAasArbgfpopL2MH0KN/fD+4YEtaDtiZ\n' +
-    //     'TD+2LT6kDCxpmFlCf6X0LI7M1ewfAgMBAAECgYBbMp17mXOot5DZGenMR1zxnPy7\n' +
-    //     '/fNxMJhwe2Mp1Q9elheg4qjF0MiilsAYBdKOPk2gipY+h6mHc6tKYut7zbZzGIPw\n' +
-    //     'wqDUmNnXg3hwGD//m8Dj4rVixBrus4Wiio0T3SPx30xUYWiq9SFi8Y54UJ58R471\n' +
-    //     'ckkA5TEI2DlXOK1WMQJBAOSKAetcscdzeKiq4p2nBRFcyC72H6Df73ICdCpYXRjl\n' +
-    //     'Ue5tapRtt799nQMZTTNj3Ok9IIdS9W58z0JEft3H7kkCQQDDTCOfWRI5xGJQTgME\n' +
-    //     'zTmt5izRpG8jd8UyAlHrRwVCcmEVKtqQXPk5xLyk0VK3bYt5SvzZfj9kT1KPRRs7\n' +
-    //     'd6cnAkEAkvh1l4i7A4ss0ztiFQSt66aBTkIVwP2CHQ2a6wh8hmAjOnO/EMkmW81K\n' +
-    //     'Rg3laeEU1iHrY1tkXrOBDhrCg5npkQJAS5k4nOFk3bm4eO+J2Zz7u+ZC6TAm2Wru\n' +
-    //     'iao+Pb4zOgJ+tCvviTyEOSmAAKkKxPiBqgUuFZ76OQE/qzgMD5wEtwJAHXxjuY4H\n' +
-    //     'X2CEgGt18w4q2mLK5NViIm7yrZjhEmjaZaP7RPq6aR4XQV+qOloXOwmytvt6PlCq\n' +
-    //     'vV1oOWwB+YHOqA==\n' +
-    //     '-----END PRIVATE KEY-----\n'
 }
 
 const createToken = ({username, password}) => {
