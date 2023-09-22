@@ -61,9 +61,14 @@
     background: #0005;
     color: white;
 }
+/*@keyframes marquee {*/
+/*    0% { left: 0; }*/
+/*    100% { left: -200%; }*/
+/*}*/
+
 @keyframes marquee {
-    0% { left: 0; }
-    100% { left: -200%; }
+    0% { transform: translateX(0) }
+    100% { transform: translateX(-200%) }
 }
 
 .container>div {
