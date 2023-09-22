@@ -549,10 +549,11 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
     }
 
     let actions = []
-    if (!(invalid || !showSpecialView)) {
+    const allDeleted = numFiles === 0
+    if (!(allDeleted || invalid || !showSpecialView)) {
         actions.push({label: 'Preview', action: togglePreview})
     }
-    const allDeleted = numFiles === 0
+
     const toggleDeleteAll = () => {
         setFiles(files.map(f => ({
             ...f,
