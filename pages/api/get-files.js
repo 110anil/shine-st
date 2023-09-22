@@ -254,10 +254,12 @@ export function renameFiles (req, res) {
 
     const rename = f => {
         return () => {
-            let headers = new Headers();
-            headers.set('Content-Type', 'application/json')
-            headers.set('Authorization', 'Basic ' + Buffer.from(privateKey + ":" + "").toString('base64'))
             const imageKit = getImageKit(pin.toLowerCase())
+            let headers = new Headers();
+
+            headers.set('Content-Type', 'application/json')
+            headers.set('Authorization', 'Basic ' + Buffer.from(imageKit.privateKey + ":" + "").toString('base64'))
+
             return fetch('https://api.imagekit.io/v1/files/rename', {
                 headers: headers,
                 method: 'PUT',
