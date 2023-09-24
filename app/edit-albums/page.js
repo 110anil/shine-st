@@ -4,8 +4,8 @@ import Footer from '@/components/Footer'
 import SearchInput from "@/components/SearchInput";
 import {useEffect, useState} from 'react'
 import styles from './uploadAlbums.module.css'
-import styles2 from '@/components/AlbumPageContainer/albums.module.css'
 import AlbumsRenderer from '@/components/AlbumRenderer';
+import Loader from "@/components/Loader";
 import AlbumPage from '@/components/AlbumPage';
 import PreviewTemp from '@/components/Preview';
 import Login from '@/components/Login';
@@ -569,7 +569,7 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
-            {urlPin && !existingData && <div className={styles2.loaderContainer}><div className={styles2.loader} /></div>}
+            {urlPin && !existingData && <Loader />}
             {roleMatch && <>
                 {!urlPin && <SearchInput
                     onSubmit={({pin, ...data}) => findAlbum({...data, pin: pinPrepend + pin})}

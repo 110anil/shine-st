@@ -2,7 +2,7 @@
 import React, {useEffect, useState} from 'react'
 import styles from './login.module.css'
 import SearchInput from "@/components/SearchInput";
-import styles2 from "@/components/AlbumPageContainer/albums.module.css";
+import Loader from "@/components/Loader";
 export default function Login ({component: Component}) {
     const [user, setUser] = useState(false)
     const [loading, setLoading] = useState(true)
@@ -35,7 +35,7 @@ export default function Login ({component: Component}) {
     }, [])
 
     if (loading) {
-        return <div className={styles2.loaderContainer}><div className={styles2.loader} /></div>
+        return <Loader />
     }
     if (user) {
         return <Component role={user.role} />

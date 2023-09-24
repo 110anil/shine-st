@@ -2,7 +2,7 @@
 import Home from '@/components/Home'
 import React, {useEffect, useState} from "react";
 import styles from './preview.module.css'
-import styles2 from "@/components/AlbumPageContainer/albums.module.css";
+import Loader from "@/components/Loader";
 export default function Preview ({modifiedData, keys, component: Component = Home, onClose}) {
     const [data, setData] = useState(null)
     const [loading, setLoading] = useState(true)
@@ -26,7 +26,7 @@ export default function Preview ({modifiedData, keys, component: Component = Hom
     }, [])
 
     if (loading) {
-        return <div className={styles2.loaderContainer}><div className={styles2.loader} /></div>
+        return <Loader />
     }
 
     return (
