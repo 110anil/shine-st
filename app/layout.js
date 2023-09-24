@@ -25,6 +25,7 @@ export default function RootLayout({ children }) {
         <meta name="mobile-web-app-capable" content="yes" />
         <meta property="og:url" content="//shinestudio.in/" />
         <meta name="twitter:url" content="//shinestudio.in/" />
+        <meta httpEquiv="ScreenOrientation" content="autoRotate:disabled" />
         <meta property="og:title" content={metadata.title} />
         <meta name="twitter:title" content={metadata.title} />
         <link type="image/png" rel="shortcut icon" href={favIcon.src} />
