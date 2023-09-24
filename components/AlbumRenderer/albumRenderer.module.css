@@ -18,10 +18,15 @@
     height: 50px;
 }
 
+.title {
+    font-size: 30px;
+    margin: 0 auto 40px;
+}
+
 .container.close>label {
     display: inline-block;
     position: absolute;
-    top: 20px;
+    top: 28px;
     right: 20px;
     width: 175px;
     height: 50px;
@@ -31,9 +36,36 @@
     font-size: 17px;
     cursor: pointer;
 }
-.title {
-    font-size: 30px;
-    margin: 0 auto 40px;
+
+@media (max-width: 1100px) {
+    .container {
+        padding: 20px;
+    }
+    .title {
+        margin-bottom: 20px;
+    }
+    .container.close > label {
+        top: 15px;
+    }
+    .container:before {
+        top: 13px;
+    }
+}
+
+.container:not(.landscape):before {
+    top: 23px;
+    left: 0;
+    width: 154px;
+    height: 40px;
+}
+
+.container:not(.landscape) .title {
+    font-size: 22px;
+    margin: 60px auto 40px;
+}
+.container:not(.landscape)>label {
+    width: 60px;
+    font-size: 14px;
 }
 
 .music {
@@ -57,14 +89,18 @@
     background-position: 0 0;
 }
 
-.music.play:hover {
-    background-position: 0 20px;
+
+@media (min-width: 1100px) {
+    .music.play:hover {
+        background-position: 0 20px;
+    }
+
+    .music.pause:hover {
+        background-position: 0 0;
+    }
 }
 
 .music.pause {
     background-position: 0 20px;
 }
 
-.music.pause:hover {
-    background-position: 0 0;
-}

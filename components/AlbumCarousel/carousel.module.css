@@ -10,7 +10,6 @@
     margin: 0 63px;
 }
 
-
 .carouselItem {
     margin: auto;
     width: var(--w);
@@ -145,7 +144,7 @@
     right: -103px;
 }
 
-.carouselControl:hover svg {
+.carousel:not(.mobile) .carouselControl:hover svg {
     transform: scale(120%);
 }
 
@@ -178,7 +177,7 @@
     font-size: 35px;
 }
 
-.carouselBullet:hover {
+.carousel:not(.mobile) .carouselBullet:hover {
     opacity: 1;
 }
 
@@ -194,6 +193,7 @@
     left: 50%;
     transform: translateX(-50%);
     opacity: 0.7;
+    z-index: 21;
 }
 
 .carouselBtns {
@@ -218,6 +218,7 @@
     overflow: hidden;
     position: relative;
     margin: 20px auto;
+    z-index: 20;
 }
 .dotsContainer {
     width: 80vw;
@@ -275,4 +276,62 @@
     background-position: center;
     background-size: contain;
     background-repeat: no-repeat;
+}
+
+.mobile .carouselInner {
+    width: 100%;
+    margin: 0;
+}
+
+.mobile .carouselControlNext {
+    right: -20px;
+    padding: 60px;
+}
+.mobile .carouselControlNext svg {
+    transform: translateX(55px);
+}
+.mobile .carouselControlPrev {
+    left: -20px;
+    padding: 60px;
+}
+.mobile .carouselControlPrev svg {
+    transform: translateX(55px);
+}
+.mobile .dotsContainer>div>div {
+    width: 30px;
+}
+
+.rotate {
+    position: absolute;
+    top: 40%;
+    font-weight: 300;
+    width: 80%;
+    left: 50%;
+    text-align: center;
+    transform: translateX(-50%) translateY(-50%);
+
+}
+
+.rotate b {
+    font-size: 28px;
+    line-height: 60px;
+    display: block;
+}
+@keyframes rotate {
+    0% { transform: rotate(90deg); }
+    100% { transform: rotate(00deg); }
+}
+.rotate:before {
+    animation: rotate .5s ease-in;
+    background-image: url(./rotate.png);
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center;
+    height: 200px;
+    width: 200px;
+    background-color: white;
+    border-radius: 20%;
+    content: ' ';
+    display: block;
+    margin: 0 auto 20px;
 }

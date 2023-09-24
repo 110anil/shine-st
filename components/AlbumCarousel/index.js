@@ -10,6 +10,7 @@ import play from './icons/play.png'
 import restart from './icons/restart.png'
 import thumb from './icons/thumb.png'
 import cs from 'classnames'
+import Modal from '@/components/Modal'
 
 function toggleFullScreen() {
     if (!document.fullscreenElement) {
@@ -19,7 +20,15 @@ function toggleFullScreen() {
     }
 }
 
-const Legends = ({children, onClick, active, dimensions: {h, w} = {}}) => {
+const Legends = ({isMobile, isPortrait, isLandscapeView, children, onClick, active, dimensions: {h, w} = {}}) => {
+
+    if (isMobile) {
+        const height = isPortrait ? 120 : 80
+            w = w * height / h
+            h = height
+    }
+
+
     const ref = useRef(null)
     const [width, setWidth] = useState(100)
     const [containerWidth, setContainerWidth] = useState(300)
@@ -50,13 +59,22 @@ const Legends = ({children, onClick, active, dimensions: {h, w} = {}}) => {
     // we want to show 12 dots
 
     let numDots = 12
+    if (!isLandscapeView && isMobile) {
+        numDots = 6
+    }
     if (numDots > children.length) {
         numDots = children.length
     }
     const factor = children.length / numDots // 3.3333
     const currentFactor = Math.floor(active / factor)
+    const map = {
+        200: 215,
+        105: 115,
+        80: 87,
+        120: 127
+    }
     const contStyles = {
-        height: `${h === 200 ? 215 : 115}px`
+        height: `${map[h]}px`
     }
     const legendStyles = {
         '--h': `${h + 6}px`,
@@ -98,7 +116,7 @@ const keyFunction = (active, setActive, images) => (e) => {
         setActive(value)
     }
 }
-const Carousel = ({images, keyboard = false, dimensions, windowDimensions, dimensions: {w = 1, h = 1} = {}, autoPlay = false, activeId = 2}) => {
+const Carousel = ({images, isPortrait, isLandscapeView = true, keyboard = false, dimensions, windowDimensions, dimensions: {w = 1, h = 1} = {}, autoPlay = false, activeId = 2}) => {
 
     const ref = useRef(null)
     const keyRef = useRef(null)
@@ -107,7 +125,8 @@ const Carousel = ({images, keyboard = false, dimensions, windowDimensions, dimen
     const [currentShow, setCurrentShown] = useState(active)
     const [transitionStatus, setTransitionStatus] = useState('ENDED')
     const [isAutoPlay, setAutoPlay] = useState(autoPlay)
-    const [isShowLegends, toggleLegends] = useState(false)
+    const [isShowLegends, toggleLegends] = useState(true)
+    const [showRotatePrompt, togglePrompt] = useState(true)
     const ratio = w / h
 
     const setActive = (id) => {
@@ -123,12 +142,38 @@ const Carousel = ({images, keyboard = false, dimensions, windowDimensions, dimen
 
     const {wH, wW} = windowDimensions
 
-    let height = (isShowLegends ? .55 : .75) * wH
-    let width = height * ratio
-    if (width >= wW - 206) {
-        width = wW - 206
-        height = width / ratio
+    const isMobile = wW <= 1100
+
+    let height, width
+    if (isMobile) {
+        // if (isLandscapeView) {
+            height = wH - 40 - 56 // padding and title height are subtracted
+
+            width = height * ratio
+            const f = isLandscapeView ? 50 : 40
+            if (width >= wW - f) {
+                width = wW - f
+                height = width / ratio
+            }
+        // } else {
+        //     height = (isShowLegends ? .55 : .75) * wH
+        //     width = height * ratio
+        //     if (width >= wW - 206) {
+        //         width = wW - 206
+        //         height = width / ratio
+        //     }
+        // }
+    } else {
+        height = (isShowLegends ? .55 : .75) * wH
+        width = height * ratio
+        if (width >= wW - 206) {
+            width = wW - 206
+            height = width / ratio
+        }
     }
+
+
+
 
     const btns = [{icon: thumb, text: 'legends', onClick: () => toggleLegends(!isShowLegends)},{
         icon: isAutoPlay ? pause : play,
@@ -138,6 +183,11 @@ const Carousel = ({images, keyboard = false, dimensions, windowDimensions, dimen
             setActive(0)
         }}]
 
+    useEffect(() => {
+            setTimeout(() => {
+                togglePrompt(false)
+            }, 3000)
+    }, [])
     useEffect(() => {
         ref.current && clearTimeout(ref.current)
         ref.current = null
@@ -215,10 +265,13 @@ const Carousel = ({images, keyboard = false, dimensions, windowDimensions, dimen
     flip1 = flip1 ? `url('${flip1}')` : '__'
     flip2 = flip2 ? `url('${flip2}')` : '__'
 
+    if (showRotatePrompt && !isPortrait && !isLandscapeView && isMobile) {
+        return <Modal><div className={styles.rotate}><b>Rotate your device</b>for a better experience</div></Modal>
+    }
     const children = images.map(img => <div className={styles.legendImage} style={{'--bg': `url('${img.url || img}')`}} key={img.url || img} />)
     return (
 
-        <div className={styles.carousel}>
+        <div className={cs(styles.carousel, isMobile && styles.mobile, isLandscapeView && styles.landscape)}>
             <div className={styles.carouselInner}>
                 <div className={cs(styles.carouselItem)} style={{
                     '--h': `${height}px`,
@@ -238,7 +291,7 @@ const Carousel = ({images, keyboard = false, dimensions, windowDimensions, dimen
                 </div>
                         <label onClick={() => active > 0 && setActive(active - 1)} className={classNames(styles.carouselControl, styles.carouselControlPrev, active > 0 && styles.carouselControlActive)}><ControlArrow /></label>
                         <label onClick={() => active < images.length - 1 && setActive(active + 1)} className={classNames(styles.carouselControl, styles.carouselControlNext, active < images.length - 1 && styles.carouselControlActive)}><ControlArrow /></label>
-                {isShowLegends && <Legends dimensions={dimensions} active={active} onClick={setActive}>{children}</Legends>}
+                {isShowLegends && <Legends isPortrait={isPortrait} isMobile={isMobile} isLandscapeView={isLandscapeView} dimensions={dimensions} active={active} onClick={setActive}>{children}</Legends>}
                     <ol className={styles.btns}>
                         {btns.map(({text, icon, onClick}, index) => {
                             return (

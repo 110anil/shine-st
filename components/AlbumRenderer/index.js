@@ -56,28 +56,6 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
             ref3 && ref3.current && window.removeEventListener('resize', ref3.current)
             ref3.current = null
         }
-        // if (screen && screen.orientation && screen.orientation.addEventListener) {
-        //     ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
-        //     ref3.current = () => {
-        //         setDimensions({wH: window.innerHeight, wW: window.innerWidth})
-        //     }
-        //     screen.orientation.addEventListener("change", ref3.current)
-        // } else if (typeof window.onorientationchange !== 'undefined'){
-        //     ref3 && ref3.current && window.removeEventListener('change', ref3.current)
-        //     ref3.current = () => {
-        //         setDimensions({wH: window.innerHeight, wW: window.innerWidth})
-        //     }
-        //     window.addEventListener('orientationchange', ref3.current)
-        // }
-        // return () => {
-        //     if (screen && screen.orientation && screen.orientation.addEventListener) {
-        //         ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
-        //         ref3.current = null
-        //     } else if (typeof window.onorientationchange !== 'undefined'){
-        //         ref3 && ref3.current && window.removeEventListener('change', ref3.current)
-        //         ref3.current = null
-        //     }
-        // }
     }, [])
 
     if (!data) {
@@ -89,14 +67,16 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
     const h1 = isPortrait ? 200 : 105
     const w1 = Math.round(2 * h1 * width / height) // 200 * 600 / 900
 
+    const isLandscapeView = windowDimensions.wW / windowDimensions.wH > 1
+
     return (
         <Modal>
-            <div className={cs(styles.container, styles.close)} style={{
+            <div className={cs(styles.container, styles.close, isLandscapeView && styles.landscape)} style={{
                 '--bg': `url('${logoMap.whiteLogo}')`
             }}>
                 <label onClick={onClose}>Close</label>
                 <div className={styles.title}>{title}</div>
-                <Carousel windowDimensions={windowDimensions} keyboard showControls dimensions={{h: h1, w: w1}} images={images} />
+                <Carousel isPortrait={isPortrait} isLandscapeView={isLandscapeView} windowDimensions={windowDimensions} keyboard showControls dimensions={{h: h1, w: w1}} images={images} />
                 <div className={cs(styles.music, play ? styles.play : styles.pause)} style={{
                     '--bg': `url('${musicAnimation.src}')`
                 }} onClick={() => toggleMusic(!play)}>
