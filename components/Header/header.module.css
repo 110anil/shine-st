@@ -94,13 +94,13 @@
 }
 
 .logoContainer span {
-    height: 100px;
+    height: 90px;
     background-image: var(--bg);
     background-repeat: no-repeat;
     background-size: contain;
     background-position: center;
     display: block;
-    width: 100%;
+    width: 72%;
 }
 
 .album {display: none}
@@ -110,7 +110,8 @@
         height: 50px;
     }
     .logoContainer span {
-        height: 57px;
+        height: 49px;
+        width: 90%;
     }
     .header:after {
         height: 50px;

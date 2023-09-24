@@ -17,8 +17,6 @@ export default function RootLayout({ children }) {
  return (
     <html lang="en">
     <head>
-        {/*<title>Shine Studio | Wedding Photography | Maternity Photography | Pre-wedding Shoots | Faridabad | Delhi NCR | Gurgaon | Gurugram | Noida</title>*/}
-        {/*<meta name='description' content='For all your photography and videography needs' />*/}
         <meta name="fragment" content="!" />
         <meta name="http-equiv" content="text/plain; charset=x-user-defined" />
         <meta name="google" content="notranslate" />
