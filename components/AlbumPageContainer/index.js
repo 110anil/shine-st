@@ -2,7 +2,7 @@
 import AlbumsRenderer from '@/components/AlbumRenderer';
 import {useEffect, useState} from "react";
 import { useParams } from 'next/navigation'
-import styles from './albums.module.css'
+import Loader from '@/components/Loader'
 
 export default function AlbumPage({logoMap}) {
     const [dta, setData] = useState([])
@@ -25,7 +25,7 @@ export default function AlbumPage({logoMap}) {
     }, [params.id])
     return (
         <>
-            {state !== 'LOADED' && <div className={styles.loaderContainer}><div className={styles.loader} /></div>}
+            {state !== 'LOADED' && <Loader />}
             {state === 'LOADED' && <AlbumsRenderer logoMap={logoMap} title={dta.tags[0]} images={dta.images} song={dta.song} height={dta.height} width={dta.width} />}
         </>
     )

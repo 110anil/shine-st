@@ -98,7 +98,7 @@ const keyFunction = (active, setActive, images) => (e) => {
         setActive(value)
     }
 }
-const Carousel = ({images, keyboard = false, dimensions, dimensions: {w = 1, h = 1} = {}, autoPlay = false, activeId = 2}) => {
+const Carousel = ({images, keyboard = false, dimensions, windowDimensions, dimensions: {w = 1, h = 1} = {}, autoPlay = false, activeId = 2}) => {
 
     const ref = useRef(null)
     const keyRef = useRef(null)
@@ -108,7 +108,6 @@ const Carousel = ({images, keyboard = false, dimensions, dimensions: {w = 1, h =
     const [transitionStatus, setTransitionStatus] = useState('ENDED')
     const [isAutoPlay, setAutoPlay] = useState(autoPlay)
     const [isShowLegends, toggleLegends] = useState(false)
-    const [windowDimensions, setDimensions] = useState({wH: 1, wW: 1})
     const ratio = w / h
 
     const setActive = (id) => {
@@ -121,10 +120,6 @@ const Carousel = ({images, keyboard = false, dimensions, dimensions: {w = 1, h =
         setFlips([...pendingFlips, {to: id, direction: id < prevTo ? 'LEFT' : 'RIGHT'}])
         setAct(id)
     }
-
-    useEffect(() => {
-        setDimensions({wH: window.innerHeight, wW: window.innerWidth})
-    }, [])
 
     const {wH, wW} = windowDimensions
 

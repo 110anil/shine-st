@@ -11,8 +11,10 @@ const defaultOnClose = () => window.location.href = '/albums'
 const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width: w, logoMap, onClose = defaultOnClose}) => {
     const [data, setData] = useState(h && w ? {height: h, width: w} : null)
     const [play, toggleMusic] = useState(true)
+    const [windowDimensions, setDimensions] = useState({wH: 1, wW: 1})
     const ref = useRef(null)
     const ref2 = useRef(null)
+    const ref3 = useRef(null)
     const [firstImage] = images || []
     const firstImageUrl = firstImage.url || firstImage
 
@@ -42,6 +44,33 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
         }
     }, [])
 
+    useEffect(() => {
+        setDimensions({wH: window.innerHeight, wW: window.innerWidth})
+
+        if (screen && screen.orientation && screen.orientation.addEventListener) {
+            ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
+            ref3.current = () => {
+                setDimensions({wH: window.innerHeight, wW: window.innerWidth})
+            }
+            screen.orientation.addEventListener("change", ref3.current)
+        } else if (typeof window.onorientationchange !== 'undefined'){
+            ref3 && ref3.current && window.removeEventListener('change', ref3.current)
+            ref3.current = () => {
+                setDimensions({wH: window.innerHeight, wW: window.innerWidth})
+            }
+            window.addEventListener('orientationchange', ref3.current)
+        }
+        return () => {
+            if (screen && screen.orientation && screen.orientation.addEventListener) {
+                ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
+                ref3.current = null
+            } else if (typeof window.onorientationchange !== 'undefined'){
+                ref3 && ref3.current && window.removeEventListener('change', ref3.current)
+                ref3.current = null
+            }
+        }
+    }, [])
+
     if (!data) {
         return <Loader />
     }
@@ -58,7 +87,7 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
             }}>
                 <label onClick={onClose}>Close</label>
                 <div className={styles.title}>{title}</div>
-                <Carousel keyboard showControls dimensions={{h: h1, w: w1}} images={images} />
+                <Carousel windowDimensions={windowDimensions} keyboard showControls dimensions={{h: h1, w: w1}} images={images} />
                 <div className={cs(styles.music, play ? styles.play : styles.pause)} style={{
                     '--bg': `url('${musicAnimation.src}')`
                 }} onClick={() => toggleMusic(!play)}>
