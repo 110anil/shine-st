@@ -47,28 +47,37 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
     useEffect(() => {
         setDimensions({wH: window.innerHeight, wW: window.innerWidth})
 
-        if (screen && screen.orientation && screen.orientation.addEventListener) {
-            ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
-            ref3.current = () => {
-                setDimensions({wH: window.innerHeight, wW: window.innerWidth})
-            }
-            screen.orientation.addEventListener("change", ref3.current)
-        } else if (typeof window.onorientationchange !== 'undefined'){
-            ref3 && ref3.current && window.removeEventListener('change', ref3.current)
-            ref3.current = () => {
-                setDimensions({wH: window.innerHeight, wW: window.innerWidth})
-            }
-            window.addEventListener('orientationchange', ref3.current)
+        ref3 && ref3.current && window.removeEventListener('resize', ref3.current)
+        ref3.current = () => {
+            setDimensions({wH: window.innerHeight, wW: window.innerWidth})
         }
+        window.addEventListener('resize', ref3.current)
         return () => {
-            if (screen && screen.orientation && screen.orientation.addEventListener) {
-                ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
-                ref3.current = null
-            } else if (typeof window.onorientationchange !== 'undefined'){
-                ref3 && ref3.current && window.removeEventListener('change', ref3.current)
-                ref3.current = null
-            }
+            ref3 && ref3.current && window.removeEventListener('resize', ref3.current)
+            ref3.current = null
         }
+        // if (screen && screen.orientation && screen.orientation.addEventListener) {
+        //     ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
+        //     ref3.current = () => {
+        //         setDimensions({wH: window.innerHeight, wW: window.innerWidth})
+        //     }
+        //     screen.orientation.addEventListener("change", ref3.current)
+        // } else if (typeof window.onorientationchange !== 'undefined'){
+        //     ref3 && ref3.current && window.removeEventListener('change', ref3.current)
+        //     ref3.current = () => {
+        //         setDimensions({wH: window.innerHeight, wW: window.innerWidth})
+        //     }
+        //     window.addEventListener('orientationchange', ref3.current)
+        // }
+        // return () => {
+        //     if (screen && screen.orientation && screen.orientation.addEventListener) {
+        //         ref3 && ref3.current && screen.orientation.removeEventListener('change', ref3.current)
+        //         ref3.current = null
+        //     } else if (typeof window.onorientationchange !== 'undefined'){
+        //         ref3 && ref3.current && window.removeEventListener('change', ref3.current)
+        //         ref3.current = null
+        //     }
+        // }
     }, [])
 
     if (!data) {
