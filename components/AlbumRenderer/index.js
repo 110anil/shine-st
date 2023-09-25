@@ -45,14 +45,17 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
     }, [])
 
     useEffect(() => {
+        console.log('use effect triggered', window.innerHeight, window.innerWidth)
         setDimensions({wH: window.innerHeight, wW: window.innerWidth})
 
         ref3 && ref3.current && window.removeEventListener('resize', ref3.current)
         ref3.current = () => {
+            console.log('event triggered', window.innerHeight, window.innerWidth)
             setDimensions({wH: window.innerHeight, wW: window.innerWidth})
         }
         window.addEventListener('resize', ref3.current)
         return () => {
+            console.log('unmoun triggered', window.innerHeight, window.innerWidth)
             ref3 && ref3.current && window.removeEventListener('resize', ref3.current)
             ref3.current = null
         }

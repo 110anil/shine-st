@@ -233,7 +233,7 @@ const Carousel = ({images, isPortrait, isLandscapeView = true, keyboard = false,
         pendingFlips.length && setFlips(pending)
     }
 
-    console.log(pendingFlips, transitionStatus, currentShow, 'sdfsd45345345')
+    // console.log(pendingFlips, transitionStatus, currentShow, 'sdfsd45345345')
 
     let prev = images[currentShow]
     let next = images[currentShow]
