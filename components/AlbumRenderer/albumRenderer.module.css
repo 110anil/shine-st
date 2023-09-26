@@ -53,7 +53,6 @@
 }
 
 .container:not(.landscape):before {
-    top: 23px;
     left: 0;
     width: 154px;
     height: 40px;
@@ -66,6 +65,25 @@
 .container:not(.landscape)>label {
     width: 60px;
     font-size: 14px;
+}
+
+@media (max-width: 1100px) {
+    .container.landscape .title {
+        font-size: 16px;
+        margin-bottom: 12px;
+
+    }
+
+    .container.landscape .close {
+        height: 30px;
+        line-height: 30px;
+        font-size: 14px;
+        width: initial;
+    }
+    .container.landscape:before {
+        width: 93px;
+        height: 30px;
+    }
 }
 
 .music {

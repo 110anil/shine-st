@@ -147,7 +147,7 @@ const Carousel = ({images, isPortrait, isLandscapeView = true, keyboard = false,
     let height, width
     if (isMobile) {
         // if (isLandscapeView) {
-            height = wH - 40 - 56 // padding and title height are subtracted
+            height = wH - 30 - 31 // padding and title height are subtracted
 
             width = height * ratio
             const f = isLandscapeView ? 50 : 40
