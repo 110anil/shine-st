@@ -35,7 +35,7 @@ This project uses the following []
   - Login with github
   - Attached Email: `smile@shinestudio.in`
   - Vercel automatically pulls code from github. new deployments are automatically trigged when code is pushed to github on branch 'main'.
-  - in the `settings` tab, you'll find `Environment Variables` which are same as the  file `.env.local`. These hold API credenti
+  - in the `settings` tab, you'll find `Environment Variables` which are same as the  file `.env.local`. These hold API keys for Mailsend, ImageKit
 - Godaddy
   - Login Email: `smile@shinestudio.in`
   - Godaddy hosts the domain & all the DNS records
