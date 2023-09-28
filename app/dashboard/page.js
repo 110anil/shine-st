@@ -4,6 +4,8 @@ import styles from './dashboard.module.css'
 import logo from '@/images/logo.png'
 import Footer from "@/components/Footer";
 import Login from "@/components/Login";
+import cs from 'classnames'
+import {Fragment, useEffect, useState} from "react";
 const items = [{text: 'Dashboard', url: '/dashboard'}, {text: 'Albums', url: '/albums'}, {text: 'Upload', url: '/upload-albums'}, {text: 'Find', url: '/find-albums'}, {text: 'Edit', url: '/edit-albums'}, {text: 'Change Pin', url: '/change-pin'}]
 const leftItems = ['Contact', {name: 'Logout', onClick: () => {
         localStorage.removeItem('authToken')
@@ -25,10 +27,24 @@ const defaultActions = [
     {key: 'usermanagement', text: 'Update Users'}
 ]
 function Admin({actions = defaultActions, title = 'Update Website', subTitle = 'Choose a section to update'}) {
+    const [usageData, setUsageData] = useState([])
+    useEffect(() => {
+        fetch('/api/get-usage', {method: 'POST', headers: {'Content-Type': 'application/json'}}).then(res => res.json()).then((data) => {
+            if (data.done && data.result && data.result.length) {
+                setUsageData(data.result)
+                return
+            }
+            setUsageData([])
+        }).catch(() => {
+            setUsageData([])
+        })
+    }, [])
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
             <div className={styles.container}>
+
+
                 <div>
                     <div className={styles.title}>{title}</div>
                     <div>
@@ -39,6 +55,28 @@ function Admin({actions = defaultActions, title = 'Update Website', subTitle = '
                     </div>
                 </div>
             </div>
+            {usageData.length > 0 && <div className={cs(styles.container, styles.padZero)}>
+                <div>
+                    <div className={styles.title}>ImageKit Usage Stats</div>
+                    <div>
+                        <div className={styles.textContainer}>
+                            <div className={styles.name}>This data shows usage for current month. Max limit per account: 20GB Bandwidth, 20GB Storage</div>
+                            <div className={styles.table}>
+                                <div>Account Number</div>
+                                <div>Bandwidth</div>
+                                <div>Storage</div>
+                                {usageData.map(({bandwidthBytes, mediaLibraryStorageBytes}, index) => {
+                                    return <Fragment key={'account' + index}>
+                                        <div>Account {index+1}</div>
+                                        <div>{(bandwidthBytes/1024/1024/1024).toFixed(3)} GB</div>
+                                        <div>{(mediaLibraryStorageBytes/1024/1024/1024).toFixed(3)} GB</div>
+                                    </Fragment>
+                                })}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>}
             <div id='Contact'><Footer /></div>
         </>
     )

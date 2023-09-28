@@ -276,6 +276,36 @@ export function renameFiles (req, res) {
     return runBatch(files.map(rename)).then(response => res.status(200).json({done: true, response}))
 }
 
+export function getUsage (req, res) {
+    const a = new Date()
+    const year = a.getFullYear()
+    let endDate = a.getDate().toString().padStart(2, '0')
+    let startDate = '01'
+    const month = (a.getMonth() + 1).toString().padStart(2, '0')
+
+    startDate = [year, month, startDate].join('-')
+    endDate = [year, month, endDate].join('-')
+
+    Promise.all(initAll().map(({privateKey}) => {
+        let headers = new Headers();
+
+        headers.set('Content-Type', 'application/json')
+        headers.set('Authorization', 'Basic ' + Buffer.from(privateKey + ":" + "").toString('base64'))
+
+        return fetch('https://api.imagekit.io/v1/accounts/usage?'+ new URLSearchParams({
+            startDate,
+            endDate,
+        }), {
+            headers: headers,
+            method: 'GET'
+        }).then(res => res.json())
+    })).then(r => {
+        res.status(200).json({done: true, result: r})
+    }).catch(e => {
+        res.status(500).json({done: false, error: e.message})
+    })
+}
+
 export function findAlbum (req, res) {
     let title = req.body.title
     title = title.split(/( & | and | )/i)
