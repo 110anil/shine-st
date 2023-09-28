@@ -30,7 +30,7 @@ function FindAlbum() {
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
-            <SearchInput onSubmit={obSubmit} fields={[{key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}]}>
+            <SearchInput keyboard onSubmit={obSubmit} fields={[{key: 'title', type: 'text', placeholder: 'Enter Album Title / Couple Name'}]}>
                 {data.length > 0 && (
                     <div className={styles.table}>
                             <div>Album Title</div>

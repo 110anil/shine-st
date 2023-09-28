@@ -1,5 +1,5 @@
 'use client'
-import React, {useRef, useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import styles from './searchInput.module.css'
 import cs from 'classnames'
 const defaultValidator = (formData, fields) => {
@@ -20,12 +20,14 @@ const PlaySong = ({onChange, data: {objectUrl,  url = objectUrl} = {}}) => {
     </div>
 }
 
-const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums', subTitle = 'Find Your Albums', submitText = 'Find It', children, onSubmit, fields = [], validator = defaultValidator}) => {
+const AlbumsInput = ({keyboard = false, actions = [], initialValue = {}, title = 'Find Your Albums', subTitle = 'Find Your Albums', submitText = 'Find It', children, onSubmit, fields = [], validator = defaultValidator}) => {
     const [formData, setData] = useState(initialValue)
     const setFormData = (key, value) => {
         setData({...formData, [key]: value})
     }
     const songRef = useRef(null)
+    const keyRef = useRef(null)
+    const currentSubmit = useRef(null)
     const [btnState, setBtnState] = useState(null)
     const submit = () => {
         setBtnState('LOADING')
@@ -37,6 +39,27 @@ const AlbumsInput = ({actions = [], initialValue = {}, title = 'Find Your Albums
             alert(e.message || 'Something went wrong')
         })
     }
+
+    currentSubmit.current = submit
+
+    const keyFunc = useCallback((e) => {
+        if (e && e.key === 'Enter') {
+            currentSubmit.current && currentSubmit.current()
+        }
+    }, [])
+    useEffect(() => {
+        keyRef.current && window.removeEventListener('keydown', keyRef.current)
+        keyRef.current = null
+        if (keyboard) {
+            keyRef.current = keyFunc
+            window.addEventListener('keydown', keyRef.current)
+        }
+        return () => {
+            keyRef.current && window.removeEventListener('keydown', keyRef.current)
+            keyRef.current = null
+        }
+    }, [keyboard])
+
     return (
         <>
             <div className={styles.container}>

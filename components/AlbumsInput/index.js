@@ -1,13 +1,34 @@
 'use client'
-import React, {useState} from 'react'
+import React, {useCallback, useEffect, useRef, useState} from 'react'
 import styles from './albumsInput.module.css'
+
 const AlbumsInput = ({albumthumbnail: [albumthumbnail] = {}}) => {
     const [pin, setPin] = useState('')
+    const keyRef = useRef(null)
+    const currentRef = useRef(null)
+
     const [btnState, setBtnState] = useState(null)
     const onSubmit = () => {
         setBtnState('LOADING')
         window.location.href = `/albums/${pin.trim()}`
     }
+    currentRef.current = onSubmit
+    const keyFunc = useCallback((e) => {
+        if (e && e.key === 'Enter') {
+            currentRef.current && currentRef.current()
+        }
+    }, [])
+    useEffect(() => {
+        keyRef.current && window.removeEventListener('keydown', keyRef.current)
+        keyRef.current = null
+            keyRef.current = keyFunc
+            window.addEventListener('keydown', keyRef.current)
+        return () => {
+            keyRef.current && window.removeEventListener('keydown', keyRef.current)
+            keyRef.current = null
+        }
+    }, [])
+
     return (
         <>
             <div className={styles.container}>
