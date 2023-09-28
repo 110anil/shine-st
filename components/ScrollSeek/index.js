@@ -2,7 +2,7 @@
 import styles from './scrollSeek.module.css'
 import React, {useRef, useState} from 'react'
 import {useOnScreen} from "@/utils/useOnScreen"
-import frames from './photoFrames'
+import frames from './photoFrames2'
 import cs from 'classnames'
 const numFrames = frames.length
 
