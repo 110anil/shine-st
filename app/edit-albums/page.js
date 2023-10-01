@@ -85,6 +85,61 @@ const serviceValidator = (existingData, files) => {
     }
     return {valid: true}
 }
+const frameValidator = (existingData, files) => {
+    const {images = []} = existingData || {}
+    let error = false
+    let bgError = false
+    let bgError2 = false
+    images.filter(x => !x.deleted).forEach(({tempTags: {timesToRepeat, backgroundPosition} = {}}) => {
+        if (timesToRepeat) {
+            timesToRepeat = parseInt(timesToRepeat)
+            if (isNaN(timesToRepeat) || timesToRepeat > 50 || timesToRepeat < 1) {
+                error = true
+            }
+        }
+        if (backgroundPosition && !timesToRepeat) {
+            bgError = true
+        }
+        if (backgroundPosition) {
+            backgroundPosition = parseInt(backgroundPosition)
+            if (isNaN(backgroundPosition) || backgroundPosition < 0 || backgroundPosition > 80) {
+                bgError2 = true
+            }
+        }
+
+    })
+    files.filter(x => !x.deleted).forEach(({tempTags: {timesToRepeat, backgroundPosition} = {}}) => {
+        if (timesToRepeat) {
+            timesToRepeat = parseInt(timesToRepeat)
+            if (isNaN(timesToRepeat) || timesToRepeat > 50 || timesToRepeat < 1) {
+                error = true
+            }
+        }
+        if (backgroundPosition && !timesToRepeat) {
+            bgError = true
+        }
+        if (backgroundPosition) {
+            backgroundPosition = parseInt(backgroundPosition)
+            if (isNaN(backgroundPosition) || backgroundPosition < 0 || backgroundPosition > 80) {
+                bgError2 = true
+            }
+        }
+    })
+    const errors = []
+    if (error) {
+        errors.push(`'timeToRepeat' must be a positive number less than or equal to 50`)
+    }
+    if (bgError) {
+        errors.push(`BackgroundPosition can only be added when timesToRepeat is added`)
+    }
+    if (bgError2) {
+        errors.push(`BackgroundPosition must be number between 0 to 80`)
+    }
+    if (errors.length) {
+        return {valid: false, error: errors.join('.\n')}
+    }
+    return {valid: true}
+}
 const userValidator = (existingData, files) => {
     const {images = []} = existingData || {}
     const usernames = {}
@@ -159,7 +214,7 @@ const carouselImagesValidator = (existingData, files) => {
         errors.push(`textLocation is mandatory when entering title or description. textLocation must be one of ${locations.join(', ')}.`)
     }
     if (descFail) {
-        errors.push(`Decription can only be added along with title.`)
+        errors.push(`Description can only be added along with title.`)
     }
     if (errors.length) {
         return {valid: false, error: errors.join(' ')}
@@ -171,7 +226,7 @@ const specialItems = {
     galleryimages: {allowDeleteAll: true, title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
     testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}]}, // required 2 tags: name, description. parser and deParser required
     servicethumbnails: {validator: serviceValidator, title: 'Edit Service Thumbnails', subtitle: 'Edit Services Offered thumbnails on homepage', submitText: 'Update', tags: [{key: 'serviceName', required: true}, {key: 'pin', required: true}]}, // required 1 tag
-    scrollframes: {allowDeleteAll: true, title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update'}, // nothing required
+    scrollframes: {validator: frameValidator, allowDeleteAll: true, title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update', tags: [{key: 'timesToRepeat', required: true, maxLength: 2}, {key: 'backgroundPosition', required: true, maxLength: 3}]}, // nothing required
     albumthumbnail: {dataKeys: ['logos'], preview: AlteredAlbum, title: 'Edit Album Page Thumbnail', subtitle: 'Edit Album Page Thumbnail Image', submitText: 'Update'}, // nothing required
     bottomimages: {validator: carouselImagesValidator, title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
     topimages: {validator: carouselImagesValidator, title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
@@ -273,6 +328,7 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
         specialItem = specialItems[existingData.pin]
         requiredRoles = specialItem.roles || requiredRoles
         allowDeleteAll = specialItem && specialItem.allowDeleteAll
+        tags = []
     }
 
     const roleMatch = requiredRoles.includes(role)
@@ -534,9 +590,9 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
         {duplicateNewNameFound && <div className={styles.duplicateName}>Duplicate names found. Names must be unique</div>}
         {!numeric && <div className={styles.duplicateName}>Names of the files must be numeric</div>}
         {!resValid && error && <div className={styles.duplicateName}>{error}</div>}
-        {numFiles > 50 && <div className={styles.duplicateName}>Maximum 50 files are allowed</div>}
+        {numFiles > 150 && <div className={styles.duplicateName}>Maximum 150 files are allowed</div>}
     </>
-    const invalid = numFiles > 50 || !resValid || duplicateNewNameFound || !numeric
+    const invalid = numFiles > 150 || !resValid || duplicateNewNameFound || !numeric
     let initialVal = {}
     if (existingData) {
         initialVal = tags.reduce((res, item, index) => {

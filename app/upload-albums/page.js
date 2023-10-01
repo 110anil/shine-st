@@ -115,11 +115,11 @@ function Albums({PreviewComponent: PreviewComp = AlbumsRenderer, initialValue: d
                 })}
                 {duplicateNewNameFound && <div className={styles.duplicateName}>Duplicate names found. Names must be unique</div>}
                 {!numeric && <div className={styles.duplicateName}>Names of the files must be numeric</div>}
-                {numFiles > 50 && <div className={styles.duplicateName}>Maximum 50 files are allowed</div>}
+                {numFiles > 150 && <div className={styles.duplicateName}>Maximum 150 files are allowed</div>}
             </div>
         )}
     </>
-    const invalid = numFiles > 50 || duplicateNewNameFound || !numeric
+    const invalid = numFiles > 150 || duplicateNewNameFound || !numeric
     let t = []
     if (showPreview) {
         t = tags.map(({key}) => {

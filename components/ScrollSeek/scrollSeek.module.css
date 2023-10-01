@@ -41,7 +41,7 @@
 
 @media (max-width: 1100px) {
     .frame {
-        background-position: 34% 0;
+        background-position: var(--bgLeft) 0;
     }
 }
 .activeFrame {

@@ -31,17 +31,17 @@ export const createObserver = (options) => {
 
 export const useOnScreen = (ref, options, cb) => {
     const {observe, unobserve} = useMemo(() => {
-        if (typeof window !== 'undefined') {
+        if (typeof window !== 'undefined' && options) {
             return createObserver(options)
         }
         return {}
-    }, [])
+    }, [typeof options])
 
     useEffect(() => {
         if (ref.current) {
-            observe(ref.current, cb)
+            observe && observe(ref.current, e => cb(e, options))
         }
-        return () => ref.current && unobserve(ref.current)
+        return () => ref.current && unobserve && unobserve(ref.current)
     }, [ref.current])
 
 }

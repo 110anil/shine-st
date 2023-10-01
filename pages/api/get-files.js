@@ -4,6 +4,7 @@ const endpoint = "https://ik.imagekit.io/shinest/"
 const privateKey = process.env.TEMP_KEY;
 const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I=";
 import {runBatch} from "@/utils/runBatch";
+import {makeChunks} from "@/utils/makeChunks";
 const account1 = {
     email: "smilegarg110@gmail.com",
     publicKey: "public_/ByX9Tb7/wjtatzTatuaH9115Zw=",
@@ -182,7 +183,8 @@ export default function handler (req, res) {
 
 export function deleteFiles (req, res) {
     const {files, pin} = req.body
-    getImageKit(pin.toLowerCase()).imageKit.bulkDeleteFiles(files.map(x => x.fileId))
+    const imageKit = getImageKit(pin.toLowerCase()).imageKit
+    Promise.all(makeChunks(files.map(x => x.fileId), 50).map(x => imageKit.bulkDeleteFiles(x)))
         .then((response) => {
             res.status(200).json({done: true, response})
         })
@@ -193,15 +195,19 @@ export function deleteFiles (req, res) {
 export function changeTitle (req, res) {
     const {fileIds, tags = [], oldTags = [], pin} = req.body
     let promise = Promise.resolve()
+    const imageKit = getImageKit(pin.toLowerCase()).imageKit
+    const files = makeChunks(fileIds, 50)
     if (oldTags.length) {
-        promise = getImageKit(pin.toLowerCase()).imageKit.bulkRemoveTags(fileIds, oldTags)
+        promise = Promise.all(files.map(x => imageKit.bulkRemoveTags(x, oldTags)))
     }
-    promise.then(() => getImageKit(pin.toLowerCase()).imageKit.bulkAddTags(fileIds, tags)).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
+
+    promise.then(() => Promise.all(files.map(x => imageKit.bulkAddTags(x, tags)))).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
 }
 export function changeTags (req, res) {
     const {files, pin} = req.body
+    const imageKit = getImageKit(pin.toLowerCase()).imageKit
     return runBatch(files.map(f => {
-        return () => getImageKit(pin.toLowerCase()).imageKit.updateFileDetails(f.fileId, {tags: f.newTags.length ? f.newTags : null})
+        return () => imageKit.updateFileDetails(f.fileId, {tags: f.newTags.length ? f.newTags : null})
     })).then(result => res.status(200).json({done: true, result})).catch(error => res.status(500).json({done: false, error}))
 
 }
@@ -242,7 +248,7 @@ export async function changePin  (req, res) {
             return () => newImageKit.imageKit.upload({useUniqueFileName: false, fileName: `${f.key}${timestamp}.${f.ext}`, folder, file: f.url, tags: f.tags.length ? f.tags : null})
         }))
 
-        const res2 = await originalImageKit.imageKit.bulkDeleteFiles(files.map(f => f.id))
+        const res2 = await Promise.all(makeChunks(files.map(f => f.id), 50).map(x => originalImageKit.imageKit.bulkDeleteFiles(x)))
         res.status(200).json({done: true, result})
     } catch (e) {
         res.status(500).json({done: false, error: e.message})
