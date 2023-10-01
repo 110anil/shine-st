@@ -44,6 +44,7 @@ const ScrollSeek = () => {
 
     return (
         <div ref={ref} className={styles.frameContainer}>
+            <div className={styles.bg} />
             {frames.map(((frame, index) => <div style={{
                 '--background': `url('${frame.src}')`
             }} className={cs(styles.frame, active === index && styles.activeFrame)} key={`${frame.src}-${index}`} />))}
