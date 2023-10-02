@@ -18,5 +18,5 @@ export default function ServiceList () {
     if (!data) {
         return  <Loader />
     }
-    return <Dashboard actions={data} title={'Edit Service Page Images'} subTitle={'Choose a service to update'} />
+    return <Dashboard showUsage={false} actions={data} title={'Edit Service Page Images'} subTitle={'Choose a service to update'} />
 }

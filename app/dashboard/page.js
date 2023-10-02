@@ -24,12 +24,13 @@ const defaultActions = [
     {key: 'testimonials', text: 'Reviews / Testimonials'},
     {key: 'bottomimages', text: 'Images in the bottom section'},
     {key: 'albumthumbnail', text: 'Thumbnail on the Albums page'},
-    {key: 'usermanagement', text: 'Update Users'}
+    {key: 'usermanagement', text: 'Update Users'},
+    {key: 'services_upload', text: 'Upload New service page', url: '/upload-services'}
 ]
-function Admin({actions = defaultActions, title = 'Update Website', subTitle = 'Choose a section to update'}) {
+function Admin({showUsage = true, actions = defaultActions, title = 'Update Website', subTitle = 'Choose a section to update'}) {
     const [usageData, setUsageData] = useState([])
     useEffect(() => {
-        fetch('/api/get-usage', {method: 'POST', headers: {'Content-Type': 'application/json'}}).then(res => res.json()).then((data) => {
+        showUsage && fetch('/api/get-usage', {method: 'POST', headers: {'Content-Type': 'application/json'}}).then(res => res.json()).then((data) => {
             if (data.done && data.result && data.result.length) {
                 setUsageData(data.result)
                 return
@@ -38,7 +39,7 @@ function Admin({actions = defaultActions, title = 'Update Website', subTitle = '
         }).catch(() => {
             setUsageData([])
         })
-    }, [])
+    }, [showUsage])
     return (
         <>
             <Header logoMap={{mainLogo: logo.src}} leftItems={leftItems} rightItems={items} showLeft={false} />
@@ -55,7 +56,7 @@ function Admin({actions = defaultActions, title = 'Update Website', subTitle = '
                     </div>
                 </div>
             </div>
-            {usageData.length > 0 && <div className={cs(styles.container, styles.padZero)}>
+            {showUsage && usageData.length > 0 && <div className={cs(styles.container, styles.padZero)}>
                 <div>
                     <div className={styles.title}>ImageKit Usage Stats</div>
                     <div>
@@ -82,8 +83,8 @@ function Admin({actions = defaultActions, title = 'Update Website', subTitle = '
     )
 }
 
-export default function AdminPage ({actions, subTitle, title}) {
-    const comp = () => <Admin actions={actions} title={title} subTitle={subTitle} />
+export default function AdminPage ({actions, subTitle, title, showUsage}) {
+    const comp = () => <Admin actions={actions} showUsage={showUsage} title={title} subTitle={subTitle} />
     return <Login component={comp} />
 }
 

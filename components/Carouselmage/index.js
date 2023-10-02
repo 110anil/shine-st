@@ -1,5 +1,4 @@
 import styles from "./carouselImage.module.css";
-// import styles from './carouselImage1.module.css'
 import cs from 'classnames'
 const locationMap = {
     top: styles.top,
@@ -10,13 +9,14 @@ const locationMap = {
     center: styles.center
 }
 
-const defaultTagParser = ([title, description, location] = []) => ({title, description, location})
+const defaultTagParser = ([title, description, location, bgLeft = 50] = []) => ({title, description, location, bgLeft})
 export default function CarouselImage ({data, tagParser = defaultTagParser, firstFold = true}) {
     const {url} = data
-    const {title, description, location = 'right'} = tagParser(data.tags)
+    const {title, description, location = 'right', bgLeft} = tagParser(data.tags)
     return (
             <div className={styles.test} style={{
-                '--background': `url('${url}')`
+                '--background': `url('${url}')`,
+                '--bgLeft': `${bgLeft}%`
             }}  key={url}>
                 {(title || description) &&
                     <div className={cs(styles.data, location && locationMap[location], firstFold && styles.firstFold)}>

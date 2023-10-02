@@ -17,8 +17,8 @@ let options = {
     threshold: 0.7
 }
 
-const tagParser = ([location, title, description] = []) => {
-    return {title, description, location}
+const tagParser = ([location, bgLeft, title, description] = []) => {
+    return {title, bgLeft, description, location}
 }
 
 export default function Home({preview = false, logoMap, topimages, bottomimages, scrollframes, servicethumbnails, featured, testimonials, galleryimages, rightItems}) {
