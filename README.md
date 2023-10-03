@@ -66,3 +66,13 @@ This project uses the following []
 - Edit album(www.shinestudio.in/edit-albums)
 - Find album(www.shinestudio.in/find-albums)
 - Change album PIN(www.shinestudio.in/change-pin)
+- Create frames from video for scroll controlled video section (www.shinestudio.in/create-frames)
+
+
+## How to create a scroll controlled video
+- If required, remove background from the video using: https://www.media.io/remove-video-background-online.html
+- once you have the final video goto: www.shinestudio.in/create-frames to create the frames. frames will be automatically downloaded
+- goto www.shinestudio.in/edit-albums/scrollframes and upload the downloaded frames (3.75 seconds video creates 94 frames at 25 FPS. of that first 31 were used in the first cut, with first frame repeated 10 times, 2nd frame repeated 10 times, 3rd frame repeated 5 times. and then each frame once till frame 31)
+- set `backgroundPosition` to a value between 0-80 only the first image. this is only useful in mobile view. it shifts the video to left by the `backgroundPosition`% value that you enter
+- preview the changes by clicking on preview button
+- to preview the changes in mobile view, resize the window to decrease it's width to 380px
