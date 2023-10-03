@@ -227,7 +227,7 @@ const specialItems = {
     galleryimages: {allowDeleteAll: true, title: 'Edit Gallery Images', subtitle: 'Edit Gallery Images', submitText: 'Update'}, // nothing required
     testimonials: {title: 'Edit Testimonials', subtitle: 'Edit Testimonials', submitText: 'Update', tags: [{key: 'name', required: true, maxLength: 30}, {key: 'description', required: true}]}, // required 2 tags: name, description. parser and deParser required
     servicethumbnails: {validator: serviceValidator, title: 'Edit Service Thumbnails', subtitle: 'Edit Services Offered thumbnails on homepage', submitText: 'Update', tags: [{key: 'serviceName', required: true}, {key: 'pin', required: true}]}, // required 1 tag
-    scrollframes: {validator: frameValidator, allowDeleteAll: true, title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update', tags: [{key: 'timesToRepeat', required: true, maxLength: 2}, {key: 'backgroundPosition', required: true, maxLength: 3}]}, // nothing required
+    scrollframes: {compress: 0, validator: frameValidator, allowDeleteAll: true, title: 'Edit Scroll Controlled Video', subtitle: 'Edit Scroll Controlled Video', submitText: 'Update', tags: [{key: 'timesToRepeat', required: true, maxLength: 2}, {key: 'backgroundPosition', required: true, maxLength: 3}]}, // nothing required
     albumthumbnail: {dataKeys: ['logos'], preview: AlteredAlbum, title: 'Edit Album Page Thumbnail', subtitle: 'Edit Album Page Thumbnail Image', submitText: 'Update'}, // nothing required
     bottomimages: {validator: carouselImagesValidator, title: 'Edit Images in bottom section', subtitle: 'Edit Images in bottom section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'backgroundPosition',  required: true,  placeholder: 'Background Position (Number between 0 - 50)'}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
     topimages: {validator: carouselImagesValidator, title: 'Edit Images in top section', subtitle: 'Edit Images in top section', submitText: 'Update', tags: [{key: 'textLocation',  required: false}, {key: 'backgroundPosition',  required: true,  placeholder: 'Background Position (Number between 0 - 50)'}, {key: 'title', required: false}, {key: 'description',  required: false}]}, // optional tag
@@ -325,8 +325,10 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
     let specialItem = false
     let requiredRoles = ['user', 'admin']
     let allowDeleteAll = true
+    let compress = 0.9
     if (existingData && existingData.pin && specialItems[existingData.pin]) {
         specialItem = specialItems[existingData.pin]
+        compress = specialItem.compress !== undefined ? specialItem.compress : compress
         requiredRoles = specialItem.roles || requiredRoles
         allowDeleteAll = specialItem && specialItem.allowDeleteAll
         tags = []
@@ -371,7 +373,7 @@ function Edit({PreviewComponent, role = 'user', pinPrepend = '', tags = defaultT
     }
 
     const uploadFilesAndUpdateTags = async (files, {tags, pin}) => {
-        return upload(files, {tags, pin})
+        return upload(files, {tags, pin, quality: compress})
     }
 
 

@@ -1,0 +1,28 @@
+.cont {
+   margin: 40px auto;
+    width: 1200px;
+    text-align: center;
+}
+
+.cont input {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+.cont h2 {
+    margin-bottom: 40px;
+}
+
+.cont button {
+    display: block;
+}
+
+.cont ul {
+    text-align: left;
+    margin: 40px auto;
+    font-size: 14px;
+    list-style-type: disc;
+    width: 1000px;
+    line-height: 1.6;
+}

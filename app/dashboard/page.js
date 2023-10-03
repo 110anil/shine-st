@@ -25,7 +25,8 @@ const defaultActions = [
     {key: 'bottomimages', text: 'Images in the bottom section'},
     {key: 'albumthumbnail', text: 'Thumbnail on the Albums page'},
     {key: 'usermanagement', text: 'Update Users'},
-    {key: 'services_upload', text: 'Upload New service page', url: '/upload-services'}
+    {key: 'services_upload', text: 'Upload New service page', url: '/upload-services'},
+    {key: 'create_frames', text: 'Create Frames for Scroll Video', url: '/create-frames'}
 ]
 function Admin({showUsage = true, actions = defaultActions, title = 'Update Website', subTitle = 'Choose a section to update'}) {
     const [usageData, setUsageData] = useState([])

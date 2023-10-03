@@ -3,8 +3,8 @@ import {runBatch} from "@/utils/runBatch";
 
 let imageKit
 
-const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I="
-const urlEndpoint = "https://ik.imagekit.io/shinest"
+// const publicKey = "public_OhjxwkIeAE/RJZt2J3fCav5kl4I="
+// const urlEndpoint = "https://ik.imagekit.io/shinest"
 
 const account1 = {
     publicKey: "public_/ByX9Tb7/wjtatzTatuaH9115Zw=",
@@ -33,8 +33,8 @@ const account5 = {
 
 const map = [account1, account2, account3, account4, account5]
 
-const temp = {publicKey, urlEndpoint}
-const accounts = [temp, temp, temp, temp, temp]
+// const temp = {publicKey, urlEndpoint}
+// const accounts = [temp, temp, temp, temp, temp]
 
 const getImageKit = function (pin) {
     let index = 0
@@ -54,16 +54,44 @@ const getImageKit = function (pin) {
     return obj.imageKit
 }
 
-export function upload(files, {tags = [], pin}) {
+const compress = ({objectUrl, file, timestamp, key, ext}, quality = 0.9) => {
+    if (file.type && file.type.includes('image/') && !file.type.includes('gif') && quality > 0) {
+        return new Promise((r) => {
+            const img = new Image()
+            img.onload = async function () {
+                const {height, width} = this
+                let canvas = document.createElement('canvas');
+                canvas.width =  width;
+                canvas.height = height;
+                let context = canvas.getContext('2d');
+                context.drawImage(img, 0, 0, width, height);
+                const blob = await new Promise((resolve) =>
+                    canvas.toBlob(resolve, 'image/webp', quality)
+                );
+                const f = new File([blob], `${key}${ext}`, { type: "image/webp" })
+                r(f.size >= file.size ? file : f)
+            }
+            img.src = objectUrl
+        })
+    } else {
+        return Promise.resolve(file)
+    }
+
+}
+
+export function upload(files, {tags = [], pin, quality}) {
     pin = pin.toLowerCase()
     const timestamp = '.' + (new Date()).getTime()
-    return runBatch(files.map(({file, ext, key, newTags = []}) => {
-        return () => getImageKit(pin).upload({
-            file,
-            tags: newTags.length ? newTags : (tags.length ? tags : undefined),
-            folder: `/data1/${pin}/`,
-            useUniqueFileName: false,
-            fileName: `${key}${timestamp}${ext}`
-        })
+    return runBatch(files.map((f) => {
+        const {ext, key, newTags = []} = f
+        return () => {
+            return compress(f, quality).then(file => getImageKit(pin).upload({
+                file,
+                tags: newTags.length ? newTags : (tags.length ? tags : undefined),
+                folder: `/data1/${pin}/`,
+                useUniqueFileName: false,
+                fileName: `${key}${timestamp}${ext}`
+            }))
+        }
     }))
 }
