@@ -1,5 +1,5 @@
 'use client'
-import Carousel from "@/components/AlbumCarousel";
+import Carousel from "@/components/AlbumCarousel2";
 import Modal from "@/components/Modal";
 import cs from 'classnames'
 import styles from './albumRenderer.module.css'
