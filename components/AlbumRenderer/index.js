@@ -11,7 +11,7 @@ const defaultOnClose = () => window.location.href = '/albums'
 const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width: w, logoMap, onClose = defaultOnClose}) => {
     const [data, setData] = useState(h && w ? {height: h, width: w} : null)
     const [play, toggleMusic] = useState(true)
-    const [windowDimensions, setDimensions] = useState({wH: 1, wW: 1})
+    const [windowDimensions, setDimensions] = useState(null)
     const ref = useRef(null)
     const ref2 = useRef(null)
     const ref3 = useRef(null)
@@ -27,6 +27,10 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
             img.src = firstImageUrl
         }
     }, [h, w, firstImageUrl])
+
+    useEffect(() => {
+        import('@/components/AlbumCarousel2/turn/jquery.min.1.7').then(() => import('@/components/AlbumCarousel2/turn/turn.min'))
+    }, [])
 
     useEffect(() => {
         ref && ref.current && document.body.removeEventListener('click', ref.current)
@@ -58,7 +62,7 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
         }
     }, [])
 
-    if (!data) {
+    if (!data || !windowDimensions) {
         return <Loader />
     }
     const {height, width} = data

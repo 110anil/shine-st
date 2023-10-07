@@ -204,9 +204,7 @@ const Carousel = ({images, isPortrait, isLandscapeView = true, keyboard = false,
         }
     }, [keyboard, images.length, active])
 
-    useEffect(() => {
-        import('./turn/jquery.min.1.7').then(() => import('./turn/turn.min'))
-    }, [])
+
 
     useEffect(() => {
         turnRef && turnRef.current && turnRef.current.turn('size', width, height)
@@ -214,7 +212,7 @@ const Carousel = ({images, isPortrait, isLandscapeView = true, keyboard = false,
 
     useEffect(() => {
         if (carouselRef && carouselRef.current) {
-            carouselRef.current.innerHTML = [...images.map((img, index) => {
+            carouselRef.current.innerHTML = `<div id="carousel">${[...images.map((img, index) => {
                 let prev = `<div class="${cs(styles.prev, styles.image)}"
                                   style="--bg: ${index === 0 ? '__' : `url('${img.url || img}')`}"></div>`
                 if (index === 0) {
@@ -227,45 +225,42 @@ const Carousel = ({images, isPortrait, isLandscapeView = true, keyboard = false,
                 return `
                       ${prev}${next}  
                     `
-            }), `<div class="${cs(styles.prev, styles.image)}" style="--bg: __"></div>`].join('')
-            import('./turn/jquery.min.1.7').then(() => import('./turn/turn.min')).then(() => {
-                turnRef.current = $('#carousel')
-                turnRef.current.turn({
-                    width: width,
-                    height: height,
-                    elevation: 50,
-                    page: 2 * active + 1,
-                    gradients: true,
-                    when: {
-                        turning: (_, page) => {
-                            console.log(page, Math.floor(page / 2))
-                            setAct(Math.floor(page / 2))
+            }), `<div class="${cs(styles.prev, styles.image)}" style="--bg: __"></div>`].join('')}</div>`
+            import('@/components/AlbumCarousel2/turn/jquery.min.1.7').then(() => import('@/components/AlbumCarousel2/turn/turn.min'))
+                .then(() => {
+                    turnRef.current = $('#carousel')
+                    turnRef.current.turn({
+                        width: width,
+                        height: height,
+                        elevation: 50,
+                        page: 2 * active + 1,
+                        gradients: true,
+                        when: {
+                            turning: (_, page) => {
+                                setAct(Math.floor(page / 2))
+                            }
                         }
-                    }
-                });
+                    });
+                })
 
-            })
         }
     }, [carouselRef.current, images.length])
 
-
-    if (showRotatePrompt && !isPortrait && !isLandscapeView && isMobile) {
-        return <Modal><div className={styles.rotate}><b>Rotate your device</b>for a better experience</div></Modal>
-    }
     const children = images.map(img => <div className={styles.legendImage} style={{'--bg': `url('${img.url || img}')`}} key={img.url || img} />)
     return (
 
-        <div className={cs(styles.carousel, isMobile && styles.mobile)}>
-            <div className={styles.carouselInner}>
-                <div className={cs(styles.cont1, active === 0 && styles.shift, active === images.length - 1 && styles.shiftRight)}>
-                    <div className={cs(styles.carouselItem)} ref={carouselRef} id={'carousel'} style={{
-                        '--h': `${height}px`,
-                        '--w': `${width}px`,
-                    }} />
-                </div>
-                        <label onClick={() => active > 0 && setActive(active - 1)} className={classNames(styles.carouselControl, styles.carouselControlPrev, active > 0 && styles.carouselControlActive)}><ControlArrow /></label>
-                        <label onClick={() => active < images.length - 1 && setActive(active + 1)} className={classNames(styles.carouselControl, styles.carouselControlNext, active < images.length - 1 && styles.carouselControlActive)}><ControlArrow /></label>
-                {isShowLegends && <Legends isPortrait={isPortrait} isMobile={isMobile} isLandscapeView={isLandscapeView} dimensions={dimensions} active={active} onClick={setActive}>{children}</Legends>}
+        <>
+            <div className={cs(styles.carousel, isMobile && styles.mobile)}>
+                <div className={styles.carouselInner}>
+                    <div className={cs(styles.cont1, active === 0 && styles.shift, active === images.length - 1 && styles.shiftRight)}>
+                        <div className={cs(styles.carouselItem)} ref={carouselRef} style={{
+                            '--h': `${height}px`,
+                            '--w': `${width}px`,
+                        }} />
+                    </div>
+                    <label onClick={() => active > 0 && setActive(active - 1)} className={classNames(styles.carouselControl, styles.carouselControlPrev, active > 0 && styles.carouselControlActive)}><ControlArrow /></label>
+                    <label onClick={() => active < images.length - 1 && setActive(active + 1)} className={classNames(styles.carouselControl, styles.carouselControlNext, active < images.length - 1 && styles.carouselControlActive)}><ControlArrow /></label>
+                    {isShowLegends && <Legends isPortrait={isPortrait} isMobile={isMobile} isLandscapeView={isLandscapeView} dimensions={dimensions} active={active} onClick={setActive}>{children}</Legends>}
                     <ol className={styles.btns}>
                         {btns.map(({text, icon, onClick}, index) => {
                             return (
@@ -275,8 +270,10 @@ const Carousel = ({images, isPortrait, isLandscapeView = true, keyboard = false,
                             )
                         })}
                     </ol>
+                </div>
             </div>
-        </div>
+            {showRotatePrompt && !isPortrait && !isLandscapeView && isMobile && <Modal><div className={styles.rotate}><b>Rotate your device</b>for a better experience</div></Modal>}
+        </>
     )
 }
 
