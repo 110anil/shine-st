@@ -35,7 +35,7 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
     useEffect(() => {
         ref && ref.current && document.body.removeEventListener('click', ref.current)
         ref.current = null
-        if (play && ref2 && ref2.current) {
+        if (play) {
             ref.current = function () {
                 ref2 && ref2.current && ref2.current.play()
             }
