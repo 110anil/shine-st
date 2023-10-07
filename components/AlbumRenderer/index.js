@@ -33,17 +33,29 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
     }, [])
 
     useEffect(() => {
-        ref && ref.current && document.body.removeEventListener('click', ref.current)
+        if (ref && ref.current) {
+            document.body.removeEventListener('click', ref.current)
+            document.body.removeEventListener('keydown', ref.current)
+        }
         ref.current = null
         if (play) {
             ref.current = function () {
                 ref2 && ref2.current && ref2.current.play()
+                if (ref && ref.current) {
+                    document.body.removeEventListener('click', ref.current)
+                    document.body.removeEventListener('keydown', ref.current)
+                    ref.current = null
+                }
             }
             document.body.addEventListener("click", ref.current)
+            document.body.addEventListener("keydown", ref.current)
         }
 
         return () => {
-            ref && ref.current && document.body.removeEventListener('click', ref.current)
+            if (ref && ref.current) {
+                document.body.removeEventListener('click', ref.current)
+                document.body.removeEventListener('keydown', ref.current)
+            }
             ref.current = null
         }
     }, [])
