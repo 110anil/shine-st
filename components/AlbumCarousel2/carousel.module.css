@@ -145,7 +145,7 @@
     overflow: hidden;
     position: relative;
     margin: 20px auto;
-    z-index: 20;
+    z-index: -1;
 }
 .dotsContainer {
     width: 80vw;
