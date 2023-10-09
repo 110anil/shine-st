@@ -1,5 +1,5 @@
 'use client'
-import Carousel from "@/components/AlbumCarousel";
+import Carousel from "@/components/AlbumCarousel2";
 import Modal from "@/components/Modal";
 import cs from 'classnames'
 import styles from './albumRenderer.module.css'
@@ -11,7 +11,7 @@ const defaultOnClose = () => window.location.href = '/albums'
 const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width: w, logoMap, onClose = defaultOnClose}) => {
     const [data, setData] = useState(h && w ? {height: h, width: w} : null)
     const [play, toggleMusic] = useState(true)
-    const [windowDimensions, setDimensions] = useState({wH: 1, wW: 1})
+    const [windowDimensions, setDimensions] = useState(null)
     const ref = useRef(null)
     const ref2 = useRef(null)
     const ref3 = useRef(null)
@@ -29,17 +29,33 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
     }, [h, w, firstImageUrl])
 
     useEffect(() => {
-        ref && ref.current && document.body.removeEventListener('click', ref.current)
+        import('@/components/AlbumCarousel2/turn/jquery.min.1.7').then(() => import('@/components/AlbumCarousel2/turn/turn.min'))
+    }, [])
+
+    useEffect(() => {
+        if (ref && ref.current) {
+            document.body.removeEventListener('click', ref.current)
+            document.body.removeEventListener('keydown', ref.current)
+        }
         ref.current = null
-        if (play && ref2 && ref2.current) {
+        if (play) {
             ref.current = function () {
                 ref2 && ref2.current && ref2.current.play()
+                if (ref && ref.current) {
+                    document.body.removeEventListener('click', ref.current)
+                    document.body.removeEventListener('keydown', ref.current)
+                    ref.current = null
+                }
             }
             document.body.addEventListener("click", ref.current)
+            document.body.addEventListener("keydown", ref.current)
         }
 
         return () => {
-            ref && ref.current && document.body.removeEventListener('click', ref.current)
+            if (ref && ref.current) {
+                document.body.removeEventListener('click', ref.current)
+                document.body.removeEventListener('keydown', ref.current)
+            }
             ref.current = null
         }
     }, [])
@@ -58,7 +74,7 @@ const AlbumRenderer = ({title, song = defaultSong, images = [], height: h, width
         }
     }, [])
 
-    if (!data) {
+    if (!data || !windowDimensions) {
         return <Loader />
     }
     const {height, width} = data
