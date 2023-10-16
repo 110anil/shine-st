@@ -121,9 +121,9 @@ const handle = (pin, meta) => {
             if (back) {
                 imgs.push(back)
             }
-            const [{width, height, tags} = {}] = imgs
+            const {width, height, tags} = imgs[1] || imgs[0] || {}
             const t = (tags || []).filter(tag => !['front', 'back'].includes(tag))
-            r({song, done: true, width, height, images: imgs.map(x => meta ? ({url: x.url, id: x.fileId, tags: x.tags ? x.tags : []}) : x.url), tags: t})
+            r({song, done: true, width: (width || 0) / 2, height, images: imgs.map(x => meta ? ({url: x.url, id: x.fileId, tags: x.tags ? x.tags : []}) : x.url), tags: t})
         })
     })
 }
