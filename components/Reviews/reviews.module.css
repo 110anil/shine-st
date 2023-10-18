@@ -1,5 +1,6 @@
 .container {
     padding: 120px;
+    background-color: #1e071d;
 
 }
 
@@ -29,7 +30,7 @@
     width: 45%;
     display: inline-block;
     vertical-align: top;
-    height: 375px;
+    height: 385px;
     background-image: var(--background);
     background-position: 50% 40%;
     background-size: cover;
@@ -39,13 +40,29 @@
     width: calc(55% - 40px);
     display: inline-block;
     vertical-align: top;
-    border-radius: 4px;
     margin-left: 40px;
     padding: 44px 44px 52px 40px;
+    border-radius: 22px;
     position: relative;
     height: 375px;
     border: 1px solid transparent;
-    background: linear-gradient(#191919,#191919) padding-box,linear-gradient(45deg,#444,#222,transparent) border-box;
+    box-shadow: inset 0 13.8675px 27.735px 27.735px rgba(0,0,0,.1);
+    background: linear-gradient(344.58deg,#37123666 33.92%,#42274166 87.18%);
+}
+.textContainer:before {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 1.5px;
+    width: 100%;
+    height: 100%;
+    border-radius: 22px;
+    display: block;
+    -webkit-mask-composite: xor;
+    content: ' ';
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);
+    background: linear-gradient(162.69deg,#f953a3 -39.9%,hsla(0,0%,100%,0) 62.49%);
 }
 
 .content {
@@ -59,7 +76,7 @@
 }
 @media (max-width: 1100px) {
     .container {
-        padding: 0 20px 60px;
+        padding: 60px 20px;
     }
     .container>div {
         width: initial;
@@ -93,8 +110,25 @@
 
 .review {
     min-height: 375px;
+    position: relative;
+    padding-top: 20px;
 }
 
+.textContainer:after {
+    display: inline-block;
+    z-index: 1;
+    position: absolute;
+    top: -25px;
+    right: 20px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 70px;
+    width: 70px;
+    content: ' ';
+
+    background-image: url(./testimonials-bg.svg);
+}
 .name {
     font-size: 20px;
     font-weight: 600;

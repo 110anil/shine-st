@@ -1,6 +1,6 @@
 .container {
     padding: 120px;
-
+    background-color: #1e071d;
 }
 
 .container>div {
@@ -26,7 +26,7 @@
     font-size: 60px;
     line-height: 70px;
     /*background: linear-gradient(145.76deg,#fff 4.23%,#63f3fc 35.58%,#f48d0c 73.62%,#fed775 105.63%);*/
-    background: linear-gradient(116.41deg,#000000 -67.02%,#8c172e 23.01%,#a21bb7 155.41%,#9b0938 311.85%);
+    background: linear-gradient(90deg,#ffab5e,#ff379b 0%,#ffab5e);
     margin-bottom: 60px;
 }
 
