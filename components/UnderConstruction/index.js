@@ -33,7 +33,7 @@ const UnderConstruction = () => {
                         backgroundRepeat: 'no-repeat'
                     }} height={20} width={20} />
                 </a>
-                | anilgarg2526@gmail.com | 9711162526, 0129-4082526
+                | smile@shinestudio.in | 9711162526, 0129-4082526
             </div>
         </div>
     )
