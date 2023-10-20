@@ -3,7 +3,7 @@ import favIcon from "@/public/favicon.ico";
 import appleTouchIcon from "@/public/apple-touch-icon.png";
 import favIcon16 from "@/public/favicon-16x16.png";
 import favIcon32 from "@/public/favicon-32x32.png";
-import logo from "@/images/logo.png";
+import logo from "@/images/logo1.png";
 import { Inter } from 'next/font/google'
 import styles from './layoyt.module.css'
 import cs from 'classnames'
