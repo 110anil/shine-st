@@ -267,14 +267,14 @@ const getFiles = async (pin) => {
     }} = specialItem || {}
 
     images = images.map(x => {
-        let {groups: {key, ext}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+        let {groups: {key, ext}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)/) || {}
         ext = `.${ext}`
         key = parseInt(key)
 
         return {url:x.url, fileId: x.id, originalKey: key.toString(), key, ext, deleted: false, tempTags: parse(x.tags)}
     })
     if (song) {
-        let {groups: {key, ext}} = song.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+        let {groups: {key, ext}} = song.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)/) || {}
         ext = `.${ext}`
         key = parseInt(key)
 
