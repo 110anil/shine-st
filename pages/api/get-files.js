@@ -104,8 +104,8 @@ const handle = (pin, meta) => {
 
             normalFiles = normalFiles.sort((x, y) => {
                 try {
-                    let {groups: {key: xIndex}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
-                    let {groups: {key: yIndex}} = y.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+                    let {groups: {key: xIndex}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)/) || {}
+                    let {groups: {key: yIndex}} = y.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)/) || {}
                     xIndex = parseInt(xIndex)
                     yIndex = parseInt(yIndex)
 
@@ -140,8 +140,8 @@ const handleData = (pin) => {
 
             normalFiles = normalFiles.sort((x, y) => {
                 try {
-                    let {groups: {key: xIndex}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
-                    let {groups: {key: yIndex}} = y.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+                    let {groups: {key: xIndex}} = x.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)/) || {}
+                    let {groups: {key: yIndex}} = y.url.match(/(?<key>(\d+))(\.(?<hash>[a-zA-Z0-9]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)/) || {}
                     xIndex = parseInt(xIndex)
                     yIndex = parseInt(yIndex)
 
@@ -240,7 +240,7 @@ export async function changePin  (req, res) {
         }
         files = files.map(file => {
             const {url} = file
-            let {groups: {key, ext}} = url.match(/(?<key>(\d+|song))(\.(?<hash>[a-zA-Z0-9_\-]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)$/) || {}
+            let {groups: {key, ext}} = url.match(/(?<key>(\d+|song))(\.(?<hash>[a-zA-Z0-9_\-]+)){0,1}\.(?<ext>[a-zA-Z0-9]+)/) || {}
             return {...file, key, ext}
         })
 
